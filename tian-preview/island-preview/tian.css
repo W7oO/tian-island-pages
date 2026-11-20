@@ -75,3 +75,7 @@ body[data-single-work="true"] #exhibit-identity{margin-right:auto;}
 
 #gallery-overview #exhibit-motion-toggle{min-height:36px;background:none;border:0;padding:6px 10px;font-size:11px;color:#46736d;white-space:nowrap;}
 @media(max-width:700px){#gallery-overview .explore-controls #time-of-day{grid-column:1;}#gallery-overview #exhibit-motion-toggle{grid-column:2;min-height:30px;padding:0 6px;}}
+
+#poster-open:not([hidden]){display:block;width:min(100%,360px);margin:12px 0}
+#share-poster{display:block;width:100%;height:auto;border:1px solid #cbd7cb;border-radius:8px}
+#poster-save:not([hidden]){display:inline-block;margin:0 0 14px;color:#345751}

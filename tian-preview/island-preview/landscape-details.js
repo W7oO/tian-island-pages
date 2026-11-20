@@ -1,9 +1,10 @@
 import * as T from 'three';
-import {mergeGeometries} from 'three/addons/utils/BufferGeometryUtils.js';
-let detailRoot;
+let detailRoot,footballPlay;
+export function advanceFootball(dt){footballPlay?.advance(dt);}
+export function getFootballStats(){return footballPlay?.stats();}
 export function getDetailMetrics(){return detailRoot?{...detailRoot.userData.metrics,bounds:detailRoot.userData.getBounds()}:null;}
 const palette={ivory:'#eee6ce',teal:'#446e66',gold:'#be965b',clay:'#b98b67',sage:'#879b79',dark:'#394a46'};
-// Small edge-of-exhibit props; no new work entries, navigation or per-frame animation.
+// Small edge-of-exhibit props and the existing football match.
 export function buildLandscapeDetails(scene,ground){
  const root=new T.Group();root.name='landscape-details';scene.add(root);const mats=new Map(),metrics=[];
  const mat=c=>{c=palette[c]||c;if(!mats.has(c))mats.set(c,new T.MeshStandardMaterial({color:c,roughness:.88}));return mats.get(c)};
@@ -12,17 +13,39 @@ export function buildLandscapeDetails(scene,ground){
  function group(name,x,z,raise=0){const g=new T.Group();g.name=name;g.position.set(x,ground(x,z)+raise,z);root.add(g);metrics.push(g);return g;}
  function ball(p,x,z,r=.28){mesh(new T.SphereGeometry(r,16,12),'ivory',x,r,z,p);for(const[a,b]of[[0,0],[1.2,.4],[2.5,-.3],[4.1,.6]]){const patch=mesh(new T.CircleGeometry(r*.28,5),'dark',x+Math.sin(a)*Math.cos(b)*r,r+Math.sin(b)*r,z+Math.cos(a)*Math.cos(b)*r,p);patch.lookAt(new T.Vector3(x,r,z).add(patch.position.clone().sub(new T.Vector3(x,r,z)).multiplyScalar(2)));}}
  const sports=group('sports-ball-and-bag',-11.8,-6.8);ball(sports,0,0);ball(sports,.55,.35,.21);box(.95,.42,.52,'teal',-1,.24,.25,sports);const handle=mesh(new T.TorusGeometry(.18,.035,6,16,Math.PI),'gold',-1,.5,.25,sports);box(.12,.35,.54,'gold',-1.28,.25,.25,sports);
- // Four posed players on the existing pitch: still geometry, no added animation loop.
- const match=group('football-players',-7,-8.5);match.position.y=ground(-7,-8.5)+.28;
- function footballer(x,z,kit,heading,kick=false){const g=new T.Group();match.add(g);g.position.set(x,0,z);g.rotation.y=heading;
-  box(.28,.33,.18,kit,0,.58,0,g);box(.25,.12,.18,'dark',0,.36,0,g);mesh(new T.SphereGeometry(.105,12,8),'#c6a889',0,.86,0,g);mesh(new T.SphereGeometry(.108,12,6),'dark',0,.92,-.018,g).scale.set(1,.45,1);
-  const limb=(a,b,r,c)=>{const aa=new T.Vector3(...a),bb=new T.Vector3(...b),dd=bb.clone().sub(aa),m=mesh(new T.CylinderGeometry(r,r,dd.length(),7),c,...aa.clone().add(bb).multiplyScalar(.5).toArray(),g);m.quaternion.setFromUnitVectors(new T.Vector3(0,1,0),dd.normalize());};
-  limb([-.09,.35,0],[-.11,.06,.07],.045,'ivory');limb([.09,.35,0],[.12,kick?.20:.06,kick?.34:-.07],.045,'ivory');box(.13,.07,.22,'dark',-.11,.04,.11,g);box(.13,.07,.22,'dark',.12,kick?.18:.04,kick?.4:-.03,g);
-  limb([-.17,.7,0],[-.25,.47,.1],.04,kit);limb([.17,.7,0],[.26,.5,-.1],.04,kit);
+ const match=group('football-players',-7,-8.5,.28);
+ match.userData.dynamicExhibit=true;
+ function footballer(kit){
+  const body=new T.Group();
+  match.add(body);
+  box(.28,.33,.18,kit,0,.58,0,body);
+  box(.25,.12,.18,'dark',0,.36,0,body);
+  mesh(new T.SphereGeometry(.105,12,8),'#c6a889',0,.86,0,body);
+  mesh(new T.SphereGeometry(.108,12,6),'dark',0,.92,-.018,body).scale.set(1,.45,1);
+  const legs=[],arms=[];
+  for(const side of [-1,1]){
+   const leg=new T.Group(),arm=new T.Group();
+   leg.position.set(side*.09,.35,0);
+   box(.085,.29,.085,'ivory',0,-.145,0,leg);
+   box(.13,.07,.22,'dark',0,-.31,.045,leg);
+   body.add(leg);
+   legs.push(leg);
+   arm.position.set(side*.18,.71,0);
+   box(.074,.25,.078,kit,side*.02,-.125,0,arm);
+   arm.rotation.z=side*.24;
+   body.add(arm);
+   arms.push(arm);
+  }
+  return {body,legs,arms};
  }
- footballer(-1.45,.7,'teal',.5,true);footballer(.5,-.7,'clay',-1);footballer(1.8,1,'teal',-1.8);footballer(-.7,-1.2,'clay',.3);ball(match,-1.05,1.2,.13);
- // Batch the static match by material, keeping mobile draw calls bounded.
- match.updateMatrixWorld(true);const inverse=match.matrixWorld.clone().invert(),batches=new Map();match.traverse(o=>{if(o.isMesh){const g=o.geometry.clone().applyMatrix4(inverse.clone().multiply(o.matrixWorld));if(!batches.has(o.material))batches.set(o.material,[]);batches.get(o.material).push(g);}});match.clear();for(const[m,gs]of batches){const merged=new T.Mesh(mergeGeometries(gs),m);merged.castShadow=true;merged.receiveShadow=true;match.add(merged);gs.forEach(g=>g.dispose());}
+ const players=['teal','teal','clay','clay'].map(footballer);
+ const matchBall=new T.Group();
+ match.add(matchBall);
+ const radius=.13;
+ ball(matchBall,0,0,radius);
+ matchBall.children.forEach(mesh=>{mesh.position.y-=radius;});
+ match.traverse(object=>{if(object.isMesh)object.castShadow=false;});
+ footballPlay=createFootballPlay(players,matchBall,radius);
 
  function books(p,x,z){for(let i=0;i<3;i++){const b=box(.68-i*.05,.11,.48,i%2?'teal':'clay',x,.12+i*.12,z,p);b.rotation.y=(i-1)*.12;box(.58-i*.05,.065,.43,'ivory',x,.13+i*.12,z+.02,p);}}
  const reading=group('reading-cushions-books',4.7,2.3,.16);books(reading,0,0);for(const[x,z,c]of[[-.85,.35,'sage'],[-.3,1,'gold']]){const cushion=mesh(new T.CylinderGeometry(.36,.38,.13,16),c,x,.1,z,reading);cushion.rotation.y=.2;}
@@ -38,4 +61,78 @@ export function buildLandscapeDetails(scene,ground){
  root.userData.metrics={groups:metrics.length,flowerInstances:48,stoneInstances:12,maxPropHeight:1.2,footballPlayers:4,matchBalls:1};
  root.userData.getBounds=()=>metrics.map(g=>{const b=new T.Box3().setFromObject(g);return{name:g.name,min:b.min.toArray(),max:b.max.toArray()}});
  detailRoot=root;return root;
+}
+
+// Coordinates are local to the pitch. Each ball release coincides with a foot strike.
+function createFootballPlay(players,ball,radius){
+ const cycle=14;
+ const path=[
+  [0,-1.7,1.05],[.75,-1.7,1.05],[1.65,-1.18,.95],[2.5,-1.18,.95],
+  [3.4,-.65,.84],[4.05,-.65,.84],[5.35,1.02,.57],[6.48,1.02,.57],
+  [7.55,3.11,.06],[9.9,3.11,.06],[12,-1.7,1.05],[14,-1.7,1.05],
+ ];
+ const runPaths=[
+  [[0,-2.02,1.11],[.75,-2.02,1.11],[2.5,-1.50,1.01],[4.05,-.97,.89],[6.1,-.12,1.48],[10,-1.38,1.55],[14,-2.02,1.11]],
+  [[0,.12,-1.13],[1.7,.52,-.53],[4.4,.72,.64],[6.75,.72,.64],[8.8,1.7,1.04],[11,.65,1.25],[14,.12,-1.13]],
+  [[0,-.56,-.72],[3.1,.18,-1.37],[6.5,1.8,-1.33],[9.3,2.26,-.66],[11.5,.62,-.73],[14,-.56,-.72]],
+  [[0,2.65,-.52],[5.5,2.65,-.52],[7.45,2.66,.17],[8.7,2.81,.22],[10,3.10,-.28],[11.8,2.49,-.44],[14,2.65,-.52]],
+ ];
+ const strikes=[[.75,2.5,4.05],[6.48],[],[9.9]];
+ const axis=new T.Vector3(),rollStep=new T.Quaternion();
+ ball.position.set(path[0][1],radius,path[0][2]);
+ const lerp=T.MathUtils.lerp;
+ let time=0;
+ function segment(keys,t){
+  const end=keys.findIndex(([at])=>at>t);
+  const i=end<0?keys.length-2:Math.max(0,end-1);
+  const a=keys[i],b=keys[i+1];
+  return {a,b,i,u:T.MathUtils.clamp((t-a[0])/(b[0]-a[0]),0,1)};
+ }
+ function pose(){
+  const {a,b,i,u}=segment(path,time);
+  const roll=1-(1-u)**1.35;
+  const x=lerp(a[1],b[1],roll),z=lerp(a[2],b[2],roll);
+  const dx=x-ball.position.x,dz=z-ball.position.z,distance=Math.hypot(dx,dz);
+  if(distance){
+   axis.set(dz/distance,0,-dx/distance);
+   ball.quaternion.premultiply(rollStep.setFromAxisAngle(axis,distance/radius));
+  }
+  ball.position.set(x,radius+(i===7?Math.sin(Math.PI*u)*.10:0),z);
+  players.forEach(({body,legs,arms},n)=>{
+   const {a,b,u}=segment(runPaths[n],time);
+   let x=lerp(a[1],b[1],u),z=lerp(a[2],b[2],u);
+   const speed=Math.hypot(b[1]-a[1],b[2]-a[2])/(b[0]-a[0]);
+   const strike=strikes[n].find(at=>Math.abs(time-at)<.32);
+   const trap=n===1&&Math.abs(time-5.35)<.28;
+   let swing=Math.sin(time*13+n)*Math.min(speed*2, .68);
+   let kick=0;
+   let heading=Math.atan2(b[1]-a[1],b[2]-a[2]);
+   if(strike!==undefined||trap){
+    const at=trap?5.35:strike;
+    const point=path.find(([t])=>t===at);
+    const next=path[path.indexOf(point)+(trap?-1:1)];
+    const aim=Math.atan2(next[1]-point[1],next[2]-point[2]);
+    const blend=1-Math.min(1,Math.abs(time-at)/(trap?.28:.32));
+    const reach=trap?.32:.36;
+    const turn=aim-heading;
+    heading+=Math.atan2(Math.sin(turn),Math.cos(turn))*blend;
+    x=lerp(x,point[1]-Math.sin(aim)*reach,blend);
+    z=lerp(z,point[2]-Math.cos(aim)*reach,blend);
+    kick=blend*(trap?-.42:-.79);
+    swing*=1-blend;
+   }
+   if(n===1&&time>=5.35+.28&&time<=6.48-.32)heading=Math.atan2(3.11-1.02,.06-.57);
+   body.position.set(x,Math.abs(swing)*.035,z);
+   body.rotation.y=heading;
+   legs[0].rotation.x=swing;
+   legs[1].rotation.x=-swing+kick;
+   arms[0].rotation.x=-swing*.68;
+   arms[1].rotation.x=swing*.68;
+  });
+ }
+ pose();
+ return {
+  advance(dt){time=(time+Math.min(dt,.1))%cycle;pose();},
+  stats(){return {time,ball:ball.position.toArray(),players:players.map(({body,legs})=>({position:body.position.toArray(),foot:legs[1].rotation.x}))};},
+ };
 }

@@ -1,0 +1,39 @@
+#gallery-dialog[data-view="overview"] .gallery-scroll{overflow:hidden;position:relative}
+#gallery-overview{position:relative;width:100%;height:100%;max-width:none;margin:0;background:#e8ede7;overflow:hidden}
+#explore-world{position:absolute;inset:0}#explore-world canvas{display:block;width:100%;height:100%;touch-action:none}
+#gallery-overview .gallery-intro{position:absolute;top:24px;left:4%;width:auto;max-width:400px;display:block;padding:0;margin:0;pointer-events:none;z-index:2}
+#gallery-overview .gallery-intro>.gallery-kicker{font-size:9px;margin-bottom:11px}
+#gallery-overview .gallery-intro h2{font-size:30px;line-height:1.35;letter-spacing:-.04em;margin:0 0 9px}
+#gallery-overview .gallery-intro>p:not(.gallery-kicker){padding:0;border:0;font-size:12px;line-height:1.8}
+#gallery-overview .chapter-count{font-size:10px;display:block;margin-top:8px;opacity:.75}
+#explore-labels{position:absolute;inset:0;pointer-events:none;z-index:3}
+.scene-marker{position:absolute;transform:translate(-50%,-100%);border:1px solid #d2c5d5;background:#faf7f0f2;padding:9px 14px 9px 10px;border-radius:18px;color:#304c49;display:flex;align-items:center;gap:9px;font-size:12px;white-space:nowrap;box-shadow:0 4px 10px #55435f0c;pointer-events:auto;transition:background .2s,box-shadow .2s}
+.scene-marker>span{background:#64938e;color:#fffaf6;width:23px;height:23px;line-height:23px;text-align:center;border-radius:50%;font:12px/23px Georgia,serif}
+.scene-marker:hover,.scene-marker:focus-visible{background:#fffaf1;box-shadow:0 0 0 3px #87aea238}
+#explore-loading{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:4;background:#f9f5edec;padding:16px 23px;border-radius:6px;color:#796782;font-size:12px}
+.explore-controls{position:absolute;bottom:48px;left:50%;transform:translateX(-50%);display:flex;gap:7px;z-index:4;padding:5px;background:#f9f6efde;border:1px solid #d4c9d6;border-radius:8px}
+.explore-controls button{border:0;background:none;color:#6f5b79;font-size:11px;padding:11px 17px;white-space:nowrap;border-radius:5px}
+.explore-controls button:first-child{background:#85708e;color:#fffaf2}
+.explore-controls button:disabled{opacity:.5}
+.explore-help{position:absolute;bottom:20px;left:20px;right:20px;font-size:9px;color:#796b80;text-align:center;pointer-events:none;z-index:3}
+.mobile-explore{display:none}
+#gallery-overview .overview-grid{position:absolute;inset:125px 4% 115px;z-index:6;overflow:auto;background:#f7f4edfa;border:1px solid #d6cbd9;padding:24px;border-radius:6px;box-shadow:0 10px 35px #4e3c541a}
+#gallery-overview .overview-grid:not([data-open="true"]){display:none}
+#gallery-overview .overview-art{height:17dvh}
+#gallery-overview[data-explore-failed="true"] .overview-grid{display:grid;inset:150px 4% 110px}
+#gallery-overview[data-explore-failed="true"] .explore-controls>button:first-child{display:none}
+@media(max-width:700px){
+#gallery-overview .gallery-intro{top:20px;left:6%;max-width:88%}#gallery-overview .gallery-intro>.gallery-kicker{font-size:8px;margin-bottom:9px}#gallery-overview .gallery-intro h2{font-size:25px}#gallery-overview .gallery-intro>p:not(.gallery-kicker){font-size:11px}#gallery-overview .chapter-count{font-size:9px;margin-top:5px}
+.scene-marker{font-size:10px;padding:8px 11px 8px 7px;gap:7px}.scene-marker>span{width:20px;height:20px;font-size:11px;line-height:20px}
+.explore-controls{bottom:94px;gap:0;padding:4px;max-width:94%}.explore-controls button{font-size:10px;padding:9px 12px}.explore-help{bottom:17px;font-size:8px}
+.mobile-explore{position:absolute;bottom:46px;left:6%;right:6%;z-index:4;display:flex;justify-content:space-between;gap:8px;align-items:center}.mobile-explore button{border:1px solid #d2c5d5;background:#faf7f0ee;border-radius:5px;padding:10px 12px;font-size:11px;color:#6c5677;min-height:38px}.mobile-explore button:nth-child(2){flex:1;font-size:11px}
+#gallery-overview .overview-grid{inset:145px 5% 145px;padding:15px;gap:20px 12px}#gallery-overview .overview-art{height:110px}
+}
+.gallery-top #leave-gallery{font-family:Georgia,"Times New Roman",serif;font-size:26px;letter-spacing:-1px;font-weight:700;color:#38303f}.gallery-top #leave-gallery>span{font-size:17px;font-weight:400;font-style:italic;letter-spacing:-.6px}.gallery-top>span{font-size:11px;letter-spacing:.08em}@media(max-width:700px){.gallery-top #leave-gallery{font-size:22px}.gallery-top #leave-gallery>span{font-size:14px}}
+
+/* One intentional work label, shared by touch and pointer layouts. */
+.scene-marker{opacity:0;visibility:hidden;pointer-events:none;transition:opacity .22s ease,visibility .22s ease,background .2s;max-width:calc(100% - 32px)}
+.scene-marker.is-visible{opacity:1;visibility:visible;pointer-events:auto}
+.scene-marker:disabled{pointer-events:none}
+#explore-mobile-open:disabled{background:#eee7ef;color:#597976;cursor:default}
+@media(prefers-reduced-motion:reduce){.scene-marker{transition:none}}

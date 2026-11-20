@@ -1,0 +1,10 @@
+body[data-start="island"] #gallery-overview .overview-grid{grid-template-columns:repeat(5,minmax(0,1fr));gap:23px 22px}
+body[data-start="island"] #gallery-overview .overview-art{height:clamp(90px,16dvh,180px)}
+body[data-start="island"] .overview-caption b{font-size:14px}.overview-intro{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+#gallery-dialog[data-view="work"] .chapter:nth-child(n+7)[data-playing="true"]{display:block;max-width:1600px}
+#gallery-dialog[data-view="work"] .chapter:nth-child(n+7)[data-playing="true"] .chapter-heading{position:static;max-width:none;margin:0 0 22px;align-self:initial}
+#gallery-dialog[data-view="work"] .chapter:nth-child(n+7) .game-frame iframe{height:76dvh;min-height:550px;max-height:none}
+#gallery-dialog[data-view="work"] .chapter:nth-child(n+7) .game-frame[data-expanded="true"] iframe{height:0!important;min-height:0}
+#gallery-dialog[data-view="work"] .chapter:nth-child(n+7) .game-toolbar{position:sticky}
+@media(max-width:1150px) and (min-width:701px){body[data-start="island"] #gallery-overview .overview-grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media(max-width:700px){body[data-start="island"] #gallery-overview .overview-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px 12px!important;padding:13px 14px 17px}body[data-start="island"] #gallery-overview .overview-art{height:clamp(45px,6.8dvh,65px)!important}body[data-start="island"] .overview-caption{padding-top:5px;gap:6px}body[data-start="island"] .overview-caption b{font-size:11px}body[data-start="island"] .overview-caption small{font-size:8px;margin-top:1px}body[data-start="island"] .overview-intro{display:none}body[data-start="island"] .card-kind{padding:3px 5px;font-size:7px}body[data-start="island"] .catalog-heading{padding-bottom:9px;gap:8px}body[data-start="island"] .catalog-heading h2{font-size:22px}#gallery-dialog[data-view="work"] .chapter:nth-child(n+7) .game-frame iframe{height:75dvh;min-height:520px}#gallery-dialog[data-view="work"] .chapter:nth-child(n+7) .experience-actions{gap:9px;font-size:10px}}

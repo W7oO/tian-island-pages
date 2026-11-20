@@ -1,0 +1,68 @@
+body[data-start="island"]>.intro,body[data-start="island"]>.loading,body[data-start="island"]>#world,body[data-start="island"]>header,body[data-start="island"]>.controls,body[data-start="island"]>.status,body[data-start="island"]>footer,body[data-start="island"]>#art-label{display:none}
+body[data-start="island"] .gallery-top{padding:15px 4%;min-height:70px}
+body[data-start="island"] .gallery-top>span{display:none}
+body[data-start="island"] .gallery-top #leave-gallery{font-size:27px;letter-spacing:-.04em}
+body[data-start="island"] .gallery-top #leave-gallery>span{font:400 13px/1.5 -apple-system,BlinkMacSystemFont,'PingFang SC',sans-serif;letter-spacing:.06em;margin-left:10px;color:#786b80}
+body[data-start="island"] #close-gallery{background:#467b79;color:#fffaf4;border:0;padding:12px 22px;font-size:13px;border-radius:5px;min-width:106px}
+body[data-start="island"] #gallery-overview .gallery-intro{top:20px;left:4%}
+body[data-start="island"] #gallery-overview .gallery-intro h2{font-size:26px}
+body[data-start="island"] #explore-list{display:none}
+body[data-start="island"] #gallery-overview .overview-grid{inset:14px 4% 20px;padding:25px 30px 30px;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px 28px;align-content:start;background:#f7f4edfa;box-shadow:0 20px 70px #4b3c5420;border-color:#d9cfd9;scrollbar-width:thin}
+.catalog-heading{grid-column:1/-1;display:flex;justify-content:space-between;align-items:center;gap:20px;border-bottom:1px solid #ccd8cd;padding:0 0 18px;margin-bottom:0}
+.catalog-heading h2{margin:0 0 5px;font-size:28px;font-weight:500;letter-spacing:-.05em;color:#43374b}
+.catalog-heading p{margin:0;font-size:12px;color:#8a7c8e;line-height:1.6}
+.catalog-close{padding:10px 15px;border:1px solid #c7b8ce;background:#faf6ee;border-radius:4px;color:#796282;font-size:12px;white-space:nowrap}
+body[data-start="island"] #gallery-overview .overview-art{height:clamp(100px,19dvh,240px);background:#e9e4dc;border:0;border-radius:4px}
+body[data-start="island"] #gallery-overview .overview-art img{object-fit:contain}
+body[data-start="island"] .overview-caption{padding-top:11px}
+body[data-start="island"] .overview-caption b{font-size:16px}
+body[data-start="island"] .overview-caption small{font-size:11px}
+body[data-start="island"] .overview-card{transition:transform .25s}
+body[data-start="island"] .overview-card:hover{transform:translateY(-4px)}
+body[data-start="island"] #gallery-overview:has(.overview-grid[data-open="true"]) #explore-world{filter:blur(8px);opacity:.4}
+body[data-start="island"] #gallery-overview:has(.overview-grid[data-open="true"]) .gallery-intro,body[data-start="island"] #gallery-overview:has(.overview-grid[data-open="true"]) #explore-labels{visibility:hidden}
+@media(max-width:700px){
+ body[data-start="island"] .gallery-top{min-height:63px;padding:12px 5%;gap:10px}
+ body[data-start="island"] .gallery-top #leave-gallery{font-size:23px;white-space:nowrap}
+ body[data-start="island"] .gallery-top #leave-gallery>span{font-size:10px;margin-left:5px;letter-spacing:0}
+ body[data-start="island"] #close-gallery{font-size:11px;padding:10px 13px;min-width:78px}
+ body[data-start="island"] #gallery-overview .gallery-intro{left:6%;top:20px}
+ body[data-start="island"] #gallery-overview .gallery-intro h2{font-size:23px}
+ body[data-start="island"] #gallery-overview .overview-grid{inset:10px 4% 12px;padding:17px 14px 20px;grid-template-columns:repeat(2,minmax(0,1fr));gap:17px 12px}
+ .catalog-heading{gap:10px;padding-bottom:12px}.catalog-heading h2{font-size:24px}.catalog-heading p{font-size:10px}.catalog-close{font-size:10px;padding:9px 10px}
+ body[data-start="island"] #gallery-overview .overview-art{height:clamp(74px,14dvh,120px)}
+ body[data-start="island"] .overview-caption{gap:7px;padding-top:8px}
+ body[data-start="island"] .overview-caption b{font-size:12px}
+ body[data-start="island"] .overview-caption small{font-size:9px;margin-top:2px}
+ body[data-start="island"] .overview-index{font-size:13px}
+}
+@media(prefers-reduced-motion:reduce){body[data-start="island"] .overview-card{transition:none}}
+.guide-label{position:absolute;transform:translate(-50%,-100%);padding:4px 9px;border-radius:12px;background:#fbf6ebdc;border:1px solid #d4c7d6;color:#816b89;font-size:9px;white-space:nowrap;pointer-events:none}
+.work-intro{font-size:14px;line-height:1.95;color:#66596c;max-width:360px;margin:14px 0}
+.work-learning{margin:10px 0 0;color:#8a758f;font-size:11px}
+.work-learning summary{cursor:pointer;width:fit-content;padding:4px 0}
+.work-learning .chapter-description{margin-top:9px!important;font-size:12px!important}
+#gallery-dialog[data-view="work"] .chapter[data-playing="true"] .work-intro{grid-column:2;grid-row:1/3;max-width:650px;margin:0;align-self:center;font-size:13px}
+#gallery-dialog[data-view="work"] .chapter[data-playing="true"] .work-learning{grid-column:1/-1;grid-row:4}
+#gallery-dialog[data-work="4"] .work-intro{color:#e0d7e2}
+.overview-intro{margin:8px 0 0;color:#6c7b72;font-size:12px;line-height:1.65;text-align:left}
+body[data-start="island"] #gallery-overview .overview-art{height:clamp(90px,18dvh,220px)}
+@media(max-width:700px){
+ .work-intro{font-size:12px;line-height:1.8;margin:8px 0;max-width:100%}
+ #gallery-dialog[data-view="work"] .chapter[data-playing="true"] .work-intro{font-size:12px;margin:9px 0}
+ .work-learning{margin-top:7px;font-size:10px}
+ .overview-intro{font-size:11px;line-height:1.6;margin-top:6px}
+ body[data-start="island"] #gallery-overview .overview-art{height:clamp(65px,11dvh,96px)}
+ body[data-start="island"] #gallery-overview .overview-grid{gap:13px 12px}
+ #gallery-dialog[data-view="work"][data-work="1"] .chapter-1 .chapter-media{inset:175px 6% 105px}
+ #gallery-dialog[data-view="work"][data-work="1"] .work-intro{font-size:11px;line-height:1.8;max-width:100%}
+}
+
+#gallery-dialog[data-work="4"] .work-learning{color:#c2accb}
+
+/* One collection-specific action beside the catalog title. */
+#gallery-dialog[data-catalog="true"] #share-island{display:none}
+.catalog-heading>div{min-width:0;flex:1}
+.catalog-share{flex:none;min-height:44px;padding:9px 13px;border:1px solid #a78bb3;border-radius:7px;background:#faf7ef;color:#3c6967;font:13px/1.4 -apple-system,'PingFang SC',sans-serif;white-space:nowrap;cursor:pointer}
+.catalog-share:focus-visible{outline:2px solid #3c6967;outline-offset:3px}
+@media(max-width:360px){.catalog-share{font-size:12px;padding:8px 10px}.catalog-heading{gap:10px}}

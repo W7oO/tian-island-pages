@@ -1,0 +1,59 @@
+/* One reviewable in-world exhibit: the family portrait. */
+.family-original{display:none}
+#gallery-dialog[data-view="work"][data-work="1"] #gallery-overview{filter:none;transform:none;pointer-events:none}
+#gallery-dialog[data-view="work"][data-work="1"] .gallery-scroll:before{display:none}
+#gallery-dialog[data-view="work"][data-work="1"] #gallery-chapters{position:relative;overflow:hidden;pointer-events:none}
+#gallery-dialog[data-view="work"][data-work="1"] .chapter-1{position:relative;display:block;min-height:100%;height:100%;max-width:none;padding:0;background:transparent}
+#gallery-dialog[data-view="work"][data-work="1"] .chapter-1 .chapter-media{display:none}
+#gallery-dialog[data-view="work"][data-work="1"] .chapter-1 .chapter-heading{position:absolute;left:5%;top:9%;width:290px;padding:0;border:0;border-radius:0;box-shadow:none;background:none;backdrop-filter:none;display:block;pointer-events:auto}
+#gallery-dialog[data-view="work"][data-work="1"] .chapter-number{border:0;padding:0;margin:0 0 24px;font-size:17px;color:#8b7597}
+#gallery-dialog[data-view="work"][data-work="1"] .chapter-heading h2{font-size:31px;margin:14px 0 21px;letter-spacing:-.04em}
+#gallery-dialog[data-view="work"][data-work="1"] .chapter-description{font-size:14px;line-height:1.95;color:#66596c;max-width:265px}
+#gallery-dialog[data-view="work"][data-work="1"] .family-original{display:block;position:absolute;left:5%;bottom:9%;pointer-events:auto;padding:12px 20px;border:1px solid #ad99b6;border-radius:4px;background:#f7f2e8e8;color:#6d5578;font-size:12px}
+@media(max-width:700px){
+#gallery-dialog[data-view="work"][data-work="1"] .chapter-1 .chapter-heading{top:19px;left:7%;right:7%;width:auto;display:block}
+#gallery-dialog[data-view="work"][data-work="1"] .chapter-number{display:none}
+#gallery-dialog[data-view="work"][data-work="1"] .chapter-heading .gallery-kicker{font-size:10px}
+#gallery-dialog[data-view="work"][data-work="1"] .chapter-heading h2{font-size:24px;margin:6px 0 8px}
+#gallery-dialog[data-view="work"][data-work="1"] .chapter-description{font-size:11px;line-height:1.8;max-width:100%}
+#gallery-dialog[data-view="work"][data-work="1"] .family-original{left:7%;bottom:20px;font-size:11px;padding:10px 15px}
+}
+/* Borderless watercolor presentation; the original image stays intact. */
+#gallery-dialog[data-view="work"][data-work="1"] #gallery-overview{visibility:hidden}
+#gallery-dialog[data-view="work"][data-work="1"] .chapter-1{background:radial-gradient(ellipse at 69% 46%,#f7ede4 0,transparent 62%),#e8ede7}
+#gallery-dialog[data-view="work"][data-work="1"] .chapter-1 .chapter-media{display:block;position:absolute;inset:4% 9% 4% 38%;min-height:0;pointer-events:auto;animation:watercolor-reveal 1.5s ease-out both}
+#gallery-dialog[data-view="work"][data-work="1"] .chapter-media figure{margin:0;width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:none;border:0;box-shadow:none}
+#gallery-dialog[data-view="work"][data-work="1"] .chapter-media .image-open{display:block;position:relative;width:auto;height:100%;max-width:100%;padding:0;border:0;border-radius:0;background:none;box-shadow:none;overflow:visible;transform:none}
+#gallery-dialog[data-view="work"][data-work="1"] .chapter-media img{display:block;width:auto;height:100%;max-width:100%;object-fit:contain;border:0;border-radius:0;box-shadow:none;mask-image:linear-gradient(to right,transparent,#000 3%,#000 97%,transparent),linear-gradient(to bottom,transparent,#000 2%,#000 98%,transparent);mask-composite:intersect}
+#gallery-dialog[data-view="work"][data-work="1"] .chapter-media .image-open:after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(110deg,transparent 15%,#fff6e52e 48%,transparent 75%);background-size:240% 100%;mix-blend-mode:soft-light;animation:watercolor-light 12s ease-in-out infinite}
+#gallery-dialog[data-view="work"][data-work="1"] .chapter-media figcaption,#gallery-dialog[data-view="work"][data-work="1"] .image-open>span{display:none}
+@keyframes watercolor-reveal{from{opacity:0;filter:blur(5px);transform:translateY(8px)}to{opacity:1;filter:blur(0);transform:translateY(0)}}
+@keyframes watercolor-light{0%,100%{background-position:100% 0;opacity:.3}50%{background-position:0 0;opacity:.65}}
+@media(max-width:700px){#gallery-dialog[data-view="work"][data-work="1"] .chapter-1 .chapter-media{inset:135px 5% 70px;display:flex;align-items:center;justify-content:center}#gallery-dialog[data-view="work"][data-work="1"] .chapter-media figure{height:100%;width:100%}#gallery-dialog[data-view="work"][data-work="1"] .chapter-media .image-open{max-height:100%;max-width:100%}#gallery-dialog[data-view="work"][data-work="1"] .chapter-media img{max-height:100%;max-width:100%;object-fit:contain}}
+@media(prefers-reduced-motion:reduce){#gallery-dialog[data-view="work"][data-work="1"] .chapter-media,#gallery-dialog[data-view="work"][data-work="1"] .chapter-media .image-open:after{animation:none}}
+#gallery-dialog[data-view="work"][data-work="1"] .chapter-media .image-open{outline:none}
+#gallery-dialog[data-view="work"][data-work="1"] .chapter-media .image-open:focus-visible{outline:2px solid #8b7597;outline-offset:5px}
+/* A watercolor atmosphere, rather than an exhibition board. */
+#gallery-dialog[data-view="work"][data-work="1"] .chapter-1{isolation:isolate;background:radial-gradient(ellipse at 15% 82%,#cab9d580,transparent 47%),radial-gradient(ellipse at 82% 15%,#e6beab85,transparent 45%),#eee7df}
+#gallery-dialog[data-view="work"][data-work="1"] .chapter-1:before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 220 220' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' opacity='.18' filter='url(%23n)'/%3E%3C/svg%3E");opacity:.28;mix-blend-mode:multiply}
+#gallery-dialog[data-view="work"][data-work="1"] .chapter-1:after{content:"FAMILY";position:absolute;left:3%;bottom:5%;z-index:-1;font:clamp(100px,17vw,250px)/.8 Georgia,serif;letter-spacing:-.065em;color:#98849e22;pointer-events:none}
+#gallery-dialog[data-view="work"][data-work="1"] .chapter-1 .chapter-heading{top:21%;width:32%;max-width:390px}
+#gallery-dialog[data-view="work"][data-work="1"] .chapter-heading:before{content:"The people I love.";display:block;font:italic clamp(24px,3vw,43px)/1.2 Georgia,serif;color:#8c708a;margin-bottom:35px;transform:rotate(-5deg);transform-origin:left}
+#gallery-dialog[data-view="work"][data-work="1"] .chapter-heading h2{font-size:clamp(38px,4vw,62px);font-weight:500;letter-spacing:-.06em;margin:19px 0 25px}
+#gallery-dialog[data-view="work"][data-work="1"] .chapter-number{display:none}
+#gallery-dialog[data-view="work"][data-work="1"] .chapter-description{max-width:235px;font-size:14px;line-height:2}
+#gallery-dialog[data-view="work"][data-work="1"] .chapter-1 .chapter-media{inset:4% 10% 4% 40%}
+#gallery-dialog[data-view="work"][data-work="1"] .chapter-media:before{content:"";position:absolute;width:120%;height:100%;left:-10%;top:0;z-index:-1;border-radius:43% 57% 64% 36%/48% 36% 64% 52%;background:radial-gradient(ellipse,#d2aeb67a,#d9bfac4a 48%,transparent 73%);filter:blur(18px);animation:watercolor-bloom 16s ease-in-out infinite alternate}
+#gallery-dialog[data-view="work"][data-work="1"] .chapter-media img{mix-blend-mode:multiply;mask-image:linear-gradient(to right,transparent,#000 6%,#000 94%,transparent),linear-gradient(to bottom,transparent,#000 5%,#000 95%,transparent)}
+@keyframes watercolor-bloom{from{transform:translate(-3%,2%) rotate(-7deg) scale(.95)}to{transform:translate(3%,-2%) rotate(7deg) scale(1.08)}}
+@media(max-width:700px){#gallery-dialog[data-view="work"][data-work="1"] .chapter-1 .chapter-heading{top:20px;width:auto;max-width:none}#gallery-dialog[data-view="work"][data-work="1"] .chapter-heading:before{font-size:22px;margin-bottom:13px;transform:rotate(-3deg)}#gallery-dialog[data-view="work"][data-work="1"] .chapter-heading h2{font-size:30px;margin:7px 0 9px}#gallery-dialog[data-view="work"][data-work="1"] .chapter-description{font-size:11px;max-width:100%}#gallery-dialog[data-view="work"][data-work="1"] .chapter-1 .chapter-media{inset:170px 6% 64px}#gallery-dialog[data-view="work"][data-work="1"] .chapter-1:after{font-size:96px;bottom:5%;left:2%}}
+@media(prefers-reduced-motion:reduce){#gallery-dialog[data-view="work"][data-work="1"] .chapter-media:before{animation:none}}
+#gallery-dialog[data-view="work"][data-work="1"] .chapter-1{overflow:hidden}
+
+/* Continue the island's own landscape language; no added English captions. */
+#gallery-dialog[data-view="work"][data-work="1"] #gallery-overview{visibility:visible}
+#gallery-dialog[data-view="work"][data-work="1"] .chapter-1{background:radial-gradient(ellipse at 65% 35%,#f6ecdfaa,transparent 68%)}
+#gallery-dialog[data-view="work"][data-work="1"] .chapter-1:after,#gallery-dialog[data-view="work"][data-work="1"] .chapter-heading:before{content:none}
+#gallery-dialog[data-view="work"][data-work="1"] .chapter-1 .chapter-heading{top:18%}
+#gallery-dialog[data-view="work"][data-work="1"] .chapter-1 .chapter-media{inset:4% 13% 13% 38%}
+@media(max-width:700px){#gallery-dialog[data-view="work"][data-work="1"] .chapter-1 .chapter-heading{top:22px}#gallery-dialog[data-view="work"][data-work="1"] .chapter-1 .chapter-media{inset:125px 6% 105px}}

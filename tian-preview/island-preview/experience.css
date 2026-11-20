@@ -1,0 +1,76 @@
+/* Six arrivals, connected to the real island and the student's original work. */
+#gallery-dialog{overflow:clip}
+.work-loading{position:absolute;inset:58px 0 0;z-index:3;overflow:hidden;pointer-events:none;background:#f4f0e4;opacity:0;visibility:hidden;transition:opacity .25s,visibility .25s}
+.work-loading img{display:block;width:100%;height:auto;max-height:100%;object-fit:contain;object-position:top}
+.work-loading span{position:absolute;left:50%;top:35%;transform:translate(-50%,-50%);padding:13px 20px;background:#fcf7eeed;color:#6c5677;border-radius:4px;font-size:13px}
+.game-frame[data-loading="true"] .work-loading{opacity:1;visibility:visible}
+.scene-arrival{position:absolute;inset:0;z-index:15;pointer-events:none;overflow:hidden;perspective:1800px}
+.scene-arrival[hidden]{display:none}
+.arrival-picture{position:absolute;inset:0;background:#e8ede7;transform-origin:0 50%;backface-visibility:hidden;will-change:transform,clip-path,opacity}
+.arrival-picture img{width:100%;height:100%;object-fit:cover;display:block}
+.arrival-picture .arrival-second{display:none}
+.arrival-caption{position:absolute;left:6%;top:12%;color:#473b50;text-shadow:0 2px 20px #f8f3e7}
+.arrival-caption>span{display:block;font:italic 35px Georgia,serif;margin-bottom:14px;color:#917899}
+.arrival-caption strong{font-size:clamp(25px,4vw,55px);font-weight:500;letter-spacing:-.04em}
+#gallery-dialog[data-view="work"]:not([data-work="1"]) #gallery-overview{filter:none;transform:none;opacity:.5}
+#gallery-dialog[data-view="work"]:not([data-work="1"]) .gallery-scroll:before{background:#eee8df99}
+#gallery-dialog[data-view="work"]:not([data-work="1"]) .chapter-heading{padding:0;background:none;border:0;box-shadow:none;backdrop-filter:none;border-radius:0}
+#gallery-dialog[data-view="work"]:not([data-work="1"]) .chapter-number{display:none}
+#gallery-dialog[data-view="work"]:not([data-work="1"]) .chapter-heading h2{font-size:clamp(30px,3.7vw,51px);font-weight:500;letter-spacing:-.05em;line-height:1.3}
+#gallery-dialog[data-view="work"]:not([data-work="1"]) .chapter-description{font-size:13px;line-height:2}
+/* The coast: two original photographic worlds, with a larger main image. */
+#gallery-dialog[data-work="2"] .chapter-2{grid-template-columns:27% minmax(0,1fr);gap:5%;padding:4% 6%;background:#c2d1d229}
+#gallery-dialog[data-work="2"] .chapter-media{display:block;position:relative;min-height:580px;height:64dvh;max-height:760px;padding:0 19% 10% 0;transform:translate(var(--look-x,0px),var(--look-y,0px));transition:transform .5s ease-out}
+#gallery-dialog[data-work="2"] .chapter-media figure:first-child{height:100%;width:100%;margin:0;transform:rotate(-3deg)}
+#gallery-dialog[data-work="2"] .chapter-media figure:last-child{position:absolute;right:0;bottom:0;width:49%;height:auto;transform:rotate(5deg);margin:0}
+#gallery-dialog[data-work="2"] .image-open{outline:0;border:0;border-radius:3px;padding:0;background:none;box-shadow:0 20px 50px #3d505538}
+#gallery-dialog[data-work="2"] .image-open img{width:100%;height:100%;max-height:none;object-fit:cover}
+#gallery-dialog[data-work="2"] figure:first-child .image-open{height:100%}
+#gallery-dialog[data-work="2"] figure:last-child img{aspect-ratio:1;object-fit:contain}
+#gallery-dialog[data-work="2"] .chapter-media figcaption{font-size:11px;background:none;margin:10px 0 0;padding:0;color:#495e65}
+/* Interactive works enter directly; the original webpage is the main event. */
+#gallery-dialog[data-view="work"] .chapter[data-playing="true"]{display:block;max-width:1550px;margin:auto;padding:25px 5% 40px}
+#gallery-dialog[data-view="work"] .chapter[data-playing="true"] .chapter-heading{margin-bottom:23px;padding:0;max-width:none}
+#gallery-dialog[data-view="work"] .chapter[data-playing="true"] .chapter-heading>div{display:grid;grid-template-columns:minmax(230px,.8fr) minmax(0,1.2fr);gap:6px 45px}
+#gallery-dialog[data-view="work"] .chapter[data-playing="true"] .chapter-heading h2{font-size:30px;line-height:1.3;margin:0}
+#gallery-dialog[data-view="work"] .chapter[data-playing="true"] .chapter-description{font-size:12px;line-height:1.9;max-width:650px}
+#gallery-dialog[data-view="work"] .chapter[data-playing="true"] .work-note{font-size:10px;padding-top:0;margin-top:2px;opacity:.8;border:0}
+#gallery-dialog[data-view="work"] .game-frame{position:relative;border:0;border-radius:9px;background:#fbf6ec;box-shadow:0 28px 65px #4d3a5933;overflow:hidden}
+#gallery-dialog[data-view="work"] .game-toolbar{padding:12px 20px;border-bottom:1px solid #d6c7da;background:#f7f2e9;backdrop-filter:none}
+#gallery-dialog[data-view="work"] .game-toolbar>span{font-size:12px;color:#6a5573}
+#gallery-dialog[data-work="3"] .game-frame{transform-origin:left center}
+#gallery-dialog[data-work="3"] .chapter-3{background:#f8f1df55}
+#gallery-dialog[data-work="5"] .chapter-5{background:#d1d9ba55}
+#gallery-dialog[data-work="6"] .chapter-6{background:#c0bfd944}
+#gallery-dialog[data-work="5"] .game-frame iframe,#gallery-dialog[data-work="6"] .game-frame iframe{height:75dvh;min-height:650px;max-height:none}
+/* The film opens into a larger, quieter screen instead of a media card. */
+#gallery-dialog[data-work="4"] .gallery-scroll:before{background:#282333ef!important}
+#gallery-dialog[data-work="4"] .chapter-4{display:grid;grid-template-columns:23% minmax(0,1fr);gap:5%;padding:4% 6%;color:#f5eee6}
+#gallery-dialog[data-work="4"] .chapter-description,#gallery-dialog[data-work="4"] .gallery-kicker{color:#d2c7d6!important}
+#gallery-dialog[data-work="4"] .chapter-media{width:100%;min-width:0}
+#gallery-dialog[data-work="4"] .chapter-media figure{border:0;padding:0;background:none;box-shadow:0 0 100px #b69ac31a;margin:0}
+#gallery-dialog[data-work="4"] .chapter-media video{display:block;width:100%;height:62dvh;max-height:700px;object-fit:contain;border:0;border-radius:0;background:#1d1925}
+#gallery-dialog[data-work="4"] .chapter-media figcaption{margin:14px 0 0;background:none;padding:0;text-align:left;display:block;color:#c7b9ce;font-size:11px}
+.film-actions{display:flex;gap:12px;justify-content:flex-end;margin-top:13px}
+.film-actions button{border:1px solid #8f7b98;color:#ede1ef;background:#8d73942b;padding:10px 17px;font-size:12px;border-radius:3px}
+@media(max-width:700px){
+ .arrival-caption{top:15%;left:7%}.arrival-caption>span{font-size:23px}.arrival-caption strong{font-size:28px}
+ #gallery-dialog[data-view="work"]:not([data-work="1"]) .chapter-heading{margin:0 0 25px;padding:0}
+ #gallery-dialog[data-view="work"]:not([data-work="1"]) .chapter-heading h2{font-size:28px;margin:8px 0 13px}
+ #gallery-dialog[data-view="work"]:not([data-work="1"]) .chapter-description{font-size:12px}
+ #gallery-dialog[data-work="2"] .chapter-2{display:block;padding:25px 7% 40px}
+ #gallery-dialog[data-work="2"] .chapter-media{height:420px;min-height:0;max-height:none;padding:0 12% 24% 0;margin-top:35px}
+ #gallery-dialog[data-work="2"] .chapter-media figure:last-child{width:53%;bottom:0;right:0}
+ #gallery-dialog[data-work="2"] .chapter-media figcaption{font-size:9px}
+ #gallery-dialog[data-view="work"] .chapter[data-playing="true"]{padding:22px 5% 35px}
+ #gallery-dialog[data-view="work"] .chapter[data-playing="true"] .chapter-heading>div{display:block}
+ #gallery-dialog[data-view="work"] .chapter[data-playing="true"] .chapter-heading h2{font-size:26px;margin:7px 0 10px}
+ #gallery-dialog[data-view="work"] .chapter[data-playing="true"] .chapter-description{font-size:11px}
+ #gallery-dialog[data-view="work"] .game-toolbar{padding:10px 12px;gap:8px}.experience-actions{gap:9px}
+ #gallery-dialog[data-work="4"] .chapter-4{display:block;padding:25px 6% 35px}
+ #gallery-dialog[data-work="4"] .chapter-media video{height:51dvh;max-height:none}.film-actions button{font-size:11px;padding:9px 14px}
+}
+@media(prefers-reduced-motion:reduce){#gallery-dialog[data-work="2"] .chapter-media{transition:none;transform:none}}
+#gallery-dialog[data-work="2"] .chapter-media figure:last-child{width:37%}
+#gallery-dialog[data-work="4"] .chapter-4 .chapter-media figure{border:0;padding:0;box-shadow:none;background:none}
+@media(max-width:700px){#gallery-dialog[data-work="2"] .chapter-media figure:last-child{width:46%}}

@@ -1,0 +1,22 @@
+.mobile-entry-head{display:none}
+@media(max-width:700px), (pointer:coarse) and (max-height:500px){
+ body[data-start="island"] .gallery-top #close-gallery{min-height:44px;min-width:92px;font-size:12px}
+ #gallery-overview .gallery-intro>.gallery-kicker{font-size:12px;letter-spacing:0}
+ .mobile-explore{display:grid;grid-template-columns:44px minmax(0,1fr) 44px;gap:8px;left:12px;right:12px;bottom:calc(70px + env(safe-area-inset-bottom));padding:11px;background:#f9f6eff5;border:1px solid #d2c5d5;border-radius:9px;box-shadow:0 5px 22px #4e3c5417}
+ .mobile-entry-head{display:flex;grid-column:1/-1;align-items:center;justify-content:space-between;gap:8px;font-size:11px;color:#7b6785}
+ .mobile-entry-head .mobile-all-works{border:0;background:none;padding:0 2px;min-height:32px;font-size:11px}
+ .mobile-explore>button{min-height:46px;width:100%;padding:9px 5px;font-size:12px}
+ .mobile-explore #explore-mobile-open{background:#467b79;color:#fffaf4;border:0;font-size:12px}
+ .mobile-explore .explore-controls{position:static;transform:none;grid-column:1/-1;display:flex;width:100%;max-width:none;margin:0;padding:0;border:0;box-shadow:none;background:none;gap:8px}
+ .mobile-explore .explore-controls button{min-height:44px;padding:8px 13px;font-size:11px}
+ .mobile-explore #explore-tour{flex:1}
+ .explore-help{bottom:calc(245px + env(safe-area-inset-bottom));font-size:10px;left:22px;right:22px}
+}
+
+@media(max-width:700px),(pointer:coarse) and (max-height:500px){
+#gallery-overview .gallery-intro{top:12px;left:16px;right:16px;max-width:none}#gallery-overview .gallery-intro h2{font-size:20px;margin:0 0 3px}#gallery-overview .gallery-intro>.gallery-kicker{font-size:10px;margin:0 0 3px}#gallery-overview .gallery-intro>p:not(.gallery-kicker){font-size:10px;margin:0;max-width:75%}#gallery-overview .gallery-intro .stage-button{position:absolute;right:0;top:0;font-size:10px;padding:5px}
+.mobile-explore{bottom:calc(12px + env(safe-area-inset-bottom));left:10px;right:10px;padding:6px;gap:4px;grid-template-columns:38px minmax(0,1fr) 38px}.mobile-entry-head{display:none}.mobile-explore>button{min-height:44px;padding:6px 3px}.mobile-explore .explore-controls{gap:5px}.mobile-explore .explore-controls button{min-height:36px;padding:4px 8px}.explore-help{bottom:110px;font-size:9px}.mobile-explore #explore-tour{flex:1}
+}
+
+/* Landscape touch layout uses the same anchored dock as portrait. */
+@media(max-width:700px),(pointer:coarse) and (max-height:500px){.mobile-explore{position:absolute}}

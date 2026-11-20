@@ -1,0 +1,11 @@
+.trial-contact-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 12px}.trial-contact-row #player-learning{flex:1;text-align:left}.trial-contact-button{flex:none;border:1px solid #bdaac7;background:#faf7f2;color:#70587e;border-radius:8px;padding:10px 14px;min-height:44px;font:inherit;white-space:nowrap}.trial-contact-button[hidden]{display:none!important}html[data-planet-immersive="true"] .trial-contact-button{display:none!important}#trial-contact-dialog{box-sizing:border-box;width:min(390px,calc(100vw - 32px));max-height:90dvh;overflow:auto;padding:20px;border:1px solid #d5c7dc;border-radius:16px;background:#faf7f2;color:#51425d;font-family:'Helvetica Neue','PingFang SC',sans-serif}#trial-contact-dialog::backdrop{background:#30233c80}#trial-contact-dialog h2{font-size:22px;margin:12px 0}#trial-contact-dialog p{font-size:14px;line-height:1.7}#trial-contact-dialog img{display:block;width:100%;height:auto;margin-top:12px}#trial-contact-dialog .trial-close{display:block;margin-left:auto;min-height:44px;border:0;background:none;color:inherit;font:inherit}
+
+.trial-reading-footer{margin-top:28px;padding-top:20px;border-top:1px solid #d5c7dc;display:flex;align-items:center;justify-content:space-between;gap:16px}.trial-reading-footer p{margin:0;font-size:14px!important;color:#746a7d}
+
+.trial-direct-qr{justify-content:flex-start;gap:24px;padding:24px 0}.trial-qr-crop{position:relative;overflow:hidden;flex:none;width:140px;height:140px;background:white}.trial-qr-crop img{position:absolute;max-width:none!important;width:163.31%!important;height:auto!important;left:-31.58%;top:-46.62%}.trial-direct-qr strong{display:block;font-size:16px;color:#70587e}.trial-direct-qr p{margin-top:8px;line-height:1.8}
+
+.trial-original-qr{justify-content:space-between}.trial-qr-figure{margin:0;flex:none;text-align:center}.trial-qr-figure img{display:block;box-sizing:border-box;width:96px;height:96px;padding:6px;background:#fffaf0;object-fit:contain}.trial-qr-figure figcaption{font-size:10px;margin-top:4px;color:#7b6386}@media(max-width:700px){.trial-qr-figure img{width:84px;height:84px}}
+
+.trial-original-qr{justify-content:flex-end;margin-top:16px;padding-top:16px;padding-bottom:8px}
+
+.chapter-brand .chapter-qr[hidden]{display:none!important}

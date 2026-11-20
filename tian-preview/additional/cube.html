@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>魔方训练站 · CFOP 计时器</title>
+<style>
+:root{
+  --bg:#0f1117; --panel:#171a23; --panel2:#1e2230; --line:#2a2f40;
+  --txt:#e8eaf0; --dim:#8a90a3; --accent:#4f8cff; --green:#2ee06e; --red:#ff5d5d;
+  --yellow:#f7d154; --blue:#3b82f6; --orange:#ff9f43; --white:#f5f6f8;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+  background:radial-gradient(1200px 700px at 20% -10%,#1b2130 0%,var(--bg) 55%);
+  color:var(--txt); min-height:100vh; line-height:1.6;
+}
+.wrap{max-width:1120px;margin:0 auto;padding:24px 20px 80px}
+header{display:flex;align-items:center;gap:14px;margin-bottom:22px;flex-wrap:wrap}
+.logo{width:46px;height:46px;border-radius:12px;display:grid;place-items:center;background:linear-gradient(135deg,#4f8cff,#7a5cff);font-size:24px;box-shadow:0 6px 18px rgba(79,140,255,.35)}
+h1{font-size:22px;font-weight:700;letter-spacing:.5px}
+.sub{color:var(--dim);font-size:13px;margin-top:2px}
+.tabs{display:flex;gap:8px;background:var(--panel);padding:6px;border-radius:14px;border:1px solid var(--line);width:fit-content;margin-bottom:24px;flex-wrap:wrap}
+.tab{padding:10px 20px;border-radius:10px;cursor:pointer;font-size:15px;font-weight:600;color:var(--dim);transition:.2s;user-select:none;white-space:nowrap}
+.tab:hover{color:var(--txt)}
+.tab.active{background:var(--accent);color:#fff;box-shadow:0 4px 14px rgba(79,140,255,.4)}
+.section{display:none;animation:fade .25s ease}
+.section.active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:22px;margin-bottom:20px}
+.card h3{font-size:15px;margin-bottom:14px;color:var(--dim);font-weight:600;letter-spacing:.5px;text-transform:uppercase}
+
+/* 计时器 */
+.timer-stage{text-align:center;padding:34px 20px 28px}
+.scramble{font-family:"SF Mono",ui-monospace,Menlo,Consolas,monospace;font-size:clamp(16px,3.2vw,24px);letter-spacing:2px;color:#c7cbe0;min-height:38px;margin-bottom:24px;font-weight:500}
+.time{font-family:"SF Mono",ui-monospace,Menlo,Consolas,monospace;font-size:clamp(64px,15vw,140px);font-weight:700;color:var(--txt);line-height:1;letter-spacing:-2px;transition:color .12s;font-variant-numeric:tabular-nums}
+.time.holding{color:var(--red)}
+.time.ready{color:var(--green);text-shadow:0 0 30px rgba(46,224,110,.45)}
+.time.running{color:var(--green);text-shadow:0 0 30px rgba(46,224,110,.45)}
+.hint{color:var(--dim);font-size:13px;margin-top:18px}
+.hint kbd{background:var(--panel2);border:1px solid var(--line);border-bottom-width:3px;border-radius:6px;padding:3px 9px;font-family:inherit;font-size:12px;color:var(--txt)}
+.stats{display:flex;gap:12px;flex-wrap:wrap}
+.stat{flex:1;min-width:120px;background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:14px;text-align:center}
+.stat .v{font-size:22px;font-weight:700;font-family:ui-monospace,Menlo,monospace}
+.stat .l{font-size:12px;color:var(--dim);margin-top:2px}
+.times-list{margin-top:16px}
+.times-list .row{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;border-radius:10px;background:var(--panel2);margin-bottom:8px;font-family:ui-monospace,Menlo,monospace;font-size:14px}
+.times-list .row .idx{color:var(--dim);font-size:12px;margin-right:10px}
+.times-list .row .best{color:var(--green)}
+.times-list .row .del{cursor:pointer;color:var(--dim);font-size:12px;padding:2px 8px;border-radius:6px}
+.times-list .row .del:hover{background:var(--red);color:#fff}
+
+/* 公式卡片 */
+.filter-bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+.chip{padding:7px 14px;border-radius:20px;border:1px solid var(--line);background:var(--panel2);cursor:pointer;font-size:13px;color:var(--dim);transition:.15s;user-select:none}
+.chip:hover{color:var(--txt)}
+.chip.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.alg-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px}
+.alg-card{background:var(--panel2);border:1px solid var(--line);border-radius:14px;padding:18px;transition:.2s}
+.alg-card:hover{border-color:var(--accent);transform:translateY(-2px)}
+.alg-card .head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.alg-card .name{font-weight:700;font-size:15px}
+.alg-card .tag{font-size:11px;color:var(--dim);background:var(--panel);border:1px solid var(--line);padding:2px 8px;border-radius:10px}
+.alg-card .diagram{display:flex;justify-content:center;gap:12px;margin-bottom:14px;background:#0b0d13;border-radius:12px;padding:16px}
+.alg-card .diagram svg{height:150px;width:auto;max-width:100%}
+.alg-card .algo{font-family:"SF Mono",ui-monospace,Menlo,Consolas,monospace;font-size:14px;color:#d7dbec;background:#0b0d13;border-radius:8px;padding:11px 13px;letter-spacing:1px;word-break:break-word;border-left:3px solid var(--accent);line-height:1.7}
+
+/* 训练模式 */
+.train-stage{text-align:center;padding:10px 0}
+.train-target{display:flex;flex-direction:column;align-items:center;gap:16px;margin:20px 0}
+.train-target .diagram{background:#0b0d13;border-radius:16px;padding:20px}
+.btn{padding:12px 26px;border-radius:12px;border:none;cursor:pointer;font-size:15px;font-weight:600;color:#fff;background:var(--accent);transition:.15s;letter-spacing:.5px}
+.btn:hover{filter:brightness(1.1)}
+.btn.ghost{background:transparent;border:1px solid var(--line);color:var(--txt)}
+.btn.green{background:var(--green);color:#05210f}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.train-algo{font-family:ui-monospace,Menlo,monospace;font-size:clamp(16px,3vw,24px);letter-spacing:2px;color:#d7dbec;background:#0b0d13;border-radius:12px;padding:16px 22px;min-height:64px;transition:filter .15s;border:1px solid var(--line)}
+.train-algo.blur{filter:blur(9px);user-select:none}
+.train-controls{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin:18px 0}
+.train-time{font-family:ui-monospace,Menlo,monospace;font-size:clamp(44px,9vw,80px);font-weight:700;color:var(--txt);transition:color .18s;letter-spacing:-1px;font-variant-numeric:tabular-nums}
+.train-time.running{color:var(--green);text-shadow:0 0 28px rgba(46,224,110,.45)}
+.train-log{margin-top:16px}
+footer{text-align:center;color:var(--dim);font-size:12px;margin-top:30px}
+@media(max-width:600px){.alg-grid{grid-template-columns:1fr}.stats{gap:8px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="logo">🧊</div>
+    <div>
+      <h1>魔方训练站</h1>
+      <div class="sub">CFOP 计时器 · 公式教学 · PLL 训练</div>
+    </div>
+  </header>
+
+  <div class="tabs">
+    <div class="tab active" data-tab="timer">⏱ 计时器</div>
+    <div class="tab" data-tab="cfop">📚 CFOP 公式</div>
+    <div class="tab" data-tab="train">🎯 训练模式</div>
+  </div>
+
+  <section class="section active" id="tab-timer">
+    <div class="card">
+      <div class="timer-stage">
+        <div class="scramble" id="scramble"></div>
+        <div class="time" id="timer">0.00</div>
+        <div class="hint">按住 <kbd>空格</kbd> 变红 → 保持约 0.35 秒变绿 → 松开开始计时 → 再按 <kbd>空格</kbd> 停止</div>
+      </div>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v" id="st-count">0</div><div class="l">次数</div></div>
+      <div class="stat"><div class="v" id="st-best">—</div><div class="l">最快</div></div>
+      <div class="stat"><div class="v" id="st-ao5">—</div><div class="l">Ao5</div></div>
+      <div class="stat"><div class="v" id="st-ao12">—</div><div class="l">Ao12</div></div>
+    </div>
+    <div class="card times-list" id="times-list"></div>
+  </section>
+
+  <section class="section" id="tab-cfop">
+    <div class="filter-bar" id="cfop-cat">
+      <div class="chip active" data-cat="F2L">F2L · 前两层</div>
+      <div class="chip" data-cat="OLL">OLL · 顶层朝向</div>
+      <div class="chip" data-cat="PLL">PLL · 顶层排列</div>
+    </div>
+    <div class="filter-bar" id="cfop-sub"></div>
+    <div class="alg-grid" id="alg-grid"></div>
+  </section>
+
+  <section class="section" id="tab-train">
+    <div class="card">
+      <div class="train-stage">
+        <div class="hint">随机出现一条 <b>PLL</b> 公式，检验你的掌握程度</div>
+        <div class="train-target" id="train-target">
+          <div class="diagram" id="train-diagram"></div>
+          <div class="train-algo" id="train-algo">点击「开始训练」</div>
+        </div>
+        <div class="train-time" id="train-time">0.00</div>
+        <div class="train-controls">
+          <button class="btn" id="btn-train">开始训练</button>
+          <button class="btn ghost" id="btn-reveal">隐藏公式</button>
+          <button class="btn green" id="btn-finish">完成 · 停止</button>
+        </div>
+        <div class="hint">观察公式 → 按 <kbd>空格</kbd> 或点「完成」开始计时 → 执行公式 → 再次停止</div>
+      </div>
+    </div>
+    <div class="card times-list" id="train-log"></div>
+  </section>
+
+  <footer>空格键全程可用 · 数据保存在本地浏览器 · 公式参考 speedcubedb.com</footer>
+</div>
+
+<script>
+// ============================================================
+//  数据：PLL / OLL / F2L（算法参考 speedcubedb.com）
+//  顶面坐标：0 1 2 / 3 4 5 / 6 7 8（俯视，F 在前/下，中心=4）
+//  角块 0,2,6,8   棱块 1,3,5,7
+// ============================================================
+
+// PLL 21 个：cycles = 循环移动的顶面位置（首尾相接画箭头）
+const PLL = [
+  { name:"Ua", algo:"R U' R U R U R U' R' U' R2", cycles:[[2,8,6],[1,7,5]], desc:"棱三角循环 · 角三角循环" },
+  { name:"Ub", algo:"R2 U R U R' U' R' U' R' U R'", cycles:[[2,6,8],[1,5,7]], desc:"棱三角循环 · 角三角循环" },
+  { name:"H",  algo:"M2 U M2 U2 M2 U M2", cycles:[[1,7],[3,5]], desc:"四棱两两对换" },
+  { name:"Z",  algo:"M2 U M2 U M' U2 M2 U2 M'", cycles:[[1,5],[3,7]], desc:"四棱交叉对换" },
+  { name:"Aa", algo:"x R' U R' D2 R U' R' D2 R2 x'", cycles:[[2,8,6]], desc:"三角逆循环（棱不动）" },
+  { name:"Ab", algo:"x R2 D2 R U R' D2 R U' R x'", cycles:[[2,6,8]], desc:"三角顺循环（棱不动）" },
+  { name:"E",  algo:"x' R U' R' D R U R' D' R U R' D R U' R' D' x", cycles:[[0,8],[2,6]], desc:"四角对角对换" },
+  { name:"F",  algo:"R' U' F' R U R' U' R' F R2 U' R' U' R U R' U R", cycles:[[2,6,8],[1,5]], desc:"三角循环 + 一对棱换" },
+  { name:"Ga", algo:"R2 U R' U R' U' R U' R2 D U' R' U R D'", cycles:[[0,6,8],[1,7,5]], desc:"三角循环 + 三棱循环" },
+  { name:"Gb", algo:"R' U' R U D' R2 U R' U R U' R U' R2 D", cycles:[[0,8,6],[1,5,7]], desc:"三角循环 + 三棱循环" },
+  { name:"Gc", algo:"R2 U' R U' R U R' U R2 D' U R U' R' D", cycles:[[0,2,6],[1,5,7]], desc:"三角循环 + 三棱循环" },
+  { name:"Gd", algo:"R U R' U' D R2 U' R U' R' U R' U R2 D'", cycles:[[0,6,2],[1,7,5]], desc:"三角循环 + 三棱循环" },
+  { name:"Ja", algo:"R' U L' U2 R U' R' U2 R L", cycles:[[0,6,2],[1,3,7]], desc:"三角循环 + 三棱循环" },
+  { name:"Jb", algo:"R U R' F' R U R' U' R' F R2 U' R'", cycles:[[0,2,6],[1,7,3]], desc:"三角循环 + 三棱循环" },
+  { name:"Na", algo:"R U R' U R U R' F' R U R' U' R' F R2 U' R' U2 R U' R'", cycles:[[0,8],[2,6],[1,5],[3,7]], desc:"四角对角换 + 四棱对角换" },
+  { name:"Nb", algo:"R' U R U' R' F' U' F R U R' F R' F' R U' R", cycles:[[0,8],[2,6],[1,7],[3,5]], desc:"四角对角换 + 四棱交叉换" },
+  { name:"Ra", algo:"R U' R' U' R U R D R' U' R D' R' U2 R'", cycles:[[2,6,8],[1,3,5]], desc:"三角循环 + 三棱循环" },
+  { name:"Rb", algo:"R' U2 R U2 R' F R U R' U' R' F' R2", cycles:[[2,8,6],[1,5,3]], desc:"三角循环 + 三棱循环" },
+  { name:"T",  algo:"R U R' U' R' F R2 U' R' U' R U R' F'", cycles:[[0,2],[1,5]], desc:"两角对换 + 两棱对换" },
+  { name:"V",  algo:"R' U R' U' R D' R' D R' U D' R2 U' R2 D R2", cycles:[[0,8],[1,7]], desc:"两角对换 + 两棱对换" },
+  { name:"Y",  algo:"F R U' R' U' R U R' F' R U R' U' R' F R F'", cycles:[[0,8],[1,3]], desc:"两角对换 + 两棱对换" },
+];
+
+// OLL 57 个：top = 顶面黄色朝上的位置（含中心4）
+const OLL = [
+  { g:"点型", name:"OLL 1", algo:"R U2 R2 F R F' U2 R' F R F'", top:[4] },
+  { g:"点型", name:"OLL 2", algo:"y' R U' R2 D' r U r' D R2 U R'", top:[4] },
+  { g:"点型", name:"OLL 3", algo:"y' f R U R' U' f' U' F R U R' U' F'", top:[4, 6] },
+  { g:"点型", name:"OLL 4", algo:"y' R' F2 R2 U2 R' F' R U2 R2 F2 R", top:[4, 8] },
+  { g:"田字", name:"OLL 5", algo:"r' U2 R U R' U r", top:[4, 5, 7, 8] },
+  { g:"田字", name:"OLL 6", algo:"r U2 R' U' R U' r'", top:[1, 2, 4, 5] },
+  { g:"闪电", name:"OLL 7", algo:"r U R' U R U2 r'", top:[1, 3, 4, 6] },
+  { g:"闪电", name:"OLL 8", algo:"y2 r' U' R U' R' U2 r", top:[1, 4, 5, 8] },
+  { g:"鱼型", name:"OLL 9", algo:"y R U R' U' R' F R2 U R' U' F'", top:[2, 3, 4, 7] },
+  { g:"鱼型", name:"OLL 10", algo:"R U R' U R' F R F' R U2 R'", top:[2, 3, 4, 7] },
+  { g:"闪电", name:"OLL 11", algo:"r' R2 U R' U R U2 R' U M'", top:[4, 5, 6, 7] },
+  { g:"闪电", name:"OLL 12", algo:"y' M' R' U' R U' R' U2 R U' M", top:[2, 4, 5, 7] },
+  { g:"马步", name:"OLL 13", algo:"F U R U2 R' U' R U R' F'", top:[3, 4, 5, 6] },
+  { g:"马步", name:"OLL 14", algo:"R' F R U R' F' R F U' F'", top:[3, 4, 5, 8] },
+  { g:"马步", name:"OLL 15", algo:"r' U' r R' U' R U r' U r", top:[3, 4, 5, 8] },
+  { g:"马步", name:"OLL 16", algo:"r U r' R U R' U' r U' r'", top:[2, 3, 4, 5] },
+  { g:"点型", name:"OLL 17", algo:"R U R' U R' F R F' U2 R' F R F'", top:[0, 4, 8] },
+  { g:"点型", name:"OLL 18", algo:"y R U2 R2 F R F' U2 M' U R U' r'", top:[0, 2, 4] },
+  { g:"点型", name:"OLL 19", algo:"y S' R U R' S U' R' F R F'", top:[0, 2, 4] },
+  { g:"点型", name:"OLL 20", algo:"r U R' U' M2 U R U' R' U' M'", top:[0, 2, 4, 6, 8] },
+  { g:"十字", name:"OLL 21", algo:"R U R' U R U' R' U R U2 R'", top:[1, 3, 4, 5, 7] },
+  { g:"十字", name:"OLL 22", algo:"R U2 R2 U' R2 U' R2 U2 R", top:[1, 3, 4, 5, 7] },
+  { g:"十字", name:"OLL 23", algo:"R2 D R' U2 R D' R' U2 R'", top:[0, 1, 2, 3, 4, 5, 7] },
+  { g:"十字", name:"OLL 24", algo:"r U R' U' r' F R F'", top:[1, 2, 3, 4, 5, 7, 8] },
+  { g:"十字", name:"OLL 25", algo:"R U2 R D R' U2 R D' R2", top:[0, 1, 3, 4, 5, 7, 8] },
+  { g:"十字", name:"OLL 26", algo:"y R U2 R' U' R U' R'", top:[0, 1, 3, 4, 5, 7] },
+  { g:"十字", name:"OLL 27", algo:"R U R' U R U2 R'", top:[1, 3, 4, 5, 6, 7] },
+  { g:"全角翻", name:"OLL 28", algo:"r U R' U' M U R U' R'", top:[0, 1, 2, 3, 4, 6, 8] },
+  { g:"大象", name:"OLL 29", algo:"r2 D' r U r' D r2 U' r' U' r", top:[0, 2, 3, 4, 7] },
+  { g:"大象", name:"OLL 30", algo:"y' r' D' r U' r' D r2 U' r' U r U r'", top:[0, 2, 4, 5, 7] },
+  { g:"P型", name:"OLL 31", algo:"R' U' F U R U' R' F' R", top:[1, 2, 4, 5, 8] },
+  { g:"P型", name:"OLL 32", algo:"S R U R' U' R' F R f'", top:[2, 4, 5, 7, 8] },
+  { g:"T型", name:"OLL 33", algo:"R U R' U' R' F R F'", top:[2, 3, 4, 5, 8] },
+  { g:"C型", name:"OLL 34", algo:"y f R f' U' r' U' R U M'", top:[0, 2, 3, 4, 5] },
+  { g:"鱼型", name:"OLL 35", algo:"R U2 R2 F R F' R U2 R'", top:[0, 4, 5, 7, 8] },
+  { g:"W型", name:"OLL 36", algo:"y R U R2 F' U' F U R2 U2 R'", top:[0, 3, 4, 7, 8] },
+  { g:"鱼型", name:"OLL 37", algo:"F R' F' R U R U' R'", top:[0, 1, 3, 4, 8] },
+  { g:"W型", name:"OLL 38", algo:"R U R' U R U' R' U' R' F R F'", top:[1, 2, 3, 4, 6] },
+  { g:"闪电", name:"OLL 39", algo:"y' f' r U r' U' r' F r S", top:[0, 1, 4, 7, 8] },
+  { g:"闪电", name:"OLL 40", algo:"y R' F R U R' U' F' U R", top:[1, 2, 4, 6, 7] },
+  { g:"大象", name:"OLL 41", algo:"y2 R U R' U R U2 R' F R U R' U' F'", top:[0, 2, 4, 5, 7] },
+  { g:"大象", name:"OLL 42", algo:"R' U' R U' R' U2 R F R U R' U' F'", top:[0, 2, 3, 4, 7] },
+  { g:"P型", name:"OLL 43", algo:"y R' U' F' U F R", top:[0, 3, 4, 6, 7] },
+  { g:"P型", name:"OLL 44", algo:"f R U R' U' f'", top:[2, 4, 5, 7, 8] },
+  { g:"T型", name:"OLL 45", algo:"F R U R' U' F'", top:[2, 3, 4, 5, 8] },
+  { g:"C型", name:"OLL 46", algo:"R' U' R' F R F' U R", top:[0, 1, 4, 6, 7] },
+  { g:"L型", name:"OLL 47", algo:"y' F R' F' R U2 R U' R' U R U2 R'", top:[1, 4, 5] },
+  { g:"L型", name:"OLL 48", algo:"F R U R' U' R U R' U' F'", top:[1, 3, 4] },
+  { g:"L型", name:"OLL 49", algo:"y2 r U' r2 U r2 U r2 U' r", top:[3, 4, 7] },
+  { g:"L型", name:"OLL 50", algo:"r' U r2 U' r2 U' r2 U r'", top:[4, 5, 7] },
+  { g:"线型", name:"OLL 51", algo:"y2 F U R U' R' U R U' R' F'", top:[3, 4, 5] },
+  { g:"线型", name:"OLL 52", algo:"y2 R' F' U' F U' R U R' U R", top:[1, 4, 7] },
+  { g:"L型", name:"OLL 53", algo:"r' U' R U' R' U R U' R' U2 r", top:[4, 5, 7] },
+  { g:"L型", name:"OLL 54", algo:"r U R' U R U' R' U R U2 r'", top:[1, 4, 5] },
+  { g:"线型", name:"OLL 55", algo:"y R' F U R U' R2 F' R2 U R' U' R", top:[1, 4, 7] },
+  { g:"线型", name:"OLL 56", algo:"r U r' U R U' R' U R U' R' r U' r'", top:[3, 4, 5] },
+  { g:"全角翻", name:"OLL 57", algo:"R U R' U' M' U R U' r'", top:[0, 2, 3, 4, 5, 6, 8] },
+];
+
+// F2L 41 个
+const F2L = [
+  { g:"已配对", name:"F2L 1",  algo:"U R U' R'", corner:"U", cWhite:"right", edge:"U", ePos:5 },
+  { g:"已配对", name:"F2L 2",  algo:"U' R' U R", corner:"U", cWhite:"front", edge:"U", ePos:7 },
+  { g:"已配对", name:"F2L 3",  algo:"R U R'", corner:"U", cWhite:"right", edge:"U", ePos:5 },
+  { g:"已配对", name:"F2L 4",  algo:"R U' R'", corner:"U", cWhite:"right", edge:"U", ePos:7 },
+  { g:"白朝上", name:"F2L 5",  algo:"U' R U R' U2 R U' R'", corner:"U", cWhite:"up", edge:"U", ePos:7 },
+  { g:"白朝上", name:"F2L 6",  algo:"U' r U' R' U R U r'", corner:"U", cWhite:"up", edge:"U", ePos:5 },
+  { g:"白朝上", name:"F2L 7",  algo:"U' R U2 R' U' R U2 R'", corner:"U", cWhite:"up", edge:"U", ePos:7 },
+  { g:"白朝上", name:"F2L 8",  algo:"r' U2 R2 U R2 U r", corner:"U", cWhite:"up", edge:"U", ePos:5 },
+  { g:"白朝上", name:"F2L 9",  algo:"U R U' R' U2 R U' R'", corner:"U", cWhite:"up", edge:"U", ePos:5 },
+  { g:"白朝上", name:"F2L 10", algo:"U' R U R' U2 R U R'", corner:"U", cWhite:"up", edge:"U", ePos:7 },
+  { g:"白朝侧", name:"F2L 11", algo:"U R U' R' U R U' R'", corner:"U", cWhite:"right", edge:"U", ePos:5 },
+  { g:"白朝侧", name:"F2L 12", algo:"U' R U R' U' R U R'", corner:"U", cWhite:"front", edge:"U", ePos:7 },
+  { g:"已配对", name:"F2L 13", algo:"R U R' U' R U R'", corner:"U", cWhite:"right", edge:"U", ePos:5, paired:true },
+  { g:"已配对", name:"F2L 14", algo:"R U' R' U R U' R'", corner:"U", cWhite:"right", edge:"U", ePos:7, paired:true },
+  { g:"白朝前", name:"F2L 15", algo:"U' R U R' U R U R'", corner:"U", cWhite:"front", edge:"U", ePos:7 },
+  { g:"白朝前", name:"F2L 16", algo:"U R U' R' U' R U' R'", corner:"U", cWhite:"front", edge:"U", ePos:5 },
+  { g:"棱在槽", name:"F2L 17", algo:"U' R U' R' U R U' R'", corner:"U", cWhite:"up", edge:"slot", ePos:-1 },
+  { g:"棱在槽", name:"F2L 18", algo:"U R U R' U' R U R'", corner:"U", cWhite:"up", edge:"slot", ePos:-1 },
+  { g:"角在槽", name:"F2L 19", algo:"R U R' U' R U R'", corner:"slot", cWhite:"front", edge:"U", ePos:5 },
+  { g:"角在槽", name:"F2L 20", algo:"R U' R' U R U' R'", corner:"slot", cWhite:"right", edge:"U", ePos:7 },
+  { g:"角在槽", name:"F2L 21", algo:"U' R U' R' U R U2 R' U R U' R'", corner:"slot", cWhite:"front", edge:"U", ePos:7 },
+  { g:"角在槽", name:"F2L 22", algo:"U R U R' U' R U2 R' U' R U R'", corner:"slot", cWhite:"right", edge:"U", ePos:5 },
+  { g:"需分离", name:"F2L 23", algo:"U' R U' R' U2 R U' R'", corner:"U", cWhite:"front", edge:"U", ePos:7 },
+  { g:"需分离", name:"F2L 24", algo:"U R U R' U2 R U R'", corner:"U", cWhite:"right", edge:"U", ePos:5 },
+  { g:"需分离", name:"F2L 25", algo:"R U R' U2 R U R'", corner:"U", cWhite:"front", edge:"U", ePos:5 },
+  { g:"需分离", name:"F2L 26", algo:"R U' R' U2 R U' R'", corner:"U", cWhite:"right", edge:"U", ePos:7 },
+  { g:"需分离", name:"F2L 27", algo:"U' R U R' U2 R U' R'", corner:"U", cWhite:"front", edge:"U", ePos:5 },
+  { g:"需分离", name:"F2L 28", algo:"U R U' R' U2 R U R'", corner:"U", cWhite:"right", edge:"U", ePos:7 },
+  { g:"需分离", name:"F2L 29", algo:"R U' R' U2 R U R'", corner:"U", cWhite:"front", edge:"U", ePos:7 },
+  { g:"需分离", name:"F2L 30", algo:"R U R' U2 R U' R'", corner:"U", cWhite:"right", edge:"U", ePos:5 },
+  { g:"双在槽", name:"F2L 31", algo:"R U' R' U R U2 R' U R U' R'", corner:"slot", cWhite:"right", edge:"slot", ePos:-1 },
+  { g:"双在槽", name:"F2L 32", algo:"R U R' U' R U2 R' U' R U R'", corner:"slot", cWhite:"front", edge:"slot", ePos:-1 },
+  { g:"双在槽", name:"F2L 33", algo:"R U' R' U R U' R' U2 R U' R'", corner:"slot", cWhite:"right", edge:"slot", ePos:-1 },
+  { g:"双在槽", name:"F2L 34", algo:"R U R' U' R U R' U2 R U R'", corner:"slot", cWhite:"front", edge:"slot", ePos:-1 },
+  { g:"白朝上对角", name:"F2L 35", algo:"U R U' R' U' R U2 R' U R U' R'", corner:"U", cWhite:"up", edge:"U", ePos:5 },
+  { g:"白朝上对角", name:"F2L 36", algo:"U' R U R' U R U2 R' U' R U R'", corner:"U", cWhite:"up", edge:"U", ePos:7 },
+  { g:"白朝上对角", name:"F2L 37", algo:"R U' R' U2 R U R' U R U' R'", corner:"U", cWhite:"up", edge:"U", ePos:7 },
+  { g:"白朝上对角", name:"F2L 38", algo:"R U R' U2 R U' R' U' R U R'", corner:"U", cWhite:"up", edge:"U", ePos:5 },
+  { g:"角在槽", name:"F2L 39", algo:"R U R' U R U' R'", corner:"slot", cWhite:"front", edge:"U", ePos:7 },
+  { g:"角在槽", name:"F2L 40", algo:"R U' R' U' R U R'", corner:"slot", cWhite:"right", edge:"U", ePos:5 },
+  { g:"已解决", name:"F2L 41", algo:"（已完成，无需操作）", corner:"slot", cWhite:"front", edge:"slot", ePos:-1, solved:true },
+];
+
+// ============================================================
+//  SVG 配图
+// ============================================================
+const C = { Y:"#f7d154", W:"#f5f6f8", G:"#2ee06e", R:"#ff5d5d", B:"#3b82f6", O:"#ff9f43", dim:"#343a4e", bg:"#0b0d13" };
+
+function cc(i, size=46, pad=5){ const col=i%3, row=Math.floor(i/3); return {x:pad+col*size+size/2, y:pad+row*size+size/2}; }
+
+// OLL 顶面黄色朝向图
+function ollSvg(top){
+  const size=46, pad=5, total=size*3+pad*2;
+  const set = new Set(top);
+  let s = `<svg viewBox="0 0 ${total} ${total}" xmlns="http://www.w3.org/2000/svg">`;
+  for(let i=0;i<9;i++){
+    const {x,y}=cc(i,size,pad);
+    const yellow = set.has(i);
+    const isCorner = (i%2===0);
+    s += `<rect x="${x-size/2}" y="${y-size/2}" width="${size}" height="${size}" rx="${isCorner?9:5}"
+        fill="${yellow?C.Y:C.dim}" stroke="${C.bg}" stroke-width="2.5"/>`;
+    if(yellow && i!==4){
+      s += `<rect x="${x-size/2+6}" y="${y-size/2+6}" width="${size-12}" height="${size-12}" rx="4" fill="#fff" opacity="0.16"/>`;
+    }
+  }
+  s += `<circle cx="${cc(4,size,pad).x}" cy="${cc(4,size,pad).y}" r="7" fill="${C.Y}" stroke="${C.bg}" stroke-width="2"/>`;
+  s += `</svg>`;
+  return s;
+}
+
+// PLL 顶面箭头图
+function pllSvg(cycles){
+  const size=46, pad=5, total=size*3+pad*2;
+  const cols=["#ff5d5d","#4f8cff","#2ee06e","#ff9f43"];
+  let s = `<svg viewBox="0 0 ${total} ${total}" xmlns="http://www.w3.org/2000/svg"><defs>`;
+  cols.forEach((c,i)=>{ s += `<marker id="arw${i}" markerWidth="9" markerHeight="9" refX="7" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="${c}"/></marker>`; });
+  s += `</defs>`;
+  for(let i=0;i<9;i++){
+    const {x,y}=cc(i,size,pad);
+    const isCorner = (i%2===0);
+    s += `<rect x="${x-size/2}" y="${y-size/2}" width="${size}" height="${size}" rx="${isCorner?9:5}" fill="${C.Y}" stroke="${C.bg}" stroke-width="2.5"/>`;
+  }
+  s += `<circle cx="${cc(4,size,pad).x}" cy="${cc(4,size,pad).y}" r="7" fill="${C.bg}"/>`;
+  cycles.forEach((cyc,ci)=>{
+    const col=cols[ci%cols.length];
+    for(let k=0;k<cyc.length;k++){
+      const a=cc(cyc[k],size,pad), b=cc(cyc[(k+1)%cyc.length],size,pad);
+      const dx=b.x-a.x, dy=b.y-a.y, len=Math.hypot(dx,dy);
+      if(!len) continue;
+      const ux=dx/len, uy=dy/len;
+      const sx=a.x+ux*(size/2-3), sy=a.y+uy*(size/2-3);
+      const ex=b.x-ux*(size/2+1), ey=b.y-uy*(size/2+1);
+      s += `<line x1="${sx}" y1="${sy}" x2="${ex}" y2="${ey}" stroke="${col}" stroke-width="4" stroke-linecap="round" marker-end="url(#arw${ci})"/>`;
+    }
+  });
+  s += `</svg>`;
+  return s;
+}
+
+// F2L 顶面示意图（角块白色朝向 + 棱块位置）
+function f2lSvg(f){
+  const size=40, pad=5, total=size*3+pad*2;
+  let s = `<svg viewBox="0 0 ${total} ${total}" xmlns="http://www.w3.org/2000/svg">`;
+  for(let i=0;i<9;i++){
+    const {x,y}=cc(i,size,pad);
+    s += `<rect x="${x-size/2}" y="${y-size/2}" width="${size}" height="${size}" rx="6" fill="${C.dim}" stroke="${C.bg}" stroke-width="2"/>`;
+  }
+  s += `<circle cx="${cc(4,size,pad).x}" cy="${cc(4,size,pad).y}" r="5" fill="${C.bg}"/>`;
+  // 棱块
+  function edge(pos, inSlot){
+    const {x,y}=cc(pos,size,pad);
+    const horiz = (pos===3||pos===5);
+    const fill = inSlot ? "#5a6078" : C.G;
+    if(horiz) s += `<rect x="${x-size/2+4}" y="${y-8}" width="${size-8}" height="16" rx="6" fill="${fill}" stroke="${C.bg}" stroke-width="2" ${inSlot?'stroke-dasharray="3 2"':''}/>`;
+    else s += `<rect x="${x-8}" y="${y-size/2+4}" width="16" height="${size-8}" rx="6" fill="${fill}" stroke="${C.bg}" stroke-width="2" ${inSlot?'stroke-dasharray="3 2"':''}/>`;
+  }
+  // 角块（FR 角 = 位置 8）
+  function corner(inSlot, white){
+    const {x,y}=cc(8,size,pad);
+    const fill = inSlot ? "#5a6078" : C.O;
+    s += `<rect x="${x-size/2+4}" y="${y-size/2+4}" width="${size-8}" height="${size-8}" rx="8" fill="${fill}" stroke="${C.bg}" stroke-width="2" ${inSlot?'stroke-dasharray="3 2"':''}/>`;
+    let wx=x, wy=y;
+    if(white==='up') wy=y-9; else if(white==='front') wy=y+9; else wx=x+9;
+    s += `<circle cx="${wx}" cy="${wy}" r="5.5" fill="${C.W}" stroke="${C.bg}" stroke-width="1.5"/>`;
+  }
+  const ePos = f.edge==='U' ? (f.ePos!==undefined?f.ePos:7) : 7;
+  edge(f.edge==='U' ? ePos : 7, f.edge==='slot');
+  corner(f.corner==='slot', f.cWhite);
+  s += `</svg>`;
+  return s;
+}
+
+// ============================================================
+//  打乱公式 / 计时器 / 训练 / 渲染
+// ============================================================
+function genScramble(){
+  const faces=['R','L','U','D','F','B'], axis={R:0,L:0,U:1,D:1,F:2,B:2}, mods=['','\'','2'];
+  let out=[], last=-1;
+  for(let i=0;i<25;i++){ let f; do{ f=faces[Math.floor(Math.random()*6)]; }while(axis[f]===last); last=axis[f]; out.push(f+mods[Math.floor(Math.random()*3)]); }
+  return out.join(' ');
+}
+
+// Stackmat 风格计时器状态机
+const timerEl = document.getElementById('timer');
+const scrambleEl = document.getElementById('scramble');
+let tState = 'idle'; // idle | holding | ready | running | stopped
+let tPress = 0, tStart = 0, tRaf = 0, tTimer = 0;
+
+function setTime(txt){ timerEl.textContent = txt; }
+function setTClass(cls){ timerEl.className = 'time' + (cls?' '+cls:''); }
+function timerReset(){ tState='idle'; setTime('0.00'); setTClass(''); cancelAnimationFrame(tRaf); clearTimeout(tTimer); }
+
+function timerTick(){
+  if(tState!=='running') return;
+  setTime(((performance.now()-tStart)/1000).toFixed(2));
+  tRaf = requestAnimationFrame(timerTick);
+}
+function timerPress(){
+  if(tState==='idle'){
+    tState='holding'; setTClass('holding'); tPress=performance.now();
+    tTimer = setTimeout(()=>{ if(tState==='holding'){ tState='ready'; setTClass('ready'); } }, 350);
+  } else if(tState==='running'){
+    tState='stopped'; const t=(performance.now()-tStart)/1000;
+    setTClass(''); cancelAnimationFrame(tRaf);
+    times.unshift(t); saveTimes();
+    scrambleEl.textContent = genScramble();
+  }
+}
+function timerRelease(){
+  if(tState==='ready'){
+    tState='running'; tStart=performance.now(); timerTick();
+  } else if(tState==='holding'){
+    timerReset();
+  } else if(tState==='stopped'){
+    tState='idle';
+  }
+}
+
+// 成绩存储
+let times = JSON.parse(localStorage.getItem('cube_times')||'[]');
+let trainLog = JSON.parse(localStorage.getItem('cube_train')||'[]');
+function fmt(t){ return t.toFixed(2); }
+function avg(arr,n){
+  if(arr.length<n) return '—';
+  const seg=arr.slice(0,n).slice().sort((a,b)=>a-b);
+  if(n===5){ seg.pop(); seg.shift(); return (seg.reduce((a,b)=>a+b,0)/3).toFixed(2); }
+  if(n===12){ seg.pop(); seg.shift(); return (seg.slice(1,11).reduce((a,b)=>a+b,0)/10).toFixed(2); }
+  return '—';
+}
+function saveTimes(){
+  localStorage.setItem('cube_times',JSON.stringify(times));
+  renderTimes();
+}
+function renderTimes(){
+  document.getElementById('st-count').textContent = times.length;
+  document.getElementById('st-best').textContent = times.length? fmt(Math.min(...times)) : '—';
+  document.getElementById('st-ao5').textContent = avg(times,5);
+  document.getElementById('st-ao12').textContent = avg(times,12);
+  const box=document.getElementById('times-list');
+  if(!times.length){ box.innerHTML='<div style="color:var(--dim);font-size:13px;padding:6px">还没有成绩，按住空格开始吧</div>'; return; }
+  box.innerHTML = times.map((t,i)=>{ const b=t===Math.min(...times);
+    return `<div class="row"><span><span class="idx">#${i+1}</span>${fmt(t)}</span><span class="${b?'best':''}">${b?'最快':'s'}</span><span class="del" onclick="delTime(${i})">删除</span></div>`; }).join('');
+}
+window.delTime = i => { times.splice(i,1); localStorage.setItem('cube_times',JSON.stringify(times)); renderTimes(); };
+window.delTrain = i => { trainLog.splice(i,1); localStorage.setItem('cube_train',JSON.stringify(trainLog)); renderTrainLog(); };
+function renderTrainLog(){
+  const box=document.getElementById('train-log');
+  if(!trainLog.length){ box.innerHTML='<div style="color:var(--dim);font-size:13px;padding:6px">训练记录将显示在这里</div>'; return; }
+  box.innerHTML = trainLog.map((r,i)=>`<div class="row"><span><span class="idx">#${i+1}</span><b>${r.name}</b></span><span>${fmt(r.time)}</span><span class="del" onclick="delTrain(${i})">删除</span></div>`).join('');
+}
+
+// Tab 切换
+document.querySelectorAll('.tab').forEach(t=>{
+  t.addEventListener('click',()=>{
+    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+    document.querySelectorAll('.section').forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    document.getElementById('tab-'+t.dataset.tab).classList.add('active');
+  });
+});
+
+// CFOP 渲染
+const CAT = { F2L, OLL, PLL };
+let currentCat='F2L', currentSub='全部';
+function renderSubFilter(){
+  const groups=[...new Set(CAT[currentCat].map(c=>c.g))];
+  const bar=document.getElementById('cfop-sub');
+  bar.innerHTML='<div class="chip active" data-sub="全部">全部</div>'+groups.map(g=>`<div class="chip" data-sub="${g}">${g}</div>`).join('');
+  bar.querySelectorAll('.chip').forEach(ch=>ch.addEventListener('click',()=>{
+    bar.querySelectorAll('.chip').forEach(x=>x.classList.remove('active'));
+    ch.classList.add('active'); currentSub=ch.dataset.sub; renderGrid();
+  }));
+}
+function renderGrid(){
+  const grid=document.getElementById('alg-grid');
+  let list=CAT[currentCat];
+  if(currentSub!=='全部') list=list.filter(c=>c.g===currentSub);
+  grid.innerHTML = list.map(c=>{
+    let svg = currentCat==='OLL' ? ollSvg(c.top) : currentCat==='PLL' ? pllSvg(c.cycles) : f2lSvg(c);
+    return `<div class="alg-card"><div class="head"><span class="name">${c.name}</span><span class="tag">${c.g}</span></div><div class="diagram">${svg}</div><div class="algo">${c.algo}</div></div>`;
+  }).join('');
+}
+document.getElementById('cfop-cat').querySelectorAll('.chip').forEach(ch=>{
+  ch.addEventListener('click',()=>{
+    document.getElementById('cfop-cat').querySelectorAll('.chip').forEach(x=>x.classList.remove('active'));
+    ch.classList.add('active'); currentCat=ch.dataset.cat; currentSub='全部';
+    renderSubFilter(); renderGrid();
+  });
+});
+
+// 训练模式
+const trainTime = document.getElementById('train-time');
+let trState='idle', trStart=0, trRaf=0, current=null;
+function trReset(){ trState='idle'; trainTime.textContent='0.00'; trainTime.classList.remove('running'); cancelAnimationFrame(trRaf); }
+function trTick(){ if(trState!=='running') return; trainTime.textContent=((performance.now()-trStart)/1000).toFixed(2); trRaf=requestAnimationFrame(trTick); }
+function trBegin(){ trState='running'; trStart=performance.now(); trainTime.classList.add('running'); trTick(); }
+function trStop(){
+  if(!current) return; if(trState!=='running'){ trBegin(); return; }
+  trState='idle'; trainTime.classList.remove('running'); cancelAnimationFrame(trRaf);
+  const t=(performance.now()-trStart)/1000;
+  trainLog.unshift({name:current.name,time:t});
+  localStorage.setItem('cube_train',JSON.stringify(trainLog)); renderTrainLog();
+}
+document.getElementById('btn-train').addEventListener('click',()=>{
+  current = PLL[Math.floor(Math.random()*PLL.length)];
+  trReset();
+  document.getElementById('train-diagram').innerHTML = pllSvg(current.cycles);
+  const a=document.getElementById('train-algo'); a.textContent=current.algo; a.classList.remove('blur');
+  document.getElementById('btn-reveal').textContent='隐藏公式';
+});
+document.getElementById('btn-reveal').addEventListener('click',()=>{
+  const a=document.getElementById('train-algo');
+  const h=a.classList.toggle('blur');
+  document.getElementById('btn-reveal').textContent=h?'显示公式':'隐藏公式';
+});
+document.getElementById('btn-finish').addEventListener('click',trStop);
+
+// 空格键全局控制
+document.addEventListener('keydown',e=>{
+  if(e.code!=='Space') return; e.preventDefault();
+  if(e.repeat) return;
+  const active=document.querySelector('.tab.active').dataset.tab;
+  if(active==='train'){ if(!current){ document.getElementById('btn-train').click(); return; } trStop(); }
+  else { timerPress(); }
+});
+document.addEventListener('keyup',e=>{
+  if(e.code!=='Space') return; e.preventDefault();
+  const active=document.querySelector('.tab.active').dataset.tab;
+  if(active!=='train') timerRelease();
+});
+
+// 初始化
+timerReset();
+scrambleEl.textContent = genScramble();
+renderTimes(); renderTrainLog(); renderSubFilter(); renderGrid();
+</script>
+</body>
+</html>

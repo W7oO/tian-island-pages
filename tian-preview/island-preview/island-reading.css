@@ -1,0 +1,54 @@
+/* Borderless, in-page reading. The existing 01/02 work presentation is untouched. */
+.island-reading{box-sizing:border-box;position:absolute;inset:0;z-index:20;overflow:auto;overscroll-behavior:contain;scrollbar-gutter:stable;background-color:#eee8df;background-image:linear-gradient(#f6f2e9bd,#f6f2e9bd),url('/share-scenes/scene-0.webp?rev=raincoat-umbrella-20261118');background-size:cover;background-position:var(--island-reading-position,50% 50%);border:0;border-radius:0;box-shadow:none;color:#504358;font:15px/1.95 -apple-system,'PingFang SC',sans-serif;text-align:left}
+.island-reading[hidden]{display:none!important}
+.island-reading-bar{position:sticky;top:0;z-index:2;display:flex;align-items:center;justify-content:flex-end;min-height:52px;padding:4px max(20px,calc((100% - 820px)/2));background:#f6f2e9b8;backdrop-filter:blur(4px);border-bottom:1px solid #467b7924}
+.island-reading-close{flex:none;min-height:44px;padding:8px 12px;border:0;border-radius:0;background:none;color:#3c6967;font:14px/1.5 -apple-system,'PingFang SC',sans-serif;cursor:pointer}
+.island-reading-content{box-sizing:border-box;width:min(100%,820px);margin:0 auto;padding:24px 24px 48px}
+.island-reading h2{font-size:clamp(25px,3.2vw,34px);line-height:1.5;margin:10px 0 20px;font-weight:600;color:#46374f;outline:none}
+.island-reading .reading-kicker,.island-reading .brand-eyebrow{font-size:12px;line-height:1.7;margin:0 0 8px;color:#74657c;letter-spacing:.03em}
+.island-reading p{font-size:15px;line-height:1.95;color:#584b60;margin:0 0 20px;overflow-wrap:anywhere}
+.island-reading .reading-intro{margin-bottom:26px}
+.island-reading .course-summary{font-size:14px;line-height:1.95;margin:0 0 24px;color:#716179}
+.island-reading section{padding:22px 0;border-top:1px solid #467b7933}
+.island-reading h3{font-size:19px;line-height:1.7;margin:24px 0 15px;font-weight:600;color:#6c5577}
+.island-reading section h3{margin:0 0 15px}
+.island-reading .feedback-insight{font-size:16px;line-height:1.8;margin:0 0 15px;font-weight:600;color:#416e6b}
+.island-reading .work-note{font-size:12px;line-height:1.8;margin-top:18px;padding-top:16px;border-top:1px solid #467b7933;color:#7b6c82}
+.island-reading .stage-contact{margin-top:30px;padding-top:24px;border-top:1px solid #467b7933;color:#705d7b}
+.island-reading .stage-contact img{width:110px;height:110px}
+.island-reading .stage-contact small{color:#796982;font-size:12px}
+.island-reading-close:focus-visible{outline:2px solid #467b79;outline-offset:2px}
+.player-stage[data-reading="true"] #player-frame{visibility:hidden;pointer-events:none}
+.player-bar #player-learning[aria-expanded="true"]::after{content:'⌃'}
+.island-stage-reading{bottom:0;left:0;right:0;z-index:30}
+@media(min-width:1000px){.island-stage-reading{background-size:cover}.island-reading-content{padding:32px 24px 60px}}
+@media(max-width:400px){.island-reading-content{padding:20px 22px 38px}.island-reading-bar{padding:3px 12px}.island-reading p{font-size:14px;line-height:1.95}}
+
+/* One visible return action; the existing header control remains in place. */
+.work-reading-panel>.island-reading-bar{display:none}
+.player-bar #player-learning[aria-expanded="true"]::after{content:none}
+
+/* Stage-level reading controls; work detail presentation stays unchanged. */
+#stage-review .stage-phase{border-top:1px solid #467b7940;margin:0;padding:0}
+#stage-review .stage-phase:last-of-type{border-bottom:1px solid #467b7940}
+#stage-review .stage-phase-summary{display:flex;align-items:center;justify-content:space-between;gap:14px;min-height:72px;padding:20px 0;cursor:pointer;list-style:none;touch-action:manipulation}
+#stage-review .stage-phase-summary::-webkit-details-marker{display:none}
+#stage-review .stage-phase-summary::marker{content:''}
+#stage-review .stage-phase-heading{min-width:0;flex:1;font-size:21px;line-height:1.5;font-weight:600;color:#46374f}
+#stage-review .stage-phase-heading h2,#stage-review .stage-phase-heading h3{font-size:clamp(19px,2.6vw,25px);line-height:1.55;margin:0 0 8px;color:#46374f;font-weight:600}
+#stage-review .stage-phase-synopsis{display:block;font-size:14px;line-height:1.8;color:#74657c}
+#stage-review .stage-phase-action{display:flex;align-items:center;gap:7px;flex:none;font-size:14px;color:#3c6967}
+#stage-review .stage-phase-chevron{display:inline-block;font-size:22px;line-height:1;transform:rotate(0deg)}
+#stage-review .stage-phase[open] .stage-phase-chevron{transform:none}
+#stage-review .stage-phase-body{padding:0 0 20px}
+#stage-review .stage-phase-summary:focus-visible{outline:2px solid #467b79;outline-offset:3px}
+@media(max-width:400px){#stage-review .stage-phase-summary{gap:10px;padding:18px 0}#stage-review .stage-phase-action{gap:4px;font-size:13px}}
+
+/* One body-text measure for creation and teacher observations in both readers. */
+#gallery-dialog[data-view="work"] .work-learning .learning-part p,
+#work-learning-panel section[data-part] p{
+ box-sizing:border-box;width:100%!important;max-width:none!important;
+ font-size:14px!important;line-height:1.95!important;
+ text-align:justify;text-align-last:start;text-justify:inter-ideograph;
+ text-wrap:wrap;white-space:normal;word-break:normal;overflow-wrap:break-word;
+}

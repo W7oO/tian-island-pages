@@ -1,0 +1,4136 @@
+<!doctype html>
+<html lang="zh-CN" data-page-node-id="HoN97ReGB8abNlXpzkx0TQ">
+<head data-page-node-id="Y8xYo3RAgGOCg492U7skLC">
+  <meta charset="utf-8" data-page-node-id="JUdVWkgNbzEoLucwpWPpXt"><meta name="viewport" content="width=device-width,initial-scale=1" data-page-node-id="KqeTX9FgcAwHHPwvnGoklZ">
+  <title>死星遗迹</title>
+  <style>
+    *{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#06070a;font-family:"Microsoft YaHei","PingFang SC",sans-serif;color:#fff}
+    canvas{display:block;position:fixed;inset:0}.title{position:fixed;z-index:3;top:36px;left:52px;pointer-events:none;text-shadow:0 3px 18px #000}
+    h1{margin:0;font-size:clamp(28px,3vw,44px);letter-spacing:.1em}.title p{margin:10px 0;color:#b9ac95;letter-spacing:.11em}
+    .hint{position:fixed;z-index:3;right:30px;bottom:26px;padding:11px 15px;border:1px solid #c8b18933;border-radius:13px;background:#191410a8;color:#e0d5c4;font-size:12px;line-height:1.8;pointer-events:none;backdrop-filter:blur(8px)}
+    .views{position:fixed;z-index:4;left:52px;bottom:26px;display:flex;flex-wrap:wrap;gap:6px;max-width:min(560px,60vw)}
+    .views button{font:inherit;font-size:11.5px;letter-spacing:.04em;cursor:pointer;padding:7px 11px;border-radius:9px;border:1px solid #c8b18933;background:#191410a8;color:#b9ac95;backdrop-filter:blur(8px);transition:all .18s}
+    .views button:hover{color:#f0e6d4;border-color:#c8b18966}
+    .views button.on{background:#c8b1892e;color:#f4ead8;border-color:#c8b1898c}
+    .vignette{position:fixed;z-index:2;inset:0;pointer-events:none;background:radial-gradient(circle at 52% 48%,transparent 40%,#0a0705a6)}
+    .aim{position:fixed;z-index:5;left:50%;top:50%;width:22px;height:22px;margin:-11px 0 0 -11px;border:1px solid #f4ead8b0;border-radius:50%;pointer-events:none;display:none;box-shadow:0 0 0 1px #0000006b,0 0 7px #00000080;transition:border-color .2s,transform .2s}
+    .aim::after{content:"";position:absolute;left:50%;top:50%;width:3px;height:3px;margin:-1.5px 0 0 -1.5px;border-radius:50%;background:#f4ead8;box-shadow:0 0 0 1px #0000006b}
+    .aim.lock{border-color:#fff5e0;transform:scale(1.13)}
+    .aim.lock::after{background:#fff8ec}
+    .stack{position:fixed;z-index:4;right:30px;top:26px;display:flex;flex-direction:column;gap:8px;align-items:stretch}
+    .sens{display:none;padding:9px 11px 10px;border:1px solid #c8b18933;border-radius:13px;background:#191410a8;color:#b9ac95;font-size:11.5px;letter-spacing:.04em;backdrop-filter:blur(8px);user-select:none}
+    .sens.on{display:block}
+    .sens .t{display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:10px;color:#8d8371;letter-spacing:.16em;margin:0 0 6px 2px}
+    .sens .t button{width:auto;height:18px;padding:0 8px;font-size:10px;letter-spacing:.08em;border-radius:6px}
+    .sens .t button.on{border-color:#c8b1898c;background:#c8b1892e;color:#f4ead8}
+    .sens .r{display:flex;align-items:center;gap:7px;margin-top:5px}
+    .sens .r em{width:auto;min-width:26px;font-style:normal;color:#a99d88}
+    .sens .r b{min-width:44px;text-align:right;font-weight:400;color:#f0e6d4;font-variant-numeric:tabular-nums}
+    .sens button{font:inherit;font-size:13px;line-height:1;width:22px;height:22px;padding:0;cursor:pointer;border-radius:7px;border:1px solid #c8b18933;background:#0f0c09a6;color:#b9ac95;transition:all .16s}
+    .sens button:hover{color:#f4ead8;border-color:#c8b1898c;background:#c8b1892e}
+    .sens button:active{transform:scale(.9)}
+  </style>
+</head>
+<body data-page-node-id="6C6PAQC89wFD4a6uNPTjF6">
+  <div class="title" data-page-node-id="DodxHqTKTmoBaWtEUcf9lQ"><h1 data-page-node-id="wPuksjgYm8iEsHp20s3uka">死星遗迹</h1><p data-page-node-id="Q1boBxPp9qGYM3MSAv66yz">一颗被文明透支之后彻底废弃的星球</p></div>
+  <div class="hint" id="hint" data-page-node-id="hICT4PQwADoVyvfdWCkaoJ">拖动：旋转星球 · 滚轮：缩放</div>
+  <div class="views" id="views" data-page-node-id="fQ0LdW2mXr9pTaBvNsKc31"><button class="on" data-page-node-id="a1">1 地球中心</button><button data-page-node-id="a2">2 月球中心</button><button data-page-node-id="a3">3 空间站中心</button><button data-page-node-id="a4">4 地表探险者</button><button data-page-node-id="a5">5 月面探险者</button><button data-page-node-id="a6">6 空间站探险者</button></div><div class="vignette" data-page-node-id="eXDhj4lHI9SEujeJx6SKmp"></div>
+  <div class="aim" id="aim"></div>
+  <div class="stack">
+  <div class="sens" id="sens">
+    <div class="t">灵敏度</div>
+    <div class="r"><em>水平</em><button data-ax="x" data-d="-1" title="水平调慢（[）">−</button><b id="sxv">100%</b><button data-ax="x" data-d="1" title="水平调快（]）">+</button></div>
+    <div class="r"><em>竖直</em><button data-ax="y" data-d="-1" title="竖直调慢（−）">−</button><b id="syv">100%</b><button data-ax="y" data-d="1" title="竖直调快（=）">+</button></div>
+  </div>
+  <div class="sens" id="torch">
+    <div class="t">手电筒<button id="ton" title="开关（F）">开</button></div>
+    <div class="r"><em>亮度</em><button data-t="-1" title="调暗">−</button><b id="tbv">100%</b><button data-t="1" title="调亮">+</button></div>
+  </div>
+  </div>
+  <script src="./three.min.js"></script>
+  <script>
+(()=>{'use strict';
+/* ==========================================================================
+   死星遗迹 · Abandoned Planet
+   一颗曾孕育现代文明、而后被彻底透支的星球：
+   灰黑色的地表、覆满灰土与碎石、工业废墟、被砍伐的森林、死火山、
+   废弃都市、死水湖泊、山体，以及一条贯穿星球的穿梭隧道（《地球大炮》式）。
+   ========================================================================== */
+
+// ---------- 色板：灰 / 黑 / 锈 / 尘 ----------
+const C={
+  dust:0x63605a,dustDark:0x403e3a,dustPale:0x8b8880,
+  stone:0x565659,stoneDark:0x35353a,
+  soot:0x1b1d1f,ash:0x2b2a28,
+  rust:0x6d3b21,rustDark:0x402d1c,
+  steel:0x55585c,steelDark:0x2e3134,
+  concrete:0x6b6963,concreteDark:0x474642,
+  water:0x0e1618,panel:0x27303c,
+  ember:0x8e2b12,warm:0xffc07a,cold:0xa8dcff
+};
+
+// ======================= 1. 场景 / 相机 / 光照 =======================
+const planetRadius=20,worldScale=3,surfacePropScale=.75;
+const scene=new THREE.Scene(),world=new THREE.Group();
+const camera=new THREE.PerspectiveCamera(42,innerWidth/innerHeight,.1,900);
+const renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:'high-performance'});
+renderer.setSize(innerWidth,innerHeight);renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+renderer.outputEncoding=THREE.sRGBEncoding;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=.72;
+renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+document.body.appendChild(renderer.domElement);scene.add(world);world.scale.setScalar(worldScale);
+// 轨道层单独成组：每帧同步 world 的旋转，这样拖动星球时月球 / 空间站 / 沙尘 / 碎片都会跟着一起转
+const space=new THREE.Group();scene.add(space);
+scene.background=new THREE.Color(0x06070a);
+scene.fog=new THREE.FogExp2(0x181410,.00125);
+const hemi=new THREE.HemisphereLight(0x8d9296,0x151312,.33);scene.add(hemi);
+const sun=new THREE.DirectionalLight(0xcfc6b6,1.02);
+sun.position.set(74,88,60);sun.castShadow=true;sun.shadow.mapSize.set(1024,1024);
+// 太阳的方位：在星系尺度上把它当成"固定方向"（远处的点光源 ≈ 平行光）。
+// 昼夜不靠太阳绕圈，而是靠死星自转 —— 地表自己转进光里、再转出去（见 14c）。
+const SUN_POS=new THREE.Vector3(74,88,60);
+const sunCam=sun.shadow.camera;sunCam.left=-72;sunCam.right=72;sunCam.top=72;sunCam.bottom=-72;sunCam.near=1;sunCam.far=300;
+sun.shadow.bias=-.0005;sun.shadow.normalBias=.05;scene.add(sun);
+const fill=new THREE.DirectionalLight(0x45536a,.18);fill.position.set(-62,14,-54);scene.add(fill);
+const rim=new THREE.DirectionalLight(0x6b6f74,.12);rim.position.set(-20,54,-84);scene.add(rim);
+// three.js r149 默认不做色彩管理，十六进制会被当作线性值 → 实际观感比色值亮得多，统一压暗
+const TONE=.7;
+const material=(color,extra={})=>{
+  const m=new THREE.MeshStandardMaterial({color,roughness:.92,metalness:0,flatShading:true,...extra});
+  m.color.setHex(extra.color!==undefined?extra.color:color).multiplyScalar(TONE);
+  return m;
+};
+const basic=(color,extra={})=>new THREE.MeshBasicMaterial({color,...extra});
+
+// ======================= 2. 随机数 / 地理模型 =======================
+let seed=90211;function random(){seed=(seed*1664525+1013904223)>>>0;return seed/4294967296}
+const D2R=THREE.MathUtils.degToRad,R2D=THREE.MathUtils.radToDeg;
+function wrappedLonDelta(a,b){let d=a-b;while(d>180)d-=360;while(d<-180)d+=360;return d}
+function clamp01(v){return v<0?0:v>1?1:v}
+
+// 八块大陆，每块被指定为一种"废墟地貌"
+const landRegions=[
+  {lat:18,lon:80,a:33.6,b:63,biome:'city'},           // 中部主陆：废弃都市 + 穿梭隧道井口
+  {lat:7,lon:38,a:18,b:27,biome:'deadforest'},        // 南陆：被砍伐的森林
+  {lat:-16,lon:116,a:29.4,b:46.2,biome:'ash'},        // 湖畔荒原
+  {lat:44,lon:143,a:25.2,b:37.8,biome:'mountain'},    // 北方山脉
+  {lat:-28,lon:-58,a:31.9,b:54.6,biome:'industrial'}, // 工业大陆（隧道出口）
+  {lat:5,lon:-150,a:26.9,b:46.2,biome:'volcano'},     // 死火山与灰土荒漠
+  {lat:58,lon:-8,a:16.8,b:29.4,biome:'deadforest'},   // 北方枯林
+  {lat:-55,lon:35,a:21,b:35.3,biome:'mountain'}       // 南境山系
+];
+function landScore(lat,lon){
+  let score=-9;
+  for(const r of landRegions){const x=wrappedLonDelta(lon,r.lon)/r.b,y=(lat-r.lat)/r.a;score=Math.max(score,1-x*x-y*y)}
+  const lonRad=D2R(lon),latRad=D2R(lat);
+  const coastNoise=.11*Math.sin(lonRad*3+latRad*2)+.07*Math.sin(lonRad*7-latRad*3)+.04*Math.cos(lonRad*11+latRad*4);
+  return score+coastNoise;
+}
+function isLand(lat,lon,margin=.08){return landScore(lat,lon)>margin}
+function biomeAt(lat,lon){
+  let best=landRegions[0],bestScore=-99;
+  for(const r of landRegions){const x=wrappedLonDelta(lon,r.lon)/r.b,y=(lat-r.lat)/r.a,score=1-x*x-y*y;if(score>bestScore){bestScore=score;best=r}}
+  return best.biome;
+}
+function latLonToDir(lat,lon){
+  const p=D2R(90-lat),t=D2R(lon);
+  return new THREE.Vector3(Math.sin(p)*Math.cos(t),Math.cos(p),Math.sin(p)*Math.sin(t));
+}
+// ---- 切向方位工具：让路、管道、沙丘脊、倒木能按"地理方位角"对齐 ----
+// place()/surfaceItems() 用 setFromUnitVectors 对齐法线，其局部 X 轴指向与经纬度无关，
+// 所以要用数值反解出"想把局部 X 轴转到某个切向方向"所需的 yaw。
+function tangentNorth(lat,lon){
+  return latLonToDir(Math.min(89.9,lat+1),lon).sub(latLonToDir(lat,lon)).normalize();
+}
+function tangentEast(lat,lon){
+  return latLonToDir(lat,lon+1).sub(latLonToDir(lat,lon)).normalize();
+}
+function faceYaw(lat,lon,wantDir){
+  const n=latLonToDir(lat,lon).normalize();
+  const q=new THREE.Quaternion().setFromUnitVectors(_UP, n);
+  const bx=new THREE.Vector3(1,0,0).applyQuaternion(q),bz=new THREE.Vector3(0,0,1).applyQuaternion(q);
+  return Math.atan2(-wantDir.dot(bz),wantDir.dot(bx));
+}
+function geoYaw(lat,lon,angleDeg){        // 0° = 朝北，90° = 朝东
+  const a=D2R(angleDeg);
+  return faceYaw(lat,lon,tangentNorth(lat,lon).multiplyScalar(Math.cos(a)).addScaledVector(tangentEast(lat,lon),Math.sin(a)));
+}
+function stepGeo(lat,lon,angleDeg,distLocal){   // 沿地理方位角走 distLocal（局部单位），返回新的 [lat,lon]
+  const d=R2D(distLocal/planetRadius),a=D2R(angleDeg);
+  return [lat+Math.cos(a)*d,lon+Math.sin(a)*d/Math.max(.2,Math.cos(D2R(lat)))];
+}
+// 贯穿星球的穿梭隧道：两个对跖井口
+const HOLE_R=2.7;
+const CANNON={lat:18,lon:80};
+const HOLES=[
+  {lat:CANNON.lat,lon:CANNON.lon,dir:latLonToDir(CANNON.lat,CANNON.lon)},
+  {lat:-CANNON.lat,lon:CANNON.lon+180,dir:latLonToDir(-CANNON.lat,CANNON.lon+180)}
+];
+function angDistDeg(a1,o1,a2,o2){
+  const p1=D2R(a1),p2=D2R(a2),dl=D2R(wrappedLonDelta(o1,o2));
+  const c=Math.sin(p1)*Math.sin(p2)+Math.cos(p1)*Math.cos(p2)*Math.cos(dl);
+  return R2D(Math.acos(Math.max(-1,Math.min(1,c))));
+}
+function holeDistance(lat,lon){
+  let m=1e9;
+  for(const h of HOLES)m=Math.min(m,D2R(angDistDeg(lat,lon,h.lat,h.lon))*planetRadius);
+  return m;
+}
+// 火山是"地貌"不是"道具"：把锥体本身并进地形高度。
+// 否则那 55° 的外坡在碰撞栅格里就是一圈 1.9 高的墙，人走到山脚就被挡住，
+// 永远上不去 —— 而"站在火山口里被岩浆冲走"正是要能走上去才成立的。
+// 山体上的装饰（熔岩沟壑 / 寄生火山口）由 field 的排除区负责不当碰撞（见 14b）。
+const VOLC_T=[];
+function volcanoLift(lat,lon){
+  let add=0;
+  for(let i=0;i<VOLC_T.length;i++){
+    const v=VOLC_T[i];
+    const dr=D2R(angDistDeg(lat,lon,v.lat,v.lon))*planetRadius;
+    if(dr>=v.baseR)continue;
+    // 外坡：从 craterR 处的"口沿高度"线性落到 baseR 处的 0；口内是火山口底
+    const lift=(dr<=v.craterR)?v.floorY:(v.h*clamp01((v.baseR-dr)/(v.baseR-v.craterR)));
+    if(lift>add)add=lift;
+  }
+  return add;
+}
+function terrainHeight(lat,lon){
+  const a=D2R(lon),b=D2R(lat);
+  const detail=.5*Math.sin(a*9+b*5)+.28*Math.cos(a*15-b*8)+.18*Math.sin(a*23+b*13);
+  const dunes=.16*Math.sin(a*34+b*21)+.11*Math.sin(a*57-b*39)+.07*Math.cos(a*88+b*63);
+  const score=landScore(lat,lon);
+  const biome=biomeAt(lat,lon);
+  const lift=biome==='mountain'?.23:biome==='volcano'?.2:biome==='industrial'?.09:biome==='city'?.07:biome==='deadforest'?.08:.065;
+  const landH=lift+.09*detail*Math.min(1,Math.max(0,score)*4)+.075*dunes;
+  const seaH=.018*detail+.026*dunes;           // 海底：几乎死平的淤泥面
+  const t=clamp01((score+.025)/.115);          // 平滑的海岸过渡带，避免出现"台阶状"海岸线
+  let h=seaH*(1-t)+landH*t;
+  const d=holeDistance(lat,lon);
+  if(d<5.4)h+=.1*(1-d/5.4);                    // 井口外沿掘出的堆积环
+  h+=volcanoLift(lat,lon);                     // 火山锥体（地貌，可走上去）
+  return Math.max(.006,h);
+}
+// 预置颜色常量，避免逐顶点反复 new Color（星球有近两万面）
+const PALETTE_COL={ash:new THREE.Color(0x4c4c49),deadforest:new THREE.Color(0x34352f),mountain:new THREE.Color(0x5b5f61),industrial:new THREE.Color(0x43413f),city:new THREE.Color(0x4a4a4c),volcano:new THREE.Color(0x2a2725)};
+const C_SHALLOW=new THREE.Color(0x131c1e),C_DEEP=new THREE.Color(0x030507);
+const C_DUSTLINE=new THREE.Color(0x6f6a5e),C_ASH=new THREE.Color(0x14161a),C_DIM=new THREE.Color(0x1b1e20),C_HOLE=new THREE.Color(0x7d7669);
+const _colA=new THREE.Color(),_colB=new THREE.Color(),_colC=new THREE.Color();
+function terrainColor(lat,lon){
+  const score=landScore(lat,lon),a=D2R(lon),b=D2R(lat);
+  const variation=.9+.06*Math.sin(a*13+b*7)+.04*Math.cos(a*21-b*11);
+  // 海底：几近死水
+  const sea=_colB.copy(C_SHALLOW).lerp(C_DEEP,Math.min(1,Math.max(0,-score)*1.2)).multiplyScalar(.9+.1*Math.sin(b*9));
+  if(score<-.05)return sea.multiplyScalar(variation*TONE);
+  // 陆地：灰黑渐变 + 焦土斑 + 灰土带
+  const base=_colA.copy(PALETTE_COL[biomeAt(lat,lon)]);
+  if(score<.09)base.lerp(C_DUSTLINE,clamp01(1-score/.09));            // 岸边灰土带
+  base.lerp(C_DUSTLINE,.22*(1-Math.abs(lat)/90));                     // 赤道灰土带 → 极地更黑
+  const ashN=.5+.5*Math.sin(a*7.3+b*4.1)*Math.cos(a*3.1-b*6.7);
+  base.lerp(C_ASH,.34*ashN);                                          // 黑色焦土斑
+  base.lerp(C_DIM,.12);                                                // 整体压暗去色
+  base.lerp(C_DUSTLINE,clamp01((terrainHeight(lat,lon)-.05)/.24)*.26); // 高处覆浅灰土
+  const d=holeDistance(lat,lon);
+  if(d<7.2)base.lerp(C_HOLE,clamp01(1-d/7.2)*.72);                    // 井口掘出的浅灰土
+  // 海岸线：海陆颜色在网格尺度上平滑过渡，避免出现锯齿状硬边
+  const t=clamp01((score+.05)/.1);
+  return _colC.copy(sea).lerp(base,t).multiplyScalar(variation*TONE);
+}
+
+// ======================= 3. 星球本体 + 被污染的大气 =======================
+// 真的在星球网格上挖出两个洞口（任一顶点落在洞内的三角形都剔除）
+function cutHoles(geo,colors){
+  const pos=geo.attributes.position.array;
+  const n=pos.length/3,inHole=new Uint8Array(n);
+  for(let i=0;i<n;i++){
+    const x=pos[i*3],y=pos[i*3+1],z=pos[i*3+2],len=Math.hypot(x,y,z);
+    const nx=x/len,ny=y/len,nz=z/len;
+    for(const h of HOLES){
+      const dot=Math.max(-1,Math.min(1,nx*h.dir.x+ny*h.dir.y+nz*h.dir.z));
+      if(dot>.9999999||Math.acos(dot)*planetRadius<HOLE_R){inHole[i]=1;break}
+    }
+  }
+  const keep=[],keepCol=[];
+  for(let t=0;t<n;t+=3){
+    if(inHole[t]||inHole[t+1]||inHole[t+2])continue;   // 任一顶点落在洞口内就剔除，得到干净的圆形井口
+    for(let k=0;k<3;k++){
+      const v=t+k;
+      keep.push(pos[v*3],pos[v*3+1],pos[v*3+2]);
+      keepCol.push(colors[v*3],colors[v*3+1],colors[v*3+2]);
+    }
+  }
+  const g=new THREE.BufferGeometry();
+  g.setAttribute('position',new THREE.Float32BufferAttribute(keep,3));
+  g.setAttribute('color',new THREE.Float32BufferAttribute(keepCol,3));
+  g.computeVertexNormals();
+  return g;
+}
+const SMOG_VERT='varying vec3 vN;varying vec3 vP;varying vec3 vW;'+
+'void main(){vN=normalize(normalMatrix*normal);vec4 mv=modelViewMatrix*vec4(position,1.);vP=mv.xyz;vW=(modelMatrix*vec4(position,1.)).xyz;gl_Position=projectionMatrix*mv;}';
+const SMOG_FRAG='varying vec3 vN;varying vec3 vP;varying vec3 vW;uniform float uS;'+
+'float hash(vec3 v){return fract(sin(dot(v,vec3(12.9898,78.233,45.164)))*43758.5453123);}'+
+'float noise(vec3 v){vec3 i=floor(v),f=fract(v);f=f*f*(3.-2.*f);'+
+' return mix(mix(mix(hash(i),hash(i+vec3(1,0,0)),f.x),mix(hash(i+vec3(0,1,0)),hash(i+vec3(1,1,0)),f.x),f.y),'+
+'            mix(mix(hash(i+vec3(0,0,1)),hash(i+vec3(1,0,1)),f.x),mix(hash(i+vec3(0,1,1)),hash(i+vec3(1,1,1)),f.x),f.y),f.z);}'+
+'void main(){vec3 d=normalize(vW);'+
+' float dens=noise(d*3.)*.62+noise(d*9.)*.28+noise(d*27.)*.16;'+
+' float rim=pow(clamp(.82-dot(normalize(vP),vN),0.,1.),3.1);'+
+' vec3 col=mix(vec3(.15,.125,.105),vec3(.47,.37,.26),dens);'+
+' gl_FragColor=vec4(col,rim*(.26+dens*.8)*.8*uS);}';
+function makeSmog(scale,strength){
+  return new THREE.Mesh(new THREE.SphereGeometry(planetRadius*scale,72,44),new THREE.ShaderMaterial({
+    uniforms:{uS:{value:strength}},transparent:true,side:THREE.BackSide,depthWrite:false,blending:THREE.AdditiveBlending,
+    vertexShader:SMOG_VERT,fragmentShader:SMOG_FRAG}));
+}
+function createPlanet(){
+  const src=new THREE.IcosahedronGeometry(planetRadius,36);
+  const position=src.attributes.position,colors=[];
+  for(let i=0;i<position.count;i++){
+    const n=new THREE.Vector3(position.getX(i),position.getY(i),position.getZ(i)).normalize();
+    const lat=R2D(Math.asin(n.y)),lon=R2D(Math.atan2(n.z,n.x));
+    const radius=planetRadius+terrainHeight(lat,lon),c=terrainColor(lat,lon);
+    position.setXYZ(i,n.x*radius,n.y*radius,n.z*radius);
+    colors.push(c.r,c.g,c.b);
+  }
+  const globe=new THREE.Mesh(cutHoles(src,colors),new THREE.MeshStandardMaterial({vertexColors:true,roughness:.96,metalness:0,flatShading:true}));
+  globe.receiveShadow=true;world.add(globe);
+  world.add(makeSmog(1.03,.8));     // 贴地雾霾
+  world.add(makeSmog(1.11,.3));     // 更外层的沙尘罩
+}
+
+// ======================= 4. 球面放置 / 实例化工具 =======================
+function point(lat,lon,height=0){
+  return latLonToDir(lat,lon).multiplyScalar(planetRadius+terrainHeight(lat,lon)+height);
+}
+function place(object,lat,lon,height=.06,parent=world){
+  const p=point(lat,lon,height);
+  object.position.copy(p);
+  object.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),p.clone().normalize());
+  if(parent===world)object.scale.multiplyScalar(surfacePropScale);
+  parent.add(object);return object;
+}
+const _UP=new THREE.Vector3(0,1,0);
+function scatter(cLat,cLon,latSpread,lonSpread,count,fn){
+  let placed=0,attempts=0;
+  while(placed<count&&attempts<count*30){
+    attempts++;
+    const a=random()*Math.PI*2,r=Math.sqrt(random());
+    const lat=cLat+Math.sin(a)*latSpread*r,lon=cLon+Math.cos(a)*lonSpread*r;
+    if(!isLand(lat,lon,.1)||holeDistance(lat,lon)<HOLE_R*1.9)continue;
+    fn(lat,lon,placed);placed++;
+  }
+}
+function scatterGlobal(count,fn){
+  let placed=0,attempts=0;
+  while(placed<count&&attempts<count*40){
+    attempts++;
+    const lat=R2D(Math.asin(random()*2-1)),lon=random()*360-180;
+    if(!isLand(lat,lon,.02)||holeDistance(lat,lon)<HOLE_R*1.9)continue;
+    fn(lat,lon,placed);placed++;
+  }
+}
+function randomDirInLand(cLat,cLon,latS,lonS){
+  for(let i=0;i<80;i++){
+    const lat=cLat+(random()*2-1)*latS,lon=cLon+(random()*2-1)*lonS;
+    if(isLand(lat,lon,.12)&&holeDistance(lat,lon)>HOLE_R*1.9)return [lat,lon];
+  }
+  return null;
+}
+function surfaceItems(list,height=.02){
+  return list.map(it=>{
+    const p=point(it.lat,it.lon,it.height!==undefined?it.height:height);
+    const q=new THREE.Quaternion().setFromUnitVectors(_UP,p.clone().normalize());
+    if(it.yaw||it.tiltX)q.multiply(new THREE.Quaternion().setFromEuler(new THREE.Euler(it.tiltX||0,it.yaw||0,0)));
+    const s=(it.scale||1)*surfacePropScale;
+    return {p,q,s,sx:it.sx,sy:it.sy,sz:it.sz};
+  });
+}
+function instanceMesh(geo,mat,items,parent,opt={}){
+  if(!items||!items.length)return null;
+  const mesh=new THREE.InstancedMesh(geo,mat,items.length);
+  const m=new THREE.Matrix4(),s=new THREE.Vector3();
+  items.forEach((it,i)=>{
+    const b=it.s||1;
+    s.set(it.sx!==undefined?it.sx:b,it.sy!==undefined?it.sy:b,it.sz!==undefined?it.sz:b);
+    m.compose(it.p,it.q,s);mesh.setMatrixAt(i,m);
+  });
+  mesh.instanceMatrix.needsUpdate=true;
+  mesh.castShadow=!!opt.castShadow;mesh.receiveShadow=!!opt.receiveShadow;
+  parent.add(mesh);return mesh;
+}
+// 共享几何体（底面均在原点）
+const G={
+  box:new THREE.BoxGeometry(1,1,1).translate(0,.5,0),
+  cyl:new THREE.CylinderGeometry(.5,.5,1,12).translate(0,.5,0),
+  cone7:new THREE.ConeGeometry(.5,1,7).translate(0,.5,0),
+  dome:new THREE.SphereGeometry(.5,14,9,0,Math.PI*2,0,Math.PI/2)
+};
+function box(mat,sx,sy,sz,x,y,z,g){const m=new THREE.Mesh(G.box,mat);m.scale.set(sx,sy,sz);m.position.set(x,y,z);m.castShadow=true;m.receiveShadow=true;g.add(m);return m}
+function cyl(mat,r,h,x,y,z,g,geo){const m=new THREE.Mesh(geo||G.cyl,mat);m.scale.set(r*2,h,r*2);m.position.set(x,y,z);m.castShadow=true;g.add(m);return m}
+
+// ======================= 5. 地表：不平坦的灰土与石块 =======================
+function createSurfaceDebris(){
+  const rockGeo=new THREE.DodecahedronGeometry(1,0);rockGeo.scale(1,.78,.86);rockGeo.translate(0,.4,0);
+  const rocks=[];
+  scatterGlobal(3200,(lat,lon)=>rocks.push({lat,lon,scale:.035+random()*.14,yaw:random()*6.283,tiltX:(random()-.5)*.9,height:-.02}));
+  instanceMesh(rockGeo,material(C.stone,{roughness:.98}),surfaceItems(rocks),world,{castShadow:true,receiveShadow:true});
+
+  const moundGeo=new THREE.SphereGeometry(1,7,4);moundGeo.scale(1,.3,1);moundGeo.translate(0,.1,0);
+  const mounds=[];
+  scatterGlobal(1300,(lat,lon)=>mounds.push({lat,lon,scale:.09+random()*.24,yaw:random()*6.283,height:-.05}));
+  instanceMesh(moundGeo,material(C.dustDark,{roughness:1}),surfaceItems(mounds),world,{receiveShadow:true});
+
+  const gritGeo=new THREE.TetrahedronGeometry(.6,0);gritGeo.translate(0,.2,0);
+  const grit=[];
+  scatterGlobal(2600,(lat,lon)=>grit.push({lat,lon,scale:.025+random()*.06,yaw:random()*6.283,tiltX:(random()-.5)*1.3,height:-.03}));
+  instanceMesh(gritGeo,material(C.stoneDark,{roughness:1}),surfaceItems(grit),world);
+
+  // 一层贴着地面的细灰壳，把低洼处的灰黑过渡压得更实
+  const dust=[];
+  scatterGlobal(1100,(lat,lon)=>dust.push({lat,lon,scale:.05+random()*.13,yaw:random()*6.283,height:-.045}));
+  instanceMesh(moundGeo,material(0x5d5b57,{roughness:1}),surfaceItems(dust),world,{receiveShadow:true});
+}
+
+// ======================= 6. 被砍伐的森林 =======================
+// 真实的采伐迹地：树桩保持着原本林木的株距（互不重叠、不穿模），中间让出一条
+// 集材道；倒木、枝桠、木料只出现在集材道上和集材场，而不是满山随机乱丢。
+const STUMP_GEO=new THREE.CylinderGeometry(.34,.55,.36,7).translate(0,.18,0);   // 带伐根外扩的树桩
+const FLARE_GEO=new THREE.CylinderGeometry(.52,.74,.11,7).translate(0,.045,0);  // 地表鼓起的根部
+const CUT_GEO=new THREE.CircleGeometry(.33,7).rotateX(-Math.PI/2);              // 新鲜的锯口
+const ROOT_GEO=new THREE.ConeGeometry(.5,1,5).rotateZ(-Math.PI/2).translate(.45,0,0);
+const LOG_GEO=new THREE.CylinderGeometry(.5,.5,1,7).rotateZ(Math.PI/2);
+function logAt(mat,x,y,g,len,r){const m=new THREE.Mesh(LOG_GEO,mat);m.scale.set(len,r*2,r*2);m.position.set(x,y,0);m.castShadow=true;m.receiveShadow=true;g.add(m);return m}
+
+function distToPath(lat,lon,path){
+  let best=1e9;const k=Math.cos(D2R(lat));
+  for(let i=0;i<path.length-1;i++){
+    const a=path[i],b=path[i+1];
+    const ax=(a[1]-lon)*k,ay=a[0]-lat,bx=(b[1]-lon)*k,by=b[0]-lat;
+    const dx=bx-ax,dy=by-ay,L=dx*dx+dy*dy;
+    let t=L>1e-9?-(ax*dx+ay*dy)/L:0;t=t<0?0:t>1?1:t;
+    best=Math.min(best,Math.hypot(ax+dx*t,ay+dy*t));
+  }
+  return best;
+}
+// 按"抖动网格"布点：保住株距（树桩之间留得出空隙），同时允许按条件跳过格子
+function gridField(cLat,cLon,latS,lonS,stepDeg,skip,fn){
+  const dLon=stepDeg/Math.max(.3,Math.cos(D2R(cLat)));
+  const rows=Math.max(2,Math.round(latS*2/stepDeg)),cols=Math.max(2,Math.round(lonS*2/dLon));
+  const dLat=latS*2/rows,dLonn=lonS*2/cols;
+  for(let i=0;i<rows;i++)for(let j=0;j<cols;j++){
+    const lat=cLat-latS+(i+.5+(random()-.5)*.38)*dLat;
+    const lon=cLon-lonS+(j+.5+(random()-.5)*.38)*dLonn;
+    if(!isLand(lat,lon,.12)||holeDistance(lat,lon)<HOLE_R*1.9)continue;
+    if(skip&&skip(lat,lon,i,j))continue;
+    fn(lat,lon,i,j);
+  }
+}
+// 从一角蜿蜒到另一角的集材道
+function makeTrail(cLat,cLon,latS,lonS,n){
+  const pts=[];
+  for(let i=0;i<=n;i++){
+    const t=i/n;
+    pts.push([cLat-latS*.94+2*latS*.94*t+(random()-.5)*latS*.3,
+              cLon-lonS*.94+2*lonS*.94*t+(random()-.5)*lonS*.26]);
+  }
+  return pts;
+}
+function createDeforestedForest(cLat,cLon,latS,lonS,opt={}){
+  const woodMat=material(0x3a3227,{flatShading:true,roughness:.98});
+  const sapMat=material(0x6a5738,{flatShading:false,roughness:.88});
+  const rootMat=material(0x2c261e,{roughness:1,flatShading:true});
+  const trail=makeTrail(cLat,cLon,latS,lonS,10);
+  const onTrail=(lat,lon)=>distToPath(lat,lon,trail)<1.35+.3*random();
+  const stepDeg=opt.step||2.2;
+
+  // 集材道：压实的灰土路面 + 两道车辙
+  surfaceRibbon(trail,.95,material(C.dustDark,{roughness:1,side:THREE.DoubleSide}),.045);
+  for(const s of[-1,1]){
+    const r=trail.map(p=>[p[0]+s*.05,p[1]+s*.06]);
+    surfaceRibbon(r,.17,material(0x2a251d,{roughness:1,side:THREE.DoubleSide}),.05);
+  }
+
+  // 树桩：株距网格 + 高低不一的锯口 + 外露的伐根
+  // （所有实例缩放都用"局部单位"绝对量，几何基准见上面的 *_GEO 常量）
+  const EPS=.005;
+  const stumps=[],flares=[],cuts=[],roots=[];
+  gridField(cLat,cLon,latS,lonS,stepDeg,(lat,lon)=>onTrail(lat,lon)||random()<.08,(lat,lon)=>{
+    const la=lat+(random()-.5)*.06,lo=lon+(random()-.5)*.06;
+    const R=.19+random()*.09;                 // 树桩半径（局部单位）
+    const H=.10+random()*.32;                 // 留下的高度，高的矮的混杂
+    const kx=.92+random()*.16,kz=.92+random()*.16,yaw=random()*6.283;
+    stumps.push({lat:la,lon:lo,height:-.02,sx:R/.55*kx,sy:H/.36,sz:R/.55*kz,yaw,tiltX:(random()-.5)*.1});
+    flares.push({lat:la,lon:lo,height:-.025,sx:R/.74*1.22*kx,sy:.28+random()*.3,sz:R/.74*1.22*kz,yaw});
+    if(random()<.62)cuts.push({lat:la,lon:lo,height:H+EPS,sx:R/.33*kx,sy:H/.36,sz:R/.33*kz,yaw});
+    for(let k=0;k<3;k++){                     // 伐根：被伐倒时扯出来的侧根
+      if(random()>.6)continue;
+      const a=random()*360,d=R*.9+random()*.3,pl=stepGeo(la,lo,a,d),rl=R*(1.6+random()*.9);
+      roots.push({lat:pl[0],lon:pl[1],height:-.02,sx:rl,sy:R*.6,sz:R*.6,
+        yaw:geoYaw(pl[0],pl[1],a+(random()-.5)*40),tiltX:-.45+random()*.25});
+    }
+  });
+  instanceMesh(FLARE_GEO,rootMat,surfaceItems(flares),world,{receiveShadow:true,castShadow:true});
+  instanceMesh(STUMP_GEO,woodMat,surfaceItems(stumps),world,{castShadow:true,receiveShadow:true});
+  instanceMesh(ROOT_GEO,rootMat,surfaceItems(roots),world,{castShadow:true});
+  instanceMesh(CUT_GEO,sapMat,surfaceItems(cuts),world,{receiveShadow:true});
+
+  // 倒木：大体朝一个方向倒下，根盘那一端翘起
+  const fallen=[],plates=[],wind=random()*360;
+  gridField(cLat,cLon,latS,lonS,stepDeg*3.2,(lat,lon)=>onTrail(lat,lon)||random()<.7,(lat,lon)=>{
+    const len=.9+random()*.9,rad=.06+random()*.045,a=wind+(random()-.5)*46;
+    fallen.push({lat,lon,height:rad,sx:len,sy:rad/.5,sz:rad/.5,yaw:geoYaw(lat,lon,a),tiltX:(random()-.5)*.12});
+    const end=stepGeo(lat,lon,a+180,len*.45);
+    plates.push({lat:end[0],lon:end[1],height:.02,sx:.45+random()*.3,sy:rad*1.5,sz:rad*1.5,
+      yaw:geoYaw(end[0],end[1],a),tiltX:1.1+random()*.3});
+  });
+  instanceMesh(LOG_GEO,woodMat,surfaceItems(fallen),world,{castShadow:true,receiveShadow:true});
+  instanceMesh(ROOT_GEO,rootMat,surfaceItems(plates),world,{castShadow:true});
+
+  // 枝桠堆：清林时堆在迹地上的废枝
+  const slash=[];
+  gridField(cLat,cLon,latS,lonS,stepDeg*2.4,(lat,lon)=>random()<.74,(lat,lon)=>{
+    const n=4+Math.floor(random()*7);
+    for(let k=0;k<n;k++)slash.push({lat:lat+(random()-.5)*.5,lon:lon+(random()-.5)*.5,
+      height:.02,sx:.22+random()*.4,sy:.03+random()*.03,sz:.03+random()*.03,yaw:random()*6.283});
+  });
+  instanceMesh(LOG_GEO,rootMat,surfaceItems(slash),world,{receiveShadow:true});
+
+  // 集材场：木料码成垛（底层并排、上层压在缝里）
+  [.38,.84].forEach(t=>{
+    const p=trail[Math.min(trail.length-1,Math.round(t*trail.length))];
+    for(let k=0;k<4;k++){
+      const lat=p[0]+(random()-.5)*2.4,lon=p[1]+(random()-.5)*3.2;
+      if(!isLand(lat,lon,.1)||holeDistance(lat,lon)<HOLE_R*1.5)continue;
+      const g=new THREE.Group();
+      const n=3+Math.floor(random()*4),rows=1+Math.floor(random()*3),r=.11+random()*.05;
+      for(let row=0;row<rows;row++){
+        const cnt=Math.max(1,n-row);
+        for(let i=0;i<cnt;i++)logAt(woodMat,(i-(cnt-1)/2)*r*2.2,row*r*1.85+r*.9,g,.85+random()*.9,r);
+      }
+      for(const s of[-1,1])box(material(0x2a241c),.06,r*2*(rows+.6),.06,s*(n*r*1.15),r*2*(rows+.6)/2,.34,g);
+      place(g,lat,lon,.03);g.rotateY(random()*6.283);
+    }
+  });
+  // 一台被撂下的伐木机车
+  {
+    const p=trail[Math.round(trail.length*.6)];
+    const g=new THREE.Group();
+    box(material(C.rust),1.5,.5,.9,0,.42,0,g);
+    box(material(C.rustDark),.8,.5,.86,-.35,.92,0,g);
+    box(material(C.soot),.16,.34,.16,.62,.2,.36,g);
+    box(material(C.soot),.16,.34,.16,.62,.2,-.36,g);
+    const arm=box(material(C.steelDark,{metalness:.5,roughness:.6,flatShading:false}),.14,1.6,.14,-.85,1.1,0,g);arm.rotation.z=.5;
+    place(g,p[0]+(random()-.5)*1.4,p[1]+(random()-.5)*1.8,.03);g.rotateY(random()*6.283);
+  }
+}
+
+// ======================= 7. 工业废墟 =======================
+function industrialRuin(lat,lon,yaw,size=1){
+  const g=new THREE.Group();
+  const conc=material(C.concreteDark,{flatShading:false,roughness:.98});
+  const dark=material(C.soot,{roughness:.95});
+  const steel=material(C.steel,{metalness:.65,roughness:.5,flatShading:false});
+  const rust=material(C.rust,{roughness:.85,metalness:.3});
+  box(conc,2.7,1.15,1.8,0,0,0,g);                                    // 塌了一半的厂房
+  const roof=box(dark,2.5,.1,1.1,-.1,1.15,.34,g);roof.rotation.z=.05;
+  for(let i=0;i<5;i++)box(conc,.42,.55,.42,-1.2+i*.62,.02,.86,g);   // 断裂的柱列
+  [[-1.15,-.35,.34,2.6],[.95,-.55,.3,3.4],[1.35,.45,.26,2.0]].forEach(v=>{   // 烟囱
+    cyl(rust,v[2],v[3],v[0],v[3]/2,v[1],g);
+    cyl(dark,v[2]*1.16,.14,v[0],v[3]+.06,v[1],g);
+  });
+  [-1,1].forEach((s,i)=>{                                            // 储罐
+    const t=cyl(steel,.52,1.5,s*1.9,.75,-1.0-i*.2,g);t.rotation.z=s*.02;
+    const cap=new THREE.Mesh(G.dome,steel);cap.scale.setScalar(1.06);cap.position.set(s*1.9,1.5,-1.0-i*.2);g.add(cap);
+  });
+  for(let i=0;i<6;i++){                                              // 钢架残骸
+    const b=box(steel,.07,1.9,.07,-2.4+i*.5,.95,-2.0+(i%2)*.3,g);b.rotation.z=(random()-.5)*.5;
+    const h=box(steel,.9,.07,.07,-2.4+i*.5,1.7,-2.0+(i%2)*.3,g);h.rotation.z=(random()-.5)*.2;
+  }
+  for(let i=0;i<7;i++){                                              // 塌陷的烟道
+    const seg=cyl(rust,.16,.5,-2.2+i*.42,.72+Math.sin(i*.8)*.22,-1.4+Math.cos(i*.6)*.3,g);
+    seg.rotation.z=Math.PI/2-.2+Math.sin(i)*.2;
+  }
+  for(let i=0;i<5;i++)cyl(steel,.05,.9-(i%2)*.3,2.3,0,.9-i*.4,g);     // 传送带支架
+  place(g,lat,lon,.05);g.rotateY(yaw);g.scale.multiplyScalar(size);
+  return g;
+}
+
+// 贴合球面的带状面（道路 / 灰烬带）
+function surfaceRibbon(pts,width,mat,height=.15){
+  const samples=[];
+  for(let i=0;i<pts.length-1;i++){
+    const a=pts[i],b=pts[i+1],steps=10;
+    for(let j=0;j<steps;j++){const t=j/steps;samples.push(point(a[0]+(b[0]-a[0])*t,a[1]+(b[1]-a[1])*t,height))}
+  }
+  const last=pts[pts.length-1];samples.push(point(last[0],last[1],height));
+  const vertices=[],indices=[];
+  for(let i=0;i<samples.length;i++){
+    const c=samples[i],prev=samples[Math.max(0,i-1)],next=samples[Math.min(samples.length-1,i+1)];
+    const tangent=next.clone().sub(prev).normalize(),normal=c.clone().normalize();
+    const side=new THREE.Vector3().crossVectors(normal,tangent).normalize().multiplyScalar(width/2);
+    vertices.push(c.x+side.x,c.y+side.y,c.z+side.z,c.x-side.x,c.y-side.y,c.z-side.z);
+    if(i<samples.length-1){const n=i*2;indices.push(n,n+1,n+2,n+1,n+3,n+2)}
+  }
+  const geo=new THREE.BufferGeometry();
+  geo.setAttribute('position',new THREE.Float32BufferAttribute(vertices,3));
+  geo.setIndex(indices);geo.computeVertexNormals();
+  const mesh=new THREE.Mesh(geo,mat);mesh.receiveShadow=true;world.add(mesh);return mesh;
+}
+
+// 低空翻涌的沙尘暴团（大气污染的可视化）
+const smogBanks=[];
+function smogBank(lat,lon,s){
+  const g=new THREE.Group();
+  const m=material(0x3f3931,{transparent:true,opacity:.24,roughness:1,depthWrite:false});
+  [[0,0,.5],[.6,.06,.4],[-.52,.03,.36],[.12,.24,.34],[-.24,-.06,.3],[.34,-.1,.28]].forEach(a=>{
+    const q=new THREE.Mesh(new THREE.SphereGeometry(a[2]*s,10,7),m);
+    q.position.set(a[0]*s,a[1]*s,0);g.add(q);
+  });
+  place(g,lat,lon,1.5);
+  g.scale.setScalar(2.2);
+  g.rotateY(random()*6.28);
+  smogBanks.push(g);return g;
+}
+
+// ======================= 8. 废弃都市 =======================
+const windowItems=[];
+const WINDOW_MAT=()=>material(0x14161a,{emissive:C.warm,emissiveIntensity:1.15,flatShading:false,side:THREE.DoubleSide});
+function ruinedCity(cLat,cLon,latS,lonS,count,tall){
+  const bodies=[material(0x555356,{roughness:.98}),material(0x3c3b3a,{roughness:.98}),material(0x47454a,{roughness:.98})];
+  const slabMat=material(C.concreteDark,{roughness:.98});
+  const antennaMat=material(C.steelDark,{metalness:.6,roughness:.5,flatShading:false});
+  // 先铺路网：塌陷开裂的城市干道，让废墟有"城市"的骨架
+  const roadMat=material(0x1c1e20,{roughness:.99,flatShading:false,side:THREE.DoubleSide});
+  for(let i=0;i<3;i++){
+    const la=cLat+(-1+i)*latS*.62,pts=[];
+    for(let k=0;k<=16;k++)pts.push([la+(random()-.5)*latS*.28,cLon+(-1+2*k/16)*lonS]);
+    surfaceRibbon(pts,.2,roadMat,.13);
+  }
+  for(let i=0;i<3;i++){
+    const lo=cLon+(-1+i)*lonS*.62,pts=[];
+    for(let k=0;k<=16;k++)pts.push([cLat+(-1+2*k/16)*latS,lo+(random()-.5)*lonS*.28]);
+    surfaceRibbon(pts,.2,roadMat,.13);
+  }
+  scatter(cLat,cLon,latS,lonS,count,(lat,lon)=>{
+    const g=new THREE.Group();
+    const landmark=random()>.76;                      // 少数地标高楼撑起天际线
+    const w=(landmark?.2:.26+random()*.24)*tall,
+          segs=landmark?3:2+Math.floor(random()*2),
+          H=(landmark?4.2+random()*2.4:1.3+random()*2.6)*tall;
+    let y=0;
+    for(let i=0;i<segs;i++){
+      const sh=H/segs,sw=w*(1-i*.14),lean=i>0?(random()-.5)*.05:0;
+      const m=box(bodies[Math.floor(random()*3)],sw,sh,sw*.92,(random()-.5)*.06,y,(random()-.5)*.06,g);
+      m.rotation.z=lean;m.rotation.y=(random()-.5)*.3;
+      const slab=box(slabMat,sw*1.12,.045,sw*.98,(random()-.5)*.06,y+sh,0,g);
+      slab.rotation.z=lean;
+      y+=sh;
+    }
+    if(random()>.5){const a=cyl(antennaMat,.014,.5+random()*.6,0,y,0,g);a.rotation.z=(random()-.5)*.5}
+    box(material(C.soot),w*.9,.06,w*.8,0,y+.02,0,g);
+    place(g,lat,lon,0,world);            // 先落位，再算窗的坐标
+    g.rotateY(random()*3.14);
+    // 仍在闪烁的窗（少数还没断电的房间）
+    const m4=new THREE.Matrix4().compose(g.position,g.quaternion,g.scale);
+    for(let k=0;k<4;k++){
+      const wy=.28+random()*(y-.35);
+      const lp=new THREE.Vector3((random()-.5)*w*.7,wy,w*.47).applyMatrix4(m4);
+      windowItems.push({p:lp,q:g.quaternion.clone()});
+    }
+  });
+  for(let i=0;i<26;i++){                 // 干道上锈蚀的车流残骸
+    const p=randomDirInLand(cLat,cLon,latS,lonS);if(!p)continue;
+    const g=new THREE.Group();
+    box(material(C.rust),.34,.1,.16,0,.05,0,g);
+    box(material(C.soot),.2,.09,.15,0,.14,0,g);
+    place(g,p[0],p[1],.03);g.rotateY(random()*6.28);
+  }
+}
+function buildWindowLights(){
+  instanceMesh(new THREE.PlaneGeometry(.34,.22),WINDOW_MAT(),
+    windowItems.map(it=>({p:it.p,q:it.q,s:1})),world,{});
+}
+
+// ======================= 9. 死火山 =======================
+const plumes=[];
+const volcanoes=[];               // 供 14c 的「火山喷发」用：登记每座火山的位置与尺寸
+function deadVolcano(lat,lon,size,withPlume){
+  const g=new THREE.Group();
+  const craterR=.55*size,baseR=1.5*size,h=1.35*size;
+  const coneGeo=new THREE.CylinderGeometry(craterR,baseR,h,34,5,true);
+  const pos=coneGeo.attributes.position;
+  for(let i=0;i<pos.count;i++){
+    const x=pos.getX(i),y=pos.getY(i),z=pos.getZ(i);
+    const r=Math.hypot(x,z),a=Math.atan2(z,x),t=(y+h/2)/h;
+    const rough=.085*size*(1-t*.5)*(Math.sin(a*7+y*5)+.6*Math.sin(a*13-y*7)+.4*Math.cos(a*19+y*11));
+    const nr=r+rough;
+    pos.setXYZ(i,Math.cos(a)*nr,y+rough*.4,Math.sin(a)*nr);
+  }
+  coneGeo.computeVertexNormals();
+  const flank=new THREE.Mesh(coneGeo,material(0x2f2c29,{side:THREE.DoubleSide,roughness:1}));
+  flank.position.y=h/2;flank.castShadow=true;flank.receiveShadow=true;g.add(flank);
+  const floor=new THREE.Mesh(new THREE.CircleGeometry(craterR*1.02,28),material(0x1a1512,{side:THREE.DoubleSide}));
+  floor.rotation.x=-Math.PI/2;floor.position.y=h*.92;g.add(floor);
+  const ember=new THREE.Mesh(new THREE.CircleGeometry(craterR*.55,24),material(0x000000,{emissive:C.ember,emissiveIntensity:.6,transparent:true,opacity:.75}));
+  ember.rotation.x=-Math.PI/2;ember.position.y=h*.925;g.add(ember);
+  const crackMat=material(0x14110f);
+  for(let i=0;i<9;i++){                       // 熔岩沟壑
+    const a=i/9*Math.PI*2+.3;
+    for(let k=0;k<4;k++){
+      const t=k/4,rr=craterR+(baseR-craterR)*t;
+      const seg=box(crackMat,.05*size,.05*size,baseR*.3*size,Math.cos(a)*rr,h*(1-t*.72),Math.sin(a)*rr,g);
+      seg.rotation.y=-a;seg.rotation.z=.3;
+    }
+  }
+  for(let i=0;i<5;i++){                       // 寄生火山口
+    const a=random()*Math.PI*2,rr=baseR*(.75+random()*.5),s=.28+random()*.26;
+    cyl(material(0x34302c),s*.5,s*1.6,Math.cos(a)*rr,s*.8,Math.sin(a)*rr,g,G.cone7);
+    cyl(material(0x1b1815),s*.2,s*.5,Math.cos(a)*rr,s*1.5,Math.sin(a)*rr,g);
+  }
+  place(g,lat,lon,.02);
+  // 登记给 14c 的火山喷发用。注意 place() 会把整组乘上 surfacePropScale，
+  // 所以两套尺寸都要留着：*Raw 是组内局部单位（建粒子用），不带的才是世界局部单位（算距离用）。
+  const rec={group:g,lat,lon,size,e:0,plume:null,
+    baseR:baseR*surfacePropScale,craterR:craterR*surfacePropScale,h:h*surfacePropScale,
+    rawBaseR:baseR,rawCraterR:craterR,rawH:h,
+    floorY:h*.92*surfacePropScale};
+  volcanoes.push(rec);
+  VOLC_T.push({lat,lon,baseR:rec.baseR,craterR:rec.craterR,h:rec.h,floorY:rec.floorY});
+  if(withPlume){                              // 残存的灰烬柱
+    const pts=[];
+    for(let i=0;i<240;i++){
+      const t=random(),a=random()*Math.PI*2,r=(craterR*.35+random()*craterR*.7)*(1+t*.6);
+      pts.push(Math.cos(a)*r,t*h*2.4+random()*.4,Math.sin(a)*r);
+    }
+    const pg=new THREE.BufferGeometry();pg.setAttribute('position',new THREE.Float32BufferAttribute(pts,3));
+    const plume=new THREE.Points(pg,new THREE.PointsMaterial({color:0x8e8578,size:.62*size,transparent:true,opacity:.32,sizeAttenuation:true,depthWrite:false}));
+    plume.position.y=h*.95;g.add(plume);
+    const prec={points:plume,span:h*2.4,erupt:0};
+    plumes.push(prec);rec.plume=prec;
+  }
+  return g;
+}
+
+// ======================= 10. 山体 / 湖泊 =======================
+function deadMountain(lat,lon,size){
+  const g=new THREE.Group();
+  const rockMat=material(0x40444a,{roughness:1});
+  for(let i=0;i<3;i++){
+    const s=size*(1-i*.26);
+    const geo=new THREE.ConeGeometry(s*.62,s*1.5,8,3);
+    const p=geo.attributes.position;
+    for(let v=0;v<p.count;v++){
+      const x=p.getX(v),y=p.getY(v),z=p.getZ(v),a=Math.atan2(z,x);
+      const n=1+.14*(Math.sin(a*4+y*3)+.5*Math.sin(a*9-y*5));
+      p.setXYZ(v,x*n,y,z*n);
+    }
+    geo.computeVertexNormals();
+    const m=new THREE.Mesh(geo,rockMat);
+    m.position.set((i-1)*s*.5,s*.72,i%2?s*.3-s*.15:0);
+    m.rotation.y=random()*3;m.castShadow=true;m.receiveShadow=true;g.add(m);
+  }
+  for(let i=0;i<9;i++){                     // 山脚碎石裙
+    const a=random()*Math.PI*2,rr=size*(.7+random()*.8);
+    const r=new THREE.Mesh(new THREE.DodecahedronGeometry(size*.1+random()*size*.12,0),rockMat);
+    r.position.set(Math.cos(a)*rr,size*.08,Math.sin(a)*rr);
+    r.rotation.set(random(),random()*3,random());r.castShadow=true;g.add(r);
+  }
+  place(g,lat,lon,.02);
+  return g;
+}
+// 贴合球面的圆盘（湖泊 / 平台 / 撞击坑 / 矿坑）
+// opt.profile(t,angle) 返回相对地表的高度偏移（t = 0 圆心 → 1 边缘），用来做碗状、阶梯状等轮廓
+function curvedSurfaceDisc(lat,lon,radius,height,mat,opt={}){
+  const rings=opt.rings||10,segments=opt.segments||64,center=point(lat,lon,0).normalize();
+  const profile=opt.profile||null;
+  const edgeFn=opt.flat?(()=>1):(a=>1+.075*Math.sin(a*3+.4)+.045*Math.cos(a*5-.7));
+  const reference=Math.abs(center.y)<.9?new THREE.Vector3(0,1,0):new THREE.Vector3(1,0,0);
+  const axisX=new THREE.Vector3().crossVectors(reference,center).normalize();
+  const axisZ=new THREE.Vector3().crossVectors(center,axisX).normalize();
+  function addVertex(dir,t,angle){
+    const d=dir.normalize();
+    const sLat=R2D(Math.asin(d.y)),sLon=R2D(Math.atan2(d.z,d.x));
+    const R=planetRadius+terrainHeight(sLat,sLon)+height+(profile?profile(t,angle):0);
+    addVertex.last=R;
+    vertices.push(d.x*R,d.y*R,d.z*R);
+  }
+  const vertices=[],indices=[];
+  addVertex(center.clone(),0,0);
+  for(let ring=1;ring<=rings;ring++){
+    const ratio=ring/rings;
+    for(let s=0;s<segments;s++){
+      const angle=s/segments*Math.PI*2;
+      const arc=radius*ratio*edgeFn(angle)/planetRadius;
+      const tangent=axisX.clone().multiplyScalar(Math.cos(angle)).addScaledVector(axisZ,Math.sin(angle));
+      const dir=center.clone().multiplyScalar(Math.cos(arc)).addScaledVector(tangent,Math.sin(arc));
+      addVertex(dir,ratio,angle);
+    }
+  }
+  for(let s=0;s<segments;s++){const nn=(s+1)%segments;indices.push(0,1+s,1+nn)}
+  for(let ring=2;ring<=rings;ring++){
+    const ps=1+(ring-2)*segments,cs=1+(ring-1)*segments;
+    for(let s=0;s<segments;s++){
+      const nn=(s+1)%segments,a=ps+s,b=ps+nn,c=cs+s,d=cs+nn;
+      indices.push(a,c,b,b,c,d);
+    }
+  }
+  const geo=new THREE.BufferGeometry();
+  geo.setAttribute('position',new THREE.Float32BufferAttribute(vertices,3));
+  geo.setIndex(indices);geo.computeVertexNormals();
+  const mesh=new THREE.Mesh(geo,mat);mesh.receiveShadow=true;world.add(mesh);return mesh;
+}
+function deadLake(lat,lon,size){
+  curvedSurfaceDisc(lat,lon,size*1.16,.018,material(C.dustDark,{roughness:1}));
+  const water=curvedSurfaceDisc(lat,lon,size,.032,material(C.water,{roughness:.34,metalness:0,emissive:0x05090b,emissiveIntensity:.25,transparent:true,opacity:.95,flatShading:false}));
+  water.renderOrder=1;
+  for(let i=0;i<5;i++){                       // 湖面漂浮的残骸
+    const p=randomDirInLand(lat,lon,size*.3,size*.34);if(!p)continue;
+    const g=new THREE.Group();
+    if(random()>.5){box(material(C.rust),.5,.12,.28,0,.06,0,g);box(material(C.soot),.34,.16,.26,0,.2,0,g)}
+    else cyl(material(C.steelDark,{metalness:.6,roughness:.5,flatShading:false}),.06,.5,0,.25,0,g);
+    place(g,p[0],p[1],.05);g.rotateY(random()*6.28);
+  }
+}
+
+// ======================= 11. 贯穿星球的穿梭隧道（地球大炮） =======================
+const cannonCores=[],cannonGlows=[];
+function earthCannon(hole){
+  const g=new THREE.Group();
+  const conc=material(C.concrete,{roughness:.95,flatShading:false});
+  const concDark=material(C.concreteDark,{roughness:.98});
+  const steel=material(C.steel,{metalness:.7,roughness:.42,flatShading:false});
+  // ---- 井口一圈都留了一个豁口（正对发射导轨那一侧，即局部 +Z）----
+  // 有了它探险者才能沿导轨直接走进井里；否则土堤和挡墙会把人拦在外面。
+  const DOOR=66,DOOR2=D2R(DOOR);            // 豁口张角
+  // 掘出的环状土堤 + 井口平台
+  const rim=new THREE.Mesh(new THREE.TorusGeometry(2.35,.36,10,44,Math.PI*2-DOOR2),material(C.dustDark,{roughness:1}));
+  // TorusGeometry 的弧从 u=0 起、缺口中心落在 (360-DOOR)/2+180；绕自身轴转一下把缺口对到 +Z
+  rim.rotation.set(-Math.PI/2,0,D2R(DOOR/2-90));
+  rim.position.y=.05;rim.castShadow=true;rim.receiveShadow=true;g.add(rim);
+  const pad=new THREE.Mesh(new THREE.RingGeometry(1.9,2.35,52,1,D2R(270+DOOR/2),D2R(360-DOOR)),conc);
+  pad.rotation.x=-Math.PI/2;pad.position.y=.04;pad.receiveShadow=true;g.add(pad);
+  // 井口挡墙（开口圆环，不封住井口）
+  const collar=new THREE.Mesh(new THREE.CylinderGeometry(1.9,2.05,.42,48,1,true,D2R(DOOR/2),D2R(360-DOOR)),
+    material(0xb0aca2,{roughness:.94,flatShading:false,side:THREE.DoubleSide}));
+  collar.position.y=.21;collar.castShadow=true;g.add(collar);
+  const collarRing=new THREE.Mesh(new THREE.TorusGeometry(1.9,.07,8,48,Math.PI*2-DOOR2),steel);
+  collarRing.rotation.set(-Math.PI/2,0,D2R(DOOR/2-90));
+  collarRing.position.y=.42;g.add(collarRing);
+  // 井筒：向下收束，内壁朝向轴心
+  const boreH=7.4;
+  const bore=new THREE.Mesh(new THREE.CylinderGeometry(1.92,.26,boreH,44,1,true),
+    material(0x08090b,{side:THREE.BackSide,roughness:.92,metalness:.15}));
+  bore.position.y=-boreH/2+.24;g.add(bore);
+  // 井壁的磁悬浮加速环
+  for(let i=0;i<9;i++){
+    const t=i/8,r=1.72-1.4*t;
+    const m=material(0x6d737a,{metalness:.85,roughness:.34,flatShading:false,emissive:0x2f5d86,emissiveIntensity:.85*(1-t*.45)});
+    const ring=new THREE.Mesh(new THREE.TorusGeometry(r,.05,7,32),m);
+    ring.rotation.x=-Math.PI/2;ring.position.y=-.55-i*.74;g.add(ring);
+    if(i<5)cannonCores.push(m);
+  }
+  // 井内的环形检修平台：从井口掉下来正好落在这一圈上，可以站着看井底的辉光，
+  // 也能从中间那个洞继续往下掉到井底。（尺寸与井筒内壁严丝合缝，见 explorer_module 的 makeShaft）
+  const walkMat=material(0x3a3f45,{metalness:.55,roughness:.66,flatShading:false,side:THREE.DoubleSide});
+  const walk=new THREE.Mesh(new THREE.RingGeometry(.36,1.249,48,1),walkMat);
+  walk.rotation.x=-Math.PI/2;walk.position.y=-2.75;walk.receiveShadow=true;g.add(walk);
+  const walkRim=new THREE.Mesh(new THREE.TorusGeometry(.36,.035,6,34),steel);
+  walkRim.rotation.x=-Math.PI/2;walkRim.position.y=-2.75;g.add(walkRim);
+  for(let i=0;i<8;i++){
+    const a=i/8*Math.PI*2+.4,d=.82;
+    box(steel,.05,.62,.05,Math.cos(a)*d,-3.12,Math.sin(a)*d,g);
+  }
+  // 井底：看不见尽头
+  const cap=new THREE.Mesh(new THREE.CircleGeometry(.44,24),material(0x050608,{side:THREE.DoubleSide}));
+  cap.rotation.x=-Math.PI/2;cap.position.y=-7.05;g.add(cap);
+  const core=new THREE.Mesh(new THREE.CircleGeometry(.3,24),basic(0x9fd8ff,{transparent:true,opacity:.55,blending:THREE.AdditiveBlending,depthWrite:false,side:THREE.DoubleSide}));
+  core.rotation.x=-Math.PI/2;core.position.y=-7.0;g.add(core);
+  cannonGlows.push(core);
+  const pl=new THREE.PointLight(0x86c8ff,1.8,12,2);pl.position.y=-6.3;g.add(pl);
+  // 井口上方尚未散尽的发射辉光
+  const beam=new THREE.Mesh(new THREE.CylinderGeometry(1.5,1.95,9,26,1,true),
+    basic(0x9ecdff,{transparent:true,opacity:.045,blending:THREE.AdditiveBlending,depthWrite:false,side:THREE.DoubleSide}));
+  beam.position.y=4.5;g.add(beam);
+  // 发射塔架与信号灯
+  [0,1,2].forEach(i=>{
+    const a=i/3*Math.PI*2+.5,d=2.55,bx=Math.cos(a)*d,bz=Math.sin(a)*d,h=2.0+(i%2)*.6;
+    box(steel,.16,h,.16,bx,h/2,bz,g);
+    box(steel,.16,h*.8,.16,bx*1.13,h/2,bz*1.13,g);
+    for(let k=1;k<4;k++)box(steel,.5,.05,.05,bx*1.06,h*k/3.2,bz*1.06,g);
+    const lamp=new THREE.Mesh(new THREE.SphereGeometry(.09,8,6),basic(0xff6a3c,{transparent:true,opacity:.9}));
+    lamp.position.set(bx,h+.12,bz);g.add(lamp);
+  });
+  // 地面加速导轨
+  for(let i=0;i<2;i++){
+    const x=i?2.5:-2.5;
+    box(steel,.1,.07,3.4,x,.16,0,g);
+    for(let k=-2;k<=2;k++)box(concDark,.22,.14,.22,x,.08,k*.72,g);
+  }
+  place(g,hole.lat,hole.lon,0);
+  g.scale.setScalar(2);        // 井口尺寸由洞口半径决定，不随地表道具缩放
+  return g;
+}
+
+// ======================= 12. 月球：开发到一半 =======================
+const twinkleLights=[];
+function tangentOf(d){const t=new THREE.Vector3(0,1,0).cross(d);if(t.lengthSq()<1e-6)t.set(1,0,0);return t.normalize()}
+function bitangentOf(d){return new THREE.Vector3().crossVectors(d,tangentOf(d)).normalize()}
+function randomUnit(){const u=random()*2-1,a=random()*Math.PI*2,q=Math.sqrt(1-u*u);return new THREE.Vector3(q*Math.cos(a),u,q*Math.sin(a))}
+function randomDirInCone(center,maxAngle){
+  const t=tangentOf(center),b=bitangentOf(center);
+  const a=random()*Math.PI*2,r=Math.sqrt(random())*maxAngle;
+  return center.clone().multiplyScalar(Math.cos(r)).addScaledVector(t,Math.sin(r)*Math.cos(a)).addScaledVector(b,Math.sin(r)*Math.sin(a)).normalize();
+}
+function offsetDir(center,t,b,u,v){return center.clone().addScaledVector(t,u).addScaledVector(b,v).normalize()}
+function buildMoon(){
+  const R=8,moon=new THREE.Group();
+  const geo=new THREE.IcosahedronGeometry(R,22);
+  const pos=geo.attributes.position,colors=[];
+  const craters=[];
+  for(let i=0;i<14;i++)craters.push({dir:randomUnit(),r:R*(.12+random()*.22),d:R*(.045+random()*.045)});
+  for(let i=0;i<pos.count;i++){
+    const n=new THREE.Vector3(pos.getX(i),pos.getY(i),pos.getZ(i)).normalize();
+    let h=0;
+    for(const c of craters){
+      const ratio=Math.acos(Math.max(-1,Math.min(1,n.dot(c.dir))))*R/c.r;
+      if(ratio<1)h-=c.d*(1-ratio*ratio);
+      else if(ratio<1.22)h+=c.d*.36*(1.22-ratio)/.22;
+    }
+    h+=R*.012*(Math.sin(n.x*9+n.y*7)+.6*Math.sin(n.z*13-n.y*5));
+    const rr=R+h;
+    pos.setXYZ(i,n.x*rr,n.y*rr,n.z*rr);
+    const shade=.6+1.5*h/(R*.14)+.1*Math.sin(n.x*6+n.z*4);
+    const col=new THREE.Color(0x9a9a97).multiplyScalar(Math.max(.5,Math.min(1.3,shade))*1.15);
+    colors.push(col.r,col.g,col.b);
+  }
+  geo.setAttribute('color',new THREE.Float32BufferAttribute(colors,3));
+  geo.computeVertexNormals();
+  moon.add(new THREE.Mesh(geo,new THREE.MeshStandardMaterial({vertexColors:true,roughness:.98,metalness:0,flatShading:true})));
+  // 月面高度采样：让探险者能真正踩在坑坑洼洼的月面上
+  moon.userData.heightAt=n=>{
+    let h=R*.012*(Math.sin(n.x*9+n.y*7)+.6*Math.sin(n.z*13-n.y*5));
+    for(const c of craters){
+      const ratio=Math.acos(Math.max(-1,Math.min(1,n.dot(c.dir))))*R/c.r;
+      if(ratio<1)h-=c.d*(1-ratio*ratio);
+      else if(ratio<1.22)h+=c.d*.36*(1.22-ratio)/.22;
+    }
+    return h;
+  };
+
+  const devDir=new THREE.Vector3(-.9,.17,.4).normalize();          // 被开发的半球（朝星球那一面）
+  moon.userData.devDir=devDir;
+  const devT=tangentOf(devDir),devB=bitangentOf(devDir);
+  const metal=material(C.steelDark,{metalness:.72,roughness:.45,flatShading:false});
+  const panelMat=material(C.panel,{metalness:.3,roughness:.36,emissive:0x1b4a68,emissiveIntensity:.8,flatShading:false,side:THREE.DoubleSide});
+  const onMoon=it=>{
+    const d=it.dir.clone().normalize();
+    const p=d.clone().multiplyScalar(R+it.h);
+    const q=new THREE.Quaternion().setFromUnitVectors(_UP,d);
+    if(it.yaw)q.multiply(new THREE.Quaternion().setFromAxisAngle(_UP,it.yaw));
+    return {p,q,s:it.s};
+  };
+  // 太阳能板阵列（成排铺开，少数歪斜）
+  const panels=[];
+  for(let row=0;row<5;row++)for(let col=0;col<7;col++){
+    const d=offsetDir(devDir,devT,devB,.115*(row-2)+.02*(col%2),.13*(col-3));
+    panels.push({dir:d,h:R*.004,s:1+random()*.06,yaw:(random()-.5)*.12});
+  }
+  instanceMesh(new THREE.BoxGeometry(.52,.04,.36).translate(0,.02,0),panelMat,panels.map(onMoon),moon,{castShadow:true});
+  instanceMesh(new THREE.BoxGeometry(.06,.42,.06).translate(0,.21,0),metal,panels.map(p=>({dir:p.dir,h:0,s:1})).map(onMoon),moon,{castShadow:true});
+  // 半建成的生活穹顶（有的缺一角）
+  [[-.24,.3,1.35],[.02,-.02,2],[.3,-.34,2]].forEach(v=>{
+    const d=offsetDir(devDir,devT,devB,v[0],v[1]);
+    const dome=new THREE.Mesh(new THREE.SphereGeometry(.95,20,12,0,Math.PI*v[2],0,Math.PI/2),
+      material(0xc8c4b8,{side:THREE.DoubleSide,roughness:.85,flatShading:false}));
+    dome.position.copy(d.clone().multiplyScalar(R+.02));
+    dome.quaternion.setFromUnitVectors(_UP,d);dome.castShadow=true;moon.add(dome);
+    const lamp=new THREE.Mesh(new THREE.SphereGeometry(.16,8,6),basic(0xffd9a0,{transparent:true,opacity:.9}));
+    lamp.position.copy(d.clone().multiplyScalar(R+.3));moon.add(lamp);twinkleLights.push(lamp);
+  });
+  // 只建了半圈的环形桁架
+  const rd=offsetDir(devDir,devT,devB,.46,-.42);
+  const ringT=new THREE.Mesh(new THREE.TorusGeometry(1.5,.09,8,44,Math.PI*1.3),metal);
+  ringT.position.copy(rd.clone().multiplyScalar(R+.9));
+  ringT.quaternion.setFromUnitVectors(_UP,rd);ringT.castShadow=true;moon.add(ringT);
+  for(let i=0;i<8;i++){
+    const a=i/8*Math.PI*1.3;
+    const p=new THREE.Vector3(Math.cos(a)*1.5,0,Math.sin(a)*1.5).applyQuaternion(ringT.quaternion).add(ringT.position);
+    const st=new THREE.Mesh(new THREE.BoxGeometry(.09,1.5,.09),metal);
+    st.position.copy(p.clone().multiplyScalar(.94));st.quaternion.copy(ringT.quaternion);moon.add(st);
+  }
+  // 着陆坪
+  const padDir=offsetDir(devDir,devT,devB,-.44,-.5);
+  const pad=new THREE.Mesh(new THREE.CircleGeometry(1.5,32),material(0x6f6d67,{roughness:.95,side:THREE.DoubleSide}));
+  pad.position.copy(padDir.clone().multiplyScalar(R+.02));pad.quaternion.setFromUnitVectors(_UP,padDir);moon.add(pad);
+  const padRing=new THREE.Mesh(new THREE.RingGeometry(1.24,1.44,40),basic(0xffbe6a,{transparent:true,opacity:.72,side:THREE.DoubleSide}));
+  padRing.position.copy(padDir.clone().multiplyScalar(R+.04));padRing.quaternion.setFromUnitVectors(_UP,padDir);moon.add(padRing);
+  // 起重机 / 施工器械
+  for(let i=0;i<5;i++){
+    const d=offsetDir(devDir,devT,devB,(random()-.5)*.6,(random()-.5)*.7);
+    const cg=new THREE.Group();
+    box(metal,.1,.75,.1,0,.38,0,cg);
+    box(metal,.09,.09,.7,0,.78,.3,cg);
+    box(metal,.03,.45,.03,0,.58,.62,cg);
+    cg.position.copy(d.clone().multiplyScalar(R+.02));
+    cg.quaternion.setFromUnitVectors(_UP,d);
+    cg.rotateY(random()*6.28);moon.add(cg);
+  }
+  // 散落的建材废料
+  const junk=[];
+  for(let i=0;i<80;i++)junk.push({dir:randomDirInCone(devDir,.95),h:0,s:.5+random()*1.2,yaw:random()*6.28});
+  instanceMesh(new THREE.DodecahedronGeometry(.11,0).translate(0,.07,0),material(0x584a3b,{roughness:.95}),junk.map(onMoon),moon,{castShadow:true});
+  moon.userData.R=R;
+  return moon;
+}
+
+// ======================= 13. 人造卫星 / 废弃空间站 / 星尘 =======================
+function buildSatellite(s){
+  const g=new THREE.Group();
+  const metal=material(C.steelDark,{metalness:.75,roughness:.42,flatShading:false});
+  const plate=material(0x8a8d90,{metalness:.3,roughness:.7,flatShading:false});
+  const panelMat=material(C.panel,{metalness:.35,roughness:.34,emissive:0x11324a,emissiveIntensity:.65,flatShading:false,side:THREE.DoubleSide});
+  const body=new THREE.Mesh(new THREE.BoxGeometry(1.1,.9,1.1),metal);body.castShadow=true;g.add(body);
+  [-1,1].forEach(k=>{
+    const arm=new THREE.Mesh(new THREE.BoxGeometry(1.0,.1,.1),metal);arm.position.x=k*.95;g.add(arm);
+    const p=new THREE.Mesh(new THREE.BoxGeometry(2.5,.05,1.15),panelMat);p.position.x=k*2.5;g.add(p);
+    const rib=new THREE.Mesh(new THREE.BoxGeometry(2.5,.06,.06),metal);rib.position.set(k*2.5,0,.56);g.add(rib);
+  });
+  const dish=new THREE.Mesh(new THREE.SphereGeometry(.5,16,8,0,Math.PI*2,0,Math.PI*.42),plate);
+  dish.rotation.x=-Math.PI*.6;dish.position.set(0,.5,.55);g.add(dish);
+  const mast=new THREE.Mesh(new THREE.CylinderGeometry(.035,.035,1.3,6),metal);mast.position.y=-1.0;g.add(mast);
+  const tail=new THREE.Mesh(new THREE.SphereGeometry(.1,8,6),basic(0xff5a3c));tail.position.set(0,.1,-.62);g.add(tail);
+  g.scale.setScalar(s);
+  return g;
+}
+function buildStation(){
+  const g=new THREE.Group();
+  const metal=material(0x4a4e52,{metalness:.78,roughness:.42,flatShading:false});
+  const dark=material(C.soot,{metalness:.5,roughness:.6,flatShading:false});
+  const panelMat=material(C.panel,{metalness:.35,roughness:.34,emissive:0x17415e,emissiveIntensity:.7,flatShading:false,side:THREE.DoubleSide});
+  const hub=new THREE.Mesh(new THREE.CylinderGeometry(.7,.7,2.4,14),metal);hub.rotation.z=Math.PI/2;g.add(hub);
+  const ring=new THREE.Mesh(new THREE.TorusGeometry(2.6,.22,10,52),metal);ring.castShadow=true;g.add(ring);
+  for(let i=0;i<4;i++){
+    const a=i/4*Math.PI*2;
+    const mod=new THREE.Mesh(new THREE.CylinderGeometry(.34,.34,2.6,12),metal);
+    mod.rotation.z=Math.PI/2;mod.position.set(Math.cos(a)*1.3,0,Math.sin(a)*1.3);g.add(mod);
+    const cap=new THREE.Mesh(new THREE.SphereGeometry(.34,12,8),dark);
+    cap.position.set(Math.cos(a)*2.6,0,Math.sin(a)*2.6);g.add(cap);
+  }
+  const sp1=new THREE.Mesh(new THREE.BoxGeometry(5.2,.14,.14),metal);g.add(sp1);
+  const sp2=new THREE.Mesh(new THREE.BoxGeometry(5.2,.14,.14),metal);sp2.rotation.y=Math.PI/2;g.add(sp2);
+  [[-1,0],[1,.35],[-.6,2.2],[.7,3.6]].forEach(v=>{          // 破损的太阳能板
+    const p=new THREE.Mesh(new THREE.BoxGeometry(1.9,.05,1.5),panelMat);
+    p.position.set(v[0]*3.1,-.4-Math.abs(v[0])*.2,0);p.rotation.z=v[1];g.add(p);
+  });
+  for(let i=0;i<5;i++){                                     // 还剩一点电的舷窗
+    const light=new THREE.Mesh(new THREE.SphereGeometry(.11,8,6),basic(i===0?0xffd08a:0x9fd8ff,{transparent:true,opacity:.85}));
+    const a=i/5*Math.PI*2;
+    light.position.set(Math.cos(a)*2.6,-.2,Math.sin(a)*2.6);g.add(light);twinkleLights.push(light);
+  }
+  g.scale.setScalar(3);
+  return g;
+}
+function createStars(){
+  const pts=[];
+  for(let i=0;i<2600;i++){
+    const d=320+random()*280,u=random()*2-1,a=random()*Math.PI*2,q=Math.sqrt(1-u*u);
+    pts.push(d*q*Math.cos(a),d*u,d*q*Math.sin(a));
+  }
+  const geo=new THREE.BufferGeometry();geo.setAttribute('position',new THREE.Float32BufferAttribute(pts,3));
+  scene.add(new THREE.Points(geo,new THREE.PointsMaterial({color:0xcfd8e2,size:.5,sizeAttenuation:true,transparent:true,opacity:.72,fog:false})));
+}
+function createOrbital(){
+  const pivots=[];
+  // 月球（开发到一半）
+  const moonPivot=new THREE.Group();moonPivot.rotation.z=.24;space.add(moonPivot);
+  const moon=buildMoon();moon.position.set(100,12,0);moonPivot.add(moon);
+  pivots.push({node:moonPivot,speed:.02});
+  // 少量人造卫星
+  [[{x:.3,z:.1},64,.62],[{x:-.5,z:.34},74,.78],[{x:.6,z:-.3},86,.55],[{x:-.18,z:-.55},70,.7]].forEach(v=>{
+    const pivot=new THREE.Group();pivot.rotation.set(v[0].x,0,v[0].z);space.add(pivot);
+    const sat=buildSatellite(v[2]);sat.position.set(v[1],0,0);sat.rotation.y=random()*3;pivot.add(sat);
+    pivots.push({node:pivot,speed:.09+random()*.06,dir:random()>.5?1:-1});
+  });
+  // 废弃空间站（缓慢翻滚）
+  const stPivot=new THREE.Group();stPivot.rotation.set(.55,0,-.36);space.add(stPivot);
+  const station=buildStation();station.position.set(104,0,0);stPivot.add(station);
+  pivots.push({node:stPivot,speed:.048});
+  // 空间站第一人称的落点：站在站体顶部的桁架上
+  const stEye=new THREE.Object3D();
+  stEye.position.set(0,1.15,0);station.add(stEye);
+  // 站体周围的漂流残骸
+  const stationCenter=new THREE.Vector3(104,0,0).applyEuler(stPivot.rotation);
+  const rubble=[],debrisGroup=new THREE.Group();
+  for(let i=0;i<90;i++){
+    const u=random()*2-1,a=random()*Math.PI*2,q=Math.sqrt(1-u*u),r=7+random()*12;
+    const p=new THREE.Vector3(q*Math.cos(a),u,q*Math.sin(a)).multiplyScalar(r).add(stationCenter);
+    rubble.push({p,q:new THREE.Quaternion().setFromEuler(new THREE.Euler(random()*3,random()*3,random()*3)),s:.22+random()*.85});
+  }
+  instanceMesh(new THREE.TetrahedronGeometry(1,0),material(0x3c3f42,{metalness:.5,roughness:.6}),rubble,debrisGroup,{});
+  space.add(debrisGroup);
+  // 星球外的沙尘 / 灰烬
+  const motes=[];
+  for(let i=0;i<1000;i++){
+    const u=random()*2-1,a=random()*Math.PI*2,q=Math.sqrt(1-u*u),r=65+random()*18;
+    motes.push(r*q*Math.cos(a),r*u,r*q*Math.sin(a));
+  }
+  const mg=new THREE.BufferGeometry();mg.setAttribute('position',new THREE.Float32BufferAttribute(motes,3));
+  const moteMesh=new THREE.Points(mg,new THREE.PointsMaterial({color:0x9c8a72,size:.7,transparent:true,opacity:.2,sizeAttenuation:true,depthWrite:false}));
+  space.add(moteMesh);
+  // 近地轨道的废弃碎片带（文明留下的最后一圈垃圾）
+  const beltPivot=new THREE.Group();beltPivot.rotation.set(.3,0,.14);space.add(beltPivot);
+  const belt=[];
+  for(let i=0;i<300;i++){
+    const a=random()*Math.PI*2,r=64+random()*10;
+    belt.push({
+      p:new THREE.Vector3(Math.cos(a)*r,(random()-.5)*3,Math.sin(a)*r),
+      q:new THREE.Quaternion().setFromEuler(new THREE.Euler(random()*3,random()*3,random()*3)),
+      s:.16+random()*.7
+    });
+  }
+  instanceMesh(new THREE.TetrahedronGeometry(1,0),material(0x4b4e53,{metalness:.45,roughness:.7}),belt,beltPivot,{});
+  pivots.push({node:beltPivot,speed:.028});
+  return {pivots,moon,moonPivot,station,stPivot,stEye,debrisGroup,moteMesh,beltPivot};
+}
+
+// ======================= 13b. 死星地表语汇 · 自然地貌 =======================
+// 用一批贴合球面的低模生成器把大片空地铺满；同时刻意留出几片旷野与死湖，
+// 避免整颗星球被填满。重复件一律走 InstancedMesh，控制 draw call。
+const BOULDER_GEO=new THREE.DodecahedronGeometry(.5,0);
+const SLAB_GEO=G.box;
+const SPIRE_GEO=new THREE.ConeGeometry(.5,1,6).translate(0,.5,0);
+const DUNE_GEO=new THREE.SphereGeometry(1,10,6).scale(1,.12,.34).translate(0,-.012,0);
+const CRATER_GEO=(()=>{
+  const rings=5,segments=18,verts=[],idx=[];
+  const prof=t=>{const r=t*1.5;
+    if(r<.62)return -.2*(1-(r/.62)*(r/.62));
+    if(r<1)return .085*Math.sin((r-.62)/.38*Math.PI);
+    return .035*(1-(r-1)/.5)};
+  verts.push(0,prof(0),0);
+  for(let k=1;k<=rings;k++){const t=k/rings;for(let s=0;s<segments;s++){
+    const a=s/segments*Math.PI*2,rr=t*1.5;
+    verts.push(Math.sin(a)*rr,prof(t),Math.cos(a)*rr)}}
+  for(let s=0;s<segments;s++){const nn=(s+1)%segments;idx.push(0,1+s,1+nn)}
+  for(let k=2;k<=rings;k++){const ps=1+(k-2)*segments,cs=1+(k-1)*segments;
+    for(let s=0;s<segments;s++){const nn=(s+1)%segments,a=ps+s,b=ps+nn,c=cs+s,d=cs+nn;
+      idx.push(a,c,b,b,c,d)}}
+  const g=new THREE.BufferGeometry();
+  g.setAttribute('position',new THREE.Float32BufferAttribute(verts,3));
+  g.setIndex(idx);g.computeVertexNormals();return g;
+})();
+
+// ---- 撞击坑：碗底 + 隆起坑缘 + 外侧抛射岩块 ----
+function impactCraterAt(lat,lon,size,depth){
+  const R=size,rej=1.62;
+  const prof=t=>{const r=t*rej;
+    if(r<.62)return -depth*(1-(r/.62)*(r/.62));
+    if(r<1)  return depth*.42*Math.sin((r-.62)/.38*Math.PI);
+    return depth*.18*(1-(r-1)/(rej-1))};
+  curvedSurfaceDisc(lat,lon,R*rej,.012,material(0x2a2b2d,{roughness:1,side:THREE.DoubleSide}),
+    {rings:8,segments:38,flat:true,profile:prof});
+  const ej=[],n=7+Math.floor(R*3.5);
+  for(let i=0;i<n;i++){
+    const a=random()*360,d=R*(1.06+random()*.55),p=stepGeo(lat,lon,a,d),s=R*(.045+random()*.075);
+    ej.push({lat:p[0],lon:p[1],height:-.01,sx:s,sy:s*(.55+random()*.6),sz:s,yaw:random()*6.283,tiltX:(random()-.5)*1.4});
+  }
+  instanceMesh(BOULDER_GEO,material(0x33343a,{roughness:1}),surfaceItems(ej),world,{castShadow:true,receiveShadow:true});
+  return R;
+}
+// 全星球的小型陨石坑（一颗被反复砸过的星球）
+function craterPocks(count){
+  const items=[];
+  scatterGlobal(count,(lat,lon)=>{
+    const s=.26+random()*.6;
+    items.push({lat,lon,scale:1,sx:s,sy:s*(.5+random()*.7),sz:s,yaw:random()*6.283,height:-.02});
+  });
+  instanceMesh(CRATER_GEO,material(0x2f3033,{roughness:1,side:THREE.DoubleSide}),surfaceItems(items),world,{receiveShadow:true});
+}
+// ---- 地裂：随机游走的地表裂缝 ----
+function groundCracks(count,seg,width){
+  const mat=material(0x15161a,{side:THREE.DoubleSide,roughness:1});
+  for(let i=0;i<count;i++){
+    let la=R2D(Math.asin(random()*2-1)),lo=random()*360-180;
+    if(!isLand(la,lo,.02))continue;
+    let a=random()*360;const pts=[[la,lo]];
+    for(let k=0;k<seg;k++){a+=(random()-.5)*80;const p=stepGeo(la,lo,a,.4+random()*.5);la=p[0];lo=p[1];pts.push([la,lo])}
+    if(!isLand(la,lo,.02))continue;
+    surfaceRibbon(pts,width*(.6+random()*.9),mat,.03);
+  }
+}
+// ---- 沙丘脊：成片的风蚀沙脊，走向随经度缓慢变化（像大气环流带） ----
+function duneRidges(count){
+  const items=[];
+  scatterGlobal(count,(lat,lon)=>{
+    const sx=.5+random()*.9;
+    items.push({lat,lon,scale:1,sx,sy:.3+random()*.6,sz:.22+random()*.22,
+      yaw:geoYaw(lat,lon,42+95*Math.sin(D2R(lon*1.4))+22*Math.sin(D2R(lat*2.3))),
+      height:-.02});
+  });
+  instanceMesh(DUNE_GEO,material(0x38363a,{roughness:1}),surfaceItems(items),world,{receiveShadow:true,castShadow:true});
+}
+// ---- 风蚀石林：细高的石柱群 ----
+function spireField(lat,lon,size,count){
+  const items=[],plinth=[];
+  scatter(lat,lon,size,size,count,(lat,lon)=>{
+    const s=.34+random()*.62;
+    items.push({lat,lon,height:-.02,sx:.11+random()*.15,sy:s,sz:.11+random()*.15,
+      yaw:random()*6.283,tiltX:(random()-.5)*.3});
+    if(random()<.7){const d=.18+random()*.25,th=random()*6.283,p=stepGeo(lat,lon,R2D(th),d),q=.05+random()*.07;
+      plinth.push({lat:p[0],lon:p[1],height:-.02,sx:q,sy:q*.8,sz:q,yaw:random()*6.283})}
+  });
+  instanceMesh(SPIRE_GEO,material(0x35342f,{roughness:1}),surfaceItems(items),world,{castShadow:true,receiveShadow:true});
+  instanceMesh(BOULDER_GEO,material(C.stoneDark,{roughness:1}),surfaceItems(plinth),world,{receiveShadow:true});
+}
+// ---- 巨石带 ----
+function boulderFields(count){
+  const items=[];
+  scatterGlobal(count,(lat,lon)=>items.push({lat,lon,scale:1,
+    sx:.22+random()*.34,sy:.16+random()*.3,sz:.22+random()*.34,yaw:random()*6.283,tiltX:(random()-.5)*.7,height:-.03}));
+  instanceMesh(BOULDER_GEO,material(0x393a3f,{roughness:1}),surfaceItems(items),world,{castShadow:true,receiveShadow:true});
+}
+// ---- 灰烬原：大面积深黑斑 ----
+function ashPlain(lat,lon,size){
+  curvedSurfaceDisc(lat,lon,size,.028,material(0x131416,{roughness:1,side:THREE.DoubleSide}),{rings:7,segments:46});
+}
+// ---- 盐碱斑：灰白色矿物结壳 ----
+function saltFlat(lat,lon,size){
+  curvedSurfaceDisc(lat,lon,size,.026,material(0x5d5a53,{roughness:1,side:THREE.DoubleSide}),{rings:6,segments:38});
+}
+// ---- 干涸龟裂的湖床 ----
+const DRIED_CRACK=material(0x2c2a25,{side:THREE.DoubleSide,roughness:1});
+const DRIED_SALT=material(0x585550,{roughness:1,side:THREE.DoubleSide});
+function dryLakebed(lat,lon,size){
+  curvedSurfaceDisc(lat,lon,size,.024,material(0x4c4941,{roughness:1,side:THREE.DoubleSide}),{rings:8,segments:46});
+  for(let i=0;i<6;i++){
+    let a=random()*360;
+    const s=stepGeo(lat,lon,random()*360,size*random()*.82);
+    let la=s[0],lo=s[1];const pts=[[la,lo]];
+    for(let k=0;k<4;k++){a+=(random()-.5)*110;const p=stepGeo(la,lo,a,size*.26);la=p[0];lo=p[1];pts.push([la,lo])}
+    surfaceRibbon(pts,.05+random()*.07,DRIED_CRACK,.032);
+  }
+  for(let i=0;i<2;i++){
+    const p=stepGeo(lat,lon,random()*360,size*(.25+random()*.6)),sz=size*(.1+random()*.22);
+    curvedSurfaceDisc(p[0],p[1],sz,.03,DRIED_SALT,{rings:5,segments:26});
+  }
+}
+
+// ======================= 13c. 死星地表语汇 · 文明遗存 =======================
+// 只沿陆地上的折线铺装（自动跳过海面），所以公路 / 管道 / 电塔不会掉进海里
+function landRibbon(pts,width,mat,height){
+  const samples=[];
+  for(let i=0;i<pts.length-1;i++){
+    const a=pts[i],b=pts[i+1],n=14;
+    for(let j=0;j<n;j++){const t=j/n;samples.push([a[0]+(b[0]-a[0])*t,a[1]+(b[1]-a[1])*t])}
+  }
+  samples.push(pts[pts.length-1]);
+  let run=[];
+  for(const s of samples){
+    if(isLand(s[0],s[1],.02)&&holeDistance(s[0],s[1])>HOLE_R*1.9)run.push(s);
+    else{if(run.length>1)surfaceRibbon(run,width,mat,height);run=[]}
+  }
+  if(run.length>1)surfaceRibbon(run,width,mat,height);
+}
+// ---- 废弃公路网：塌陷开裂的干线 ----
+const ASPHALT=()=>material(0x1e2022,{roughness:.99,flatShading:false,side:THREE.DoubleSide});
+const ROADS=[
+  [[2,64],[10,70],[18,80],[26,88],[32,96]],
+  [[30,60],[24,68],[18,80],[12,92],[6,104],[0,112]],
+  [[16,120],[4,124],[-10,120],[-18,116]],
+  [[40,130],[45,140],[48,148]],
+  [[-18,-42],[-24,-50],[-29,-58],[-33,-64]],
+  [[0,-138],[6,-147],[12,-154],[18,-157]],
+  [[48,-22],[53,-14],[57,-8],[60,0]],
+  [[46,150],[50,138],[52,128]],
+  [[-48,28],[-54,35],[-58,43]],
+  [[12,44],[9,37],[7,31]],
+  [[24,98],[31,106],[37,113]],
+  [[36,116],[30,110],[24,100],[26,88]]
+];
+function roadNetwork(){
+  const mat=ASPHALT(),shoulder=material(0x3b3831,{roughness:1,side:THREE.DoubleSide});
+  for(const r of ROADS){
+    landRibbon(r,.34,shoulder,.055);
+    landRibbon(r,.2,mat,.061);
+  }
+  // 沿路的车流残骸、路障与碎件
+  const wreck=[],junk=[];
+  for(const r of ROADS){
+    for(let i=0;i<r.length-1;i++){
+      const a=r[i],b=r[i+1];
+      for(let k=0;k<5;k++){
+        const t=random(),lat=a[0]+(b[0]-a[0])*t+(random()-.5)*1.1,lon=a[1]+(b[1]-a[1])*t+(random()-.5)*1.4;
+        if(!isLand(lat,lon,.03))continue;
+        if(random()<.55){
+          wreck.push({lat,lon,height:.02,sx:.26+random()*.12,sy:.11+random()*.05,sz:.16+random()*.06,
+            yaw:geoYaw(lat,lon,random()*360),tiltX:(random()-.5)*.3});
+        }else junk.push({lat,lon,scale:.025+random()*.04,yaw:random()*6.283,tiltX:(random()-.5)*1.2,height:-.02});
+      }
+    }
+  }
+  instanceMesh(SLAB_GEO,material(C.rust,{roughness:.92}),surfaceItems(wreck),world,{castShadow:true,receiveShadow:true});
+  instanceMesh(BOULDER_GEO,material(C.stoneDark,{roughness:1}),surfaceItems(junk),world,{receiveShadow:true});
+}
+// ---- 高压电塔列（部分倒伏）----
+function pylonLine(pts,gap){
+  const mast=[],arm=[],fallen=[];
+  for(let i=0;i<pts.length-1;i++){
+    const a=pts[i],b=pts[i+1];
+    const dist=Math.hypot(b[0]-a[0],(b[1]-a[1])*Math.cos(D2R(a[0])))*planetRadius*Math.PI/180;
+    const n=Math.max(1,Math.round(dist/gap));
+    for(let k=0;k<n;k++){
+      const t=k/n,lat=a[0]+(b[0]-a[0])*t,lon=a[1]+(b[1]-a[1])*t;
+      if(!isLand(lat,lon,.03)||holeDistance(lat,lon)<HOLE_R*1.9)continue;
+      const yaw=geoYaw(lat,lon,R2D(Math.atan2((b[1]-a[1])*Math.cos(D2R(lat)),b[0]-a[0])));
+      if(random()<.22){fallen.push({lat,lon,height:.06,sx:.1,sy:.7+random()*.5,sz:.1,yaw,tiltX:1.35+random()*.25});continue}
+      const H=.58+random()*.5;
+      mast.push({lat,lon,height:-.02,sx:.065,sy:H,sz:.065,yaw,tiltX:(random()-.5)*.1});
+      arm.push({lat,lon,height:H-.09,sx:.3+random()*.18,sy:.042,sz:.042,yaw:yaw+Math.PI/2,tiltX:(random()-.5)*.1});
+    }
+  }
+  const steel=material(C.steelDark,{metalness:.5,roughness:.62,flatShading:false});
+  instanceMesh(SLAB_GEO,steel,surfaceItems(mast),world,{castShadow:true});
+  instanceMesh(SLAB_GEO,steel,surfaceItems(arm),world,{castShadow:true});
+  instanceMesh(SLAB_GEO,steel,surfaceItems(fallen),world,{castShadow:true});
+}
+// ---- 露天矿坑：阶梯采掘面 + 螺旋运输道 + 环形排土堆 ----
+function openPitMine(lat,lon,size,depth){
+  const steps=4;
+  const prof=t=>{
+    const u=clamp01((t-.13)/.87),sf=u*steps,k=Math.floor(sf),f=sf-k;
+    return -depth*(1-(k+f*.5)/steps);
+  };
+  curvedSurfaceDisc(lat,lon,size,.02,material(0x32312e,{roughness:1,side:THREE.DoubleSide}),
+    {rings:16,segments:52,flat:true,profile:prof});
+  curvedSurfaceDisc(lat,lon,size*.26,.03,material(0x0b1113,{roughness:.5,side:THREE.DoubleSide}),{rings:6,segments:28});
+  const heaps=[];
+  for(let i=0;i<30;i++){
+    const a=random()*360,d=size*(1.06+random()*.45),p=stepGeo(lat,lon,a,d),s=size*(.06+random()*.1);
+    heaps.push({lat:p[0],lon:p[1],height:-.02,sx:s*2.2,sy:s*(.5+random()*.5),sz:s,
+      yaw:geoYaw(p[0],p[1],a+90),tiltX:(random()-.5)*.2});
+  }
+  instanceMesh(DUNE_GEO,material(0x4a463d,{roughness:1}),surfaceItems(heaps),world,{receiveShadow:true,castShadow:true});
+  const ramp=[];
+  for(let i=0;i<=26;i++){const t=i/26;ramp.push(stepGeo(lat,lon,70+240*t,size*(1.16-t*.86)))}
+  surfaceRibbon(ramp,.3,material(0x3a3732,{roughness:1,side:THREE.DoubleSide}),.075);
+  for(let i=0;i<4;i++){                       // 撂下的采矿设备
+    const p=stepGeo(lat,lon,random()*360,size*(.35+random()*.6)),g=new THREE.Group();
+    box(material(C.rust),.5,.18,.32,0,.15,0,g);
+    box(material(C.soot),.24,.14,.28,-.12,.3,0,g);
+    const arm=box(material(C.steelDark,{metalness:.5,roughness:.6,flatShading:false}),.05,.42,.05,.28,.32,0,g);arm.rotation.z=-.6;
+    place(g,p[0],p[1],.05);g.rotateY(random()*6.283);
+  }
+}
+// ---- 被推平的城市：只剩地基 ----
+function foundationField(cLat,cLon,latS,lonS){
+  const slabs=[],walls=[],rubble=[];
+  gridField(cLat,cLon,latS,lonS,1.6,(lat,lon)=>random()<.55,(lat,lon)=>{
+    const w=.2+random()*.3,d=.18+random()*.28,yaw=geoYaw(lat,lon,random()*360);
+    slabs.push({lat,lon,height:.02,sx:w,sy:.05,sz:d,yaw});
+    const n=1+Math.floor(random()*3);
+    for(let k=0;k<n;k++){
+      const p=stepGeo(lat,lon,random()*360,(w+d)*.3);
+      walls.push({lat:p[0],lon:p[1],height:.05,sx:w*(.35+random()*.5),sy:.09+random()*.22,sz:.05+random()*.04,yaw:yaw+(random()-.5)*.5,tiltX:(random()-.5)*.3});
+    }
+    if(random()<.6)for(let k=0;k<4;k++)rubble.push({lat:lat+(random()-.5)*.5,lon:lon+(random()-.5)*.5,
+      scale:.025+random()*.045,yaw:random()*6.283,tiltX:(random()-.5)*1.2,height:-.02});
+  });
+  instanceMesh(SLAB_GEO,material(0x4a4843,{roughness:.98,flatShading:false}),surfaceItems(slabs),world,{receiveShadow:true,castShadow:true});
+  instanceMesh(SLAB_GEO,material(0x3e3c37,{roughness:.98,flatShading:false}),surfaceItems(walls),world,{castShadow:true,receiveShadow:true});
+  instanceMesh(BOULDER_GEO,material(C.stoneDark,{roughness:1}),surfaceItems(rubble),world,{receiveShadow:true});
+}
+// ---- 机械坟场：废弃车辆与设备堆 ----
+function scrapyard(lat,lon,size,count){
+  const body=[],cab=[];
+  for(let i=0;i<count;i++){
+    const a=random()*360,d=size*Math.sqrt(random()),p=stepGeo(lat,lon,a,d);
+    if(!isLand(p[0],p[1],.03))continue;
+    const yaw=geoYaw(p[0],p[1],random()*360),s=.2+random()*.14;
+    body.push({lat:p[0],lon:p[1],height:.02,sx:s,sy:s*.4,sz:s*.62,yaw,tiltX:(random()-.5)*.35});
+    if(random()<.7)cab.push({lat:p[0],lon:p[1],height:.02+s*.4,sx:s*.62,sy:s*.36,sz:s*.6,
+      yaw:yaw+(random()-.5)*.2,tiltX:(random()-.5)*.35});
+  }
+  instanceMesh(SLAB_GEO,material(C.rust,{roughness:.95}),surfaceItems(body),world,{castShadow:true,receiveShadow:true});
+  instanceMesh(SLAB_GEO,material(C.rustDark,{roughness:.95}),surfaceItems(cab),world,{castShadow:true,receiveShadow:true});
+}
+// ---- 锈蚀管道带 ----
+function pipeSeg(g,mat,a,b,r){
+  const d=b.clone().sub(a),len=d.length();
+  const m=new THREE.Mesh(G.cyl,mat);
+  m.scale.set(r*2,len,r*2);m.position.copy(a);
+  m.quaternion.setFromUnitVectors(_UP,d.normalize());
+  m.castShadow=true;g.add(m);
+}
+function pipelineRun(lat,lon,length,angle,count){
+  const mat=material(0x413c35,{metalness:.4,roughness:.75,flatShading:false});
+  const legMat=material(C.rustDark,{roughness:.9});
+  const g=new THREE.Group();
+  const origin=point(lat,lon,0),q0=new THREE.Quaternion().setFromUnitVectors(_UP,origin.clone().normalize());
+  const qi=q0.clone().invert();
+  const toLocal=w=>w.clone().sub(origin).applyQuaternion(qi);
+  let a=D2R(angle),la=lat,lo=lon,prev=toLocal(point(la,lo,.3));
+  const step=length/count;
+  for(let i=0;i<count;i++){
+    a+=(random()-.5)*.5;
+    const p=stepGeo(la,lo,R2D(a),step),cur=toLocal(point(p[0],p[1],.3));
+    pipeSeg(g,mat,prev,cur,.05+random()*.02);
+    if(i%2===0)box(legMat,.06,prev.y,.06,prev.x,0,prev.z,g);
+    prev=cur;la=p[0];lo=p[1];
+  }
+  place(g,lat,lon,0);
+}
+// ---- 断裂的方尖碑 ----
+function brokenMonument(lat,lon,h){
+  const g=new THREE.Group();
+  const mat=material(0x434240,{roughness:.95,flatShading:false});
+  box(mat,.8,.18,.8,0,.09,0,g);
+  box(mat,.55,.26,.55,0,.3,0,g);
+  const shaft=new THREE.Mesh(new THREE.CylinderGeometry(.09,.21,h,4),mat);
+  shaft.position.y=.44+h/2;shaft.rotation.y=.78;shaft.castShadow=true;g.add(shaft);
+  const top=new THREE.Mesh(new THREE.ConeGeometry(.18,.26,4),mat);
+  top.position.y=.44+h+.1;top.rotation.y=.78;g.add(top);
+  for(let i=0;i<5;i++){                       // 崩落的碑体碎块
+    const a=random()*6.283,d=.5+random()*.9;
+    box(mat,.2+random()*.3,.16+random()*.16,.2+random()*.28,Math.cos(a)*d,0,Math.sin(a)*d,g);
+  }
+  place(g,lat,lon,.02);
+}
+// ---- 坠毁的运载器 ----
+function crashedWreck(lat,lon,size,angle){
+  const g=new THREE.Group();
+  const hull=material(0x4c5054,{metalness:.35,roughness:.7,flatShading:false});
+  const dark=material(C.soot,{roughness:.9});
+  const body=new THREE.Mesh(new THREE.CylinderGeometry(size*.34,size*.44,size*2.6,12),hull);
+  body.rotation.z=Math.PI/2-.28;body.position.y=size*.42;body.castShadow=true;body.receiveShadow=true;g.add(body);
+  const nose=new THREE.Mesh(new THREE.ConeGeometry(size*.34,size*.9,12),hull);
+  nose.rotation.z=-Math.PI/2;nose.position.set(size*1.7,size*.05,0);g.add(nose);
+  [-1,1].forEach(s=>{                          // 折断的翼
+    const w=box(hull,size*1.5,.1,size*.9,s*size*.9,size*.3,s*size*.7,g);w.rotation.y=s*.5;w.rotation.z=s*.3;
+  });
+  for(let i=0;i<9;i++){                        // 抛撒的碎片
+    const a=random()*6.283,d=size*(1.4+random()*2.6);
+    box(i%2?dark:hull,.2+random()*.6,.15+random()*.35,.2+random()*.5,Math.cos(a)*d,.1,Math.sin(a)*d,g);
+  }
+  curvedSurfaceDisc(lat,lon,size*2.4,.026,material(0x16171a,{roughness:1,side:THREE.DoubleSide}),{rings:7,segments:40});
+  place(g,lat,lon,0);
+  g.rotateY(geoYaw(lat,lon,angle));
+}
+// ---- 停摆的风机群 ----
+function deadTurbines(cLat,cLon,latS,lonS,count){
+  const tower=material(0x6f7170,{metalness:.25,roughness:.8,flatShading:false});
+  const blade=material(0x7d7f7c,{metalness:.2,roughness:.85,flatShading:false});
+  const bladeGeo=new THREE.BoxGeometry(.07,1,.16).translate(0,.5,0);
+  scatter(cLat,cLon,latS,lonS,count,(lat,lon)=>{
+    const H=.5+random()*.42,g=new THREE.Group();
+    cyl(tower,.042,H,0,0,0,g);
+    box(tower,.2,.13,.15,0,H+.01,0,g);
+    const n=random()<.45?1:0;                  // 大部分机组只剩一两支叶片
+    for(let i=0;i<=n;i++){
+      const b=new THREE.Mesh(bladeGeo,blade);
+      b.scale.set(1,.4+random()*.34,1);
+      b.rotation.z=.2+i*2.4+(random()-.5)*.5;
+      b.position.set(0,H+.08,.11);
+      b.castShadow=true;g.add(b);
+    }
+    place(g,lat,lon,.02);g.rotateY(random()*6.283);
+  });
+}
+
+// ======================= 14. 装配整颗星球 =======================
+createPlanet();
+createSurfaceDebris();
+// 被砍伐的森林（南陆 / 北陆）
+createDeforestedForest(7,38,13,20);
+createDeforestedForest(58,-8,13,26);
+// 废弃都市（主陆核心 / 湖畔小城）
+ruinedCity(29,97,9,13,14,1.25);
+ruinedCity(-8,121,7.5,11,8,.9);
+buildWindowLights();
+// 工业废墟
+industrialRuin(6,63,.6,1.15);
+industrialRuin(16,60,2.1,.9);
+industrialRuin(-26,-52,.3,1.25);
+industrialRuin(-33,-63,1.4,1);
+industrialRuin(52,-14,.9,1.1);
+// 死火山（主火山 + 寄生火口）
+deadVolcano(4,-146,1.9,true);
+deadVolcano(20,-158,.95,false);
+// 山体
+[[44,142,2.1],[49,134,1.6],[39,150,1.4],[35,137,1.15],[52,152,1.05]].forEach(v=>deadMountain(v[0],v[1],v[2]));
+[[-55,36,1.7],[-52,29,1.3],[-58,42,1.5]].forEach(v=>deadMountain(v[0],v[1],v[2]));
+// 死水湖泊（刻意保留，作为地表上的"留白"）
+deadLake(-16,116,3.6);
+deadLake(-6,109,1.9);
+deadLake(-24,124,2.4);
+deadLake(60,-6,1.8);
+deadLake(24,138,2.1);
+
+// ============ 地表语汇 · 自然地貌 ============
+// 大中型撞击坑
+[[33,62,1.9],[-3,88,1.6],[48,118,1.5],[-20,96,1.4],[12,-128,2.1],[-34,-44,1.7],
+ [-60,8,1.5],[62,-22,1.6],[26,-168,1.25],[-8,150,1.45],[52,168,1.35],[-4,44,1.15],
+ [40,158,1.8],[-46,-70,1.45],[18,118,1.15],[-2,-118,1.5],[70,-6,1.25],[-70,40,1.35]]
+ .forEach(v=>impactCraterAt(v[0],v[1],v[2],v[2]*.1));
+craterPocks(130);                                   // 遍地的浅坑
+groundCracks(60,9,.16);                             // 地表裂缝
+duneRidges(620);                                    // 沙丘脊
+boulderFields(650);                                 // 巨石带
+// 风蚀石林
+[[44,142,9,13,52],[-55,36,7,12,40],[5,-150,10,14,48],[-20,-52,8,12,34],
+ [26,-162,7,10,30],[-30,120,7,10,26],[52,150,6,9,24],[14,60,5,8,20]]
+ .forEach(v=>spireField(v[0],v[1],v[2],v[4]));
+// 灰烬原（大面积深黑斑）
+[[0,130,26,40],[-16,116,24,36],[5,-150,24,40],[-28,-58,26,44],[44,143,20,32],[60,-8,14,24]]
+ .forEach(r=>{for(let i=0;i<4;i++){const p=randomDirInLand(r[0],r[1],r[2],r[3]);if(p)ashPlain(p[0],p[1],1.3+random()*1.6)}});
+// 盐碱斑
+[[-16,116,22,34],[5,-150,22,34],[18,80,26,40],[-28,-58,24,40]]
+ .forEach(r=>{for(let i=0;i<4;i++){const p=randomDirInLand(r[0],r[1],r[2],r[3]);if(p)saltFlat(p[0],p[1],.55+random()*.95)}});
+// 干涸龟裂的湖床
+[[-14,112,10,16],[-22,126,9,14],[6,-150,12,18],[-30,-56,11,16],[46,140,8,12]]
+ .forEach(r=>{for(let i=0;i<2;i++){const p=randomDirInLand(r[0],r[1],r[2],r[3]);if(p)dryLakebed(p[0],p[1],.8+random()*.85)}});
+
+// ============ 地表语汇 · 文明遗存 ============
+roadNetwork();
+pylonLine(ROADS[0],3.6);
+pylonLine(ROADS[1],4.2);
+pylonLine(ROADS[3],4.0);
+pylonLine(ROADS[6],4.4);
+pylonLine(ROADS[7],3.8);
+pylonLine(ROADS[9],3.4);
+openPitMine(-24,-46,1.9,.5);                        // 工业大陆的露天矿
+openPitMine(45,150,1.5,.35);                        // 北岭采石场
+openPitMine(-38,-66,1.3,.3);
+[[29,86,7,10],[6,58,6,9],[-10,124,7,10],[44,140,5,8],[-30,-58,7,10],[56,-14,6,9]]
+ .forEach(v=>foundationField(v[0],v[1],v[2],v[3]));  // 被推平的城市
+[[30,64,3.6,34],[9,52,3.0,26],[-24,-54,3.4,30],[-12,120,3.0,22],
+ [47,142,2.6,20],[58,-12,2.8,18],[1,-146,2.8,20]]
+ .forEach(v=>scrapyard(v[0],v[1],v[2],v[3]));        // 机械坟场
+pipelineRun(4,68,7.5,20,16);
+pipelineRun(-14,120,6.5,150,14);
+pipelineRun(-28,-58,7.0,60,15);
+pipelineRun(42,132,6.0,110,13);
+pipelineRun(24,96,7.0,-40,15);
+brokenMonument(16,84,1.3);                          // 断裂的纪念碑
+brokenMonument(-12,118,1.05);
+crashedWreck(-6,132,.85,140);                       // 坠毁的运载器
+crashedWreck(-30,-56,.95,20);
+deadTurbines(20,86,10,14,11);                       // 停摆的风机群
+deadTurbines(-14,116,9,13,9);
+deadTurbines(46,142,7,10,7);
+deadTurbines(-28,-56,8,12,8);
+
+// 贯穿星球的穿梭隧道：入口 + 出口
+HOLES.forEach(h=>earthCannon(h));
+// 低空翻涌的沙尘暴团
+smogBank(33,97,1.1);
+smogBank(-12,108,1.45);
+smogBank(46,138,.95);
+smogBank(-30,-62,1.2);
+smogBank(8,-142,1.05);
+smogBank(-52,32,.9);
+smogBank(16,42,.85);
+// 星空与轨道层
+createStars();
+const orbital=createOrbital();
+
+// ======================= 14b. 探险者（小人）与第三人称跟拍 =======================
+// 一名「拾荒探险者」：破旧防尘服 + 护目镜头盔 + 背负行囊 + 肩灯 + 腰间工具袋。
+// 同一套模型被放到三处：地表 / 月面 / 空间站桁架，对应数字键 4 / 5 / 6。
+// 模型原点在脚底，面朝 +Z（这样用 makeBasis(right,up,forward) 直接对齐球面法线）。
+function createExplorer(){
+  const root=new THREE.Group();
+  const rig=new THREE.Group();root.add(rig);        // 走动时只抖 rig，脚底基准不动
+  const cloth =material(0x87785c,{roughness:.97});   // 防尘外套（中调，压住亮地面）
+  const cloth2=material(0x383a37,{roughness:.98});   // 长裤 / 行囊 / 兜帽（暗调，撑出剪影）
+  const plate =material(0x6b7075,{metalness:.34,roughness:.6});
+  const dark  =material(0x1d1f21,{roughness:.86});
+  const strap =material(0x7d4a26,{roughness:.95});
+  const visor =material(0x101c26,{metalness:.62,roughness:.15,emissive:0x14384c,emissiveIntensity:.65});
+  const lamp  =basic(0xffc98a,{transparent:true,opacity:.94});
+
+  const put=(parent,geo,mat,p,r)=>{
+    const m=new THREE.Mesh(geo,mat);
+    if(p)m.position.set(p[0],p[1],p[2]);
+    if(r)m.rotation.set(r[0],r[1],r[2]);
+    m.castShadow=true;parent.add(m);return m;
+  };
+
+  // ---- 腿（以髋为枢轴，整体前后摆）----
+  const legs=[];
+  [-1,1].forEach(s=>{
+    const g=new THREE.Group();g.position.set(s*.064,.44,0);rig.add(g);
+    put(g,new THREE.BoxGeometry(.098,.19,.10),cloth,[0,-.095,0]);      // 大腿
+    put(g,new THREE.BoxGeometry(.106,.056,.108),plate,[0,-.196,0]);    // 护膝
+    put(g,new THREE.BoxGeometry(.084,.19,.084),cloth2,[0,-.288,0]);    // 小腿
+    put(g,new THREE.BoxGeometry(.108,.052,.168),dark,[0,-.412,.028]);  // 靴子
+    legs.push(g);
+  });
+  // ---- 躯干 ----
+  put(rig,new THREE.BoxGeometry(.205,.115,.145),cloth2,[0,.475,0]);    // 胯
+  put(rig,new THREE.BoxGeometry(.25,.285,.16),cloth,[0,.665,0]);       // 上衣
+  put(rig,new THREE.BoxGeometry(.272,.135,.176),plate,[0,.705,0]);     // 胸甲
+  put(rig,new THREE.BoxGeometry(.30,.032,.184),strap,[0,.632,0]);      // 束带 · 横
+  put(rig,new THREE.BoxGeometry(.034,.30,.184),strap,[0,.665,0]);      // 束带 · 竖
+  put(rig,new THREE.BoxGeometry(.092,.10,.062),cloth2,[.145,.505,.03]); // 腰间工具袋
+  // ---- 背包 / 铺盖卷 / 天线 ----
+  put(rig,new THREE.BoxGeometry(.205,.245,.128),cloth2,[0,.705,-.148]);
+  put(rig,new THREE.BoxGeometry(.215,.03,.138),strap,[0,.585,-.148]);
+  put(rig,new THREE.CylinderGeometry(.055,.055,.27,8),cloth,[0,.855,-.148],[0,0,Math.PI/2]);
+  put(rig,new THREE.CylinderGeometry(.007,.007,.30,5),plate,[.075,.975,-.142],[.12,0,-.09]);
+  // ---- 肩灯 ----
+  put(rig,new THREE.BoxGeometry(.05,.05,.05),plate,[.132,.792,.055]);
+  const gl=new THREE.Mesh(new THREE.SphereGeometry(.031,8,6),lamp);gl.position.set(.132,.792,.092);rig.add(gl);
+  // ---- 头（头盔 + 护目镜 + 呼吸器）----
+  const head=new THREE.Group();head.position.set(0,.845,0);rig.add(head);
+  put(head,new THREE.BoxGeometry(.068,.05,.068),cloth2,[0,-.022,0]);    // 脖子
+  put(head,new THREE.BoxGeometry(.178,.034,.19),cloth2,[0,.008,0]);     // 兜帽边
+  put(head,new THREE.BoxGeometry(.162,.16,.172),cloth,[0,.088,0]);      // 头盔
+  put(head,new THREE.BoxGeometry(.132,.072,.03),visor,[0,.078,.082]);   // 护目镜
+  put(head,new THREE.BoxGeometry(.058,.05,.05),plate,[0,-.006,.086]);   // 呼吸器
+  put(head,new THREE.CylinderGeometry(.014,.014,.075,6),plate,[-.072,.06,-.03],[.5,0,0]);
+  // ---- 手臂（以肩为枢轴）----
+  const arms=[];
+  [-1,1].forEach(s=>{
+    const g=new THREE.Group();g.position.set(s*.152,.788,0);rig.add(g);
+    put(g,new THREE.BoxGeometry(.076,.17,.076),cloth,[0,-.086,0]);     // 上臂
+    put(g,new THREE.BoxGeometry(.082,.05,.082),plate,[0,-.174,0]);     // 肘垫
+    put(g,new THREE.BoxGeometry(.068,.16,.068),cloth2,[0,-.252,0]);    // 小臂
+    put(g,new THREE.BoxGeometry(.074,.072,.078),dark,[0,-.358,.006]);  // 手套
+    arms.push(g);
+  });
+
+  root.userData={rig,legL:legs[0],legR:legs[1],armL:arms[0],armR:arms[1],head,lamp:gl};
+  return root;
+}
+
+// ---------- 视角输入：光标锁在画面正中，靠"单指滑动"转视野 ----------
+// 手感是「手指往哪边滑，视野就往哪边转」——所以读的是 pointermove 的相对位移
+// （movementX / movementY），而不是光标在屏幕上的绝对位置。
+//
+// 单指滑动有两条路，谁可用就用谁：
+//   ① 光标锁定成功：单指在触控板上轻滑即可（不用按下去），光标被锁在正中，
+//      相对位移没有上限 —— 这是首选。
+//   ② 锁不上：Chrome 对 file:// 直接打开一律拒绝（WrongDocumentError），预览用的
+//      iframe 没有 pointer-lock 权限策略也会被拒。这时退化成「单指按住滑动」，
+//      仍然是一根手指，只是多按一下。
+//
+// 滚轮（触控板上的双指滑动）**始终**留给缩放 —— 不再拿它转视野，
+// 否则双指就被占住了，没法一边走一边缩放。
+// 灵敏度标定：用户要「水平更快、竖直更慢」，两轴不再共用一个倍数。
+// 水平滑 55px 就是一圈；竖直滑 ~47px 抬头到底、~33px 低头到底，
+// 俯仰行程被拉开，抬头低头不再是"开关式"。
+// 改这两个数就能调档（单位：弧度 / 像素）；运行时用 [ ] 调水平、- = 调竖直。
+const LOOK={
+  sensX:.1152,               // 横向：1px = 6.60°（滑 55px ≈ 一整圈）
+  sensY:.0216,               // 纵向：1px = 1.24°（抬头 58° 约 47px、低头 41° 约 33px）
+  locked:false,dragging:false,
+  lockable:true,             // false = 环境明令禁止锁定，别再提示"点击画面"
+  px:0,py:0,                 // 最近一次指针位置（判断有没有顶到屏幕边）
+  edgeT:0,                   // 已经顶边多少秒
+  moved:false,               // 有没有真的滑过（没滑过就不续转）
+  t:0,                       // 输入层自己的时钟（只读，调试用）
+  lastEvt:0,                 // 最近一次收到指针事件的时刻（撞边后事件仍会来，只是位移为 0）
+  edgeX:0,edgeY:0,
+  onChange:null
+};
+let activeExp=null;
+const keyState={w:0,a:0,s:0,d:0,z:0,shift:0,space:0};
+const aimEl=()=>document.getElementById('aim');
+const lookChanged=()=>{if(LOOK.onChange)LOOK.onChange()};
+function setActiveExplorer(o){
+  activeExp=o||null;
+  const a=aimEl();
+  if(a)a.style.display=o?'block':'none';
+  if(!o){
+    LOOK.dragging=false;LOOK.edgeT=0;LOOK.moved=false;
+    if(document.exitPointerLock&&document.pointerLockElement)document.exitPointerLock();
+  }else requestLook();                          // 进视角就顺手锁光标（浏览器要求有手势，缺手势就等点击）
+  markAim();lookChanged();
+}
+function markAim(){
+  const a=aimEl();
+  if(a)a.className=LOOK.locked?'aim lock':'aim';
+  // 三维画面里一律不显示系统光标 —— 中心那个准星就是光标
+  // （按钮上另有 cursor:pointer，所以按钮仍然点得到）
+  if(renderer.domElement)renderer.domElement.style.cursor=activeExp?'none':'';
+  if(activeExp&&!LOOK.locked)document.body.style.cursor='crosshair';
+}
+function noLock(){                            // 环境不给锁：改走「单指按住滑动」，提示要跟着换
+  if(LOOK.lockable){LOOK.lockable=false;markAim();lookChanged();}
+}
+function requestLook(){                       // 交给浏览器把光标锁进画面正中
+  if(!activeExp||LOOK.locked||!LOOK.lockable)return;
+  const el=renderer.domElement;
+  if(!el||!el.requestPointerLock){noLock();return;}
+  try{
+    const p=el.requestPointerLock();
+    if(p&&p.then)p.then(()=>{},err=>{
+      const s=((err&&err.name)||'')+' '+((err&&err.message)||'');
+      // 只有"缺一次用户手势"才值得等；其它原因（file:// 打不开、iframe 权限策略…）
+      // 一律标记为锁不上，绝不让操作失灵。
+      if(!/gesture|activation|user.{0,12}interact/i.test(s))noLock();
+    });
+  }catch(e){noLock();}
+}
+addEventListener('pointerlockchange',()=>{
+  LOOK.locked=(document.pointerLockElement===renderer.domElement);
+  markAim();lookChanged();
+});
+addEventListener('pointerlockerror',()=>{LOOK.locked=false;noLock();markAim();});
+function applyLook(dx,dy){                    // 向右滑 → 视野右转；向上滑 → 抬头
+  if(!activeExp)return;
+  activeExp.yawTgt+=dx*LOOK.sensX;
+  activeExp.pitchTgt=Math.max(-EXPL.pitchDown,Math.min(EXPL.pitchUp,activeExp.pitchTgt-dy*LOOK.sensY));
+}
+let _pmX=null,_pmY=null;                      // movementX 缺失时用 clientX 差值兜底
+let lookT=0;                                  // 输入层自己的计时器（秒）
+function beginDrag(x,y){LOOK.edgeT=0;LOOK.px=x;LOOK.py=y;_pmX=x;_pmY=y;}
+// 单指滑动 = 转视野。**按不按都算** ——
+// 原来只在"按住拖动"时响应，不按的滑动会被整段丢掉，用户滑半天只看到画面抖了几度。
+// 现在只要指针在三维画面上就转；落在界面控件上时不转（按钮、灵敏度面板、提示条、标题），
+// 否则去点右上角面板上的 ± 或数字时，画面会跟着晃。
+const UI_ZONE='#sens,#torch,#views,#hint,.title';
+addEventListener('pointermove',e=>{
+  if(!activeExp){_pmX=null;return}
+  if(!LOOK.locked){
+    const t=e.target;
+    if(t&&t.closest&&t.closest(UI_ZONE)){_pmX=e.clientX;_pmY=e.clientY;return}
+  }
+  LOOK.px=e.clientX;LOOK.py=e.clientY;LOOK.lastEvt=lookT;
+  let dx=e.movementX,dy=e.movementY;
+  if(typeof dx!=='number'||typeof dy!=='number'){
+    dx=_pmX===null?0:e.clientX-_pmX;dy=_pmY===null?0:e.clientY-_pmY;
+  }
+  _pmX=e.clientX;_pmY=e.clientY;
+  if(dx||dy){LOOK.moved=true;applyLook(dx,dy);}
+});
+// 指针顶到屏幕边之后，浏览器会把光标钳住、再也不给新位移 —— 一直滑就会"卡死"。
+// 补一手续转：顶边后还按着（或刚滑过一下）就按固定角速度继续转，像摇杆推到底；
+// 反向滑回来立刻停。没滑过就按在边缘的情况不转，免得手滑蹭到边缘画面自己跑。
+function updateEdgeLook(dt){
+  lookT+=dt;LOOK.t=lookT;
+  if(LOOK.locked||!LOOK.moved||!activeExp){
+    LOOK.edgeT=0;LOOK.edgeX=0;LOOK.edgeY=0;return;
+  }
+  const nx=LOOK.px<=1?-1:(LOOK.px>=innerWidth-1?1:0);
+  const ny=LOOK.py<=1?-1:(LOOK.py>=innerHeight-1?1:0);
+  LOOK.edgeX=nx;LOOK.edgeY=ny;
+  if(!nx&&!ny){LOOK.edgeT=0;return}
+  // 按住则一直续转；没按住时，只要指针事件还在来（撞边后事件仍会派发，只是位移为 0）
+  // 就当用户还在滑；停手 0.12s 没事件了就停转。
+  if(!LOOK.dragging&&lookT-LOOK.lastEvt>.12){LOOK.edgeT=0;return}
+  LOOK.edgeT+=dt;
+  if(LOOK.edgeT<EXPL.edgeDelay)return;
+  if(nx)activeExp.yawTgt+=nx*D2R(EXPL.edgeYaw)*dt;
+  if(ny)activeExp.pitchTgt=Math.max(-EXPL.pitchDown,
+        Math.min(EXPL.pitchUp,activeExp.pitchTgt-ny*D2R(EXPL.edgePitch)*dt));
+}
+renderer.domElement.addEventListener('pointerdown',e=>{
+  if(!activeExp)return;
+  if(e.button)return;                          // 只认主键：触控板上就是单指按下去
+  LOOK.dragging=true;beginDrag(e.clientX,e.clientY);
+  try{renderer.domElement.setPointerCapture(e.pointerId);}catch(err){}
+  requestLook();                               // 顺手讨一次光标锁定，成功的话下一滑就不必按了
+});
+addEventListener('pointerup',()=>{LOOK.dragging=false;LOOK.edgeT=0});
+addEventListener('pointercancel',()=>{LOOK.dragging=false;LOOK.edgeT=0});
+
+const explorers=[];
+const EXPL={
+  spd:2.4,run:5.6,           // 行走 / 奔跑速度（局部单位每秒）
+  accel:9,                   // 速度平滑
+  lookRate:42,               // 视野跟手的平滑（只留一点点滞后消毛刺，别再"滑完还在追"）
+  bodyRate:9,                // 身体拧向视野的快慢：转身时先看见他扭腰，再站正
+  pitchRate:22,              // 俯仰平滑
+  pitchUp:1.02,pitchDown:.72,// 抬头 / 低头上限（配合下面机位卡地面时的注视点抬高）
+  camK:4.0,                  // 机位后移距离 = camK × 小人身高
+  camZoomMin:.45,            // 滚轮最近 = camK×scale 的 0.45 倍
+  camZoomMax:6.0,            // 滚轮最远 = 6 倍（原来只有 2.1 倍，根本缩不开）
+  pivotK:.76,                // 机位环绕的基准点（约在小人胸口）
+  orbit0:.206,               // 默认仰角 11.8°：相机略高于小人、俯视，地平线落在画面上部
+  thMin:.021,thMax:1.117,    // 环绕仰角下限 / 上限（球面上机位不许钻地）
+  flyUp:1.8,                 // 空格：上升速度（局部单位 / 秒）—— 缓缓升起
+  fall:3.6,                  // 松开空格：回落速度
+  altK:14,                   // 离地最大高度 = altK × 小人缩放
+  airG:9,                    // 被外力（岩浆冲走 / 冲击波）抛出去时的重力
+  airEps:.35,                // 判定"已离地"的高度
+  edgeYaw:800,               // 指针顶到屏幕边还在滑 → 续转速度（度/秒），随水平灵敏度
+  edgePitch:130,             // 纵向同理，随竖直灵敏度压低了
+  edgeDelay:.08              // 顶边多久开始续转（有 moved 兜着，不必再等很久）
+};
+const _Q=new THREE.Quaternion(),_M4=new THREE.Matrix4();
+function shortestDeg(a,b){let d=b-a;while(d>180)d-=360;while(d<-180)d+=360;return d}
+function dirToLatLon(d){const n=d.clone().normalize();
+  return [R2D(Math.asin(Math.max(-1,Math.min(1,n.y)))),R2D(Math.atan2(n.z,n.x))]}
+function geoAz(lat,lon,lat2,lon2){          // 从 a 看 b 的地理方位角（0=北 90=东）
+  return R2D(Math.atan2(wrappedLonDelta(lon2,lon)*Math.cos(D2R((lat+lat2)/2)),lat2-lat));
+}
+// 在 (lat,lon) 处，朝"某个方向向量"的切向方位角（0=北 90=东）
+function tangentAzTo(lat,lon,targetDir){
+  const n=latLonToDir(lat,lon).normalize(),t=targetDir.clone().normalize();
+  const p=t.clone().addScaledVector(n,-t.dot(n));
+  if(p.lengthSq()<1e-10)return 0;
+  p.normalize();
+  return R2D(Math.atan2(tangentEast(lat,lon).dot(p),tangentNorth(lat,lon).dot(p)));
+}
+// 在 a、b 张成的平面内，取一个与 a 夹角为 wDeg、且偏向 b 的单位方向
+function dirAtAngle(a,b,wDeg){
+  const A1=a.clone().normalize(),B1=b.clone().normalize();
+  const A=Math.acos(Math.max(-1,Math.min(1,A1.dot(B1)))),w=D2R(wDeg);
+  if(w>=A)return B1;
+  const sA=Math.sin(A)||1e-6;
+  return A1.multiplyScalar(Math.sin(A-w)/sA).addScaledVector(B1,Math.sin(w)/sA).normalize();
+}
+const ease=(rate,dt)=>1-Math.exp(-rate*dt);
+
+// ================= 地表突起物 = 实体：碰得到、站得住、底下能钻过去 =================
+// 不手写碰撞盒，而是把整颗星球（或月球）的模型按经纬度切成格子，从球心朝每格打一遍
+// 三角形，记下「这一格里突起物的最低 / 最高半径」。于是：
+//   · 与形状无关：圆柱、方盒、斜面、锥体一视同仁；
+//   · 平铺在地面上的东西（路面、车辙、沙丘脊、盐碱斑、碎石）最高点够不到"抬脚高度" → 不算障碍；
+//   · 悬空的（环形桁架、横梁、太阳能板）最低点高过头顶 → 从底下钻过去；
+//   · 矮过抬脚高度的自动迈过去，再高一点就挡住，高到能站的就踩得上去；
+//   · 查询只看 3×3 格，每帧 9 次数组读，几乎不花钱。
+// 度→弧度的"数值"版本（D2R 是函数，这里要的是 π/180 这个数，
+// 曾经写成裸 D2R 导致 dLat/cl 全变 NaN：带 out 时永远"不挡"（穿模），
+// 不带 out 时又永远"挡"（看不见的墙）—— 一行之差，两种相反的毛病。）
+const DEG=Math.PI/180;
+const OB={
+  stepK:.55,      // 抬脚高度：比"脚底 + 这个高度"还矮的突起不挡路。
+                  // 关键：它同时是纵向的抬升阈值（见 land），所以迈过去不是"穿过去"，
+                  // 而是真的被抬到那件道具顶上走过去，腿上不会穿模。
+                  // 定成 .32 时森林里只剩 48% 的路能走（树桩 0.3~0.5 高，全挡住）；
+                  // 定成 .55 后森林 88%、月面 86%、废都市 83%，而楼体 / 平台照样挡得住。
+  land:.55,       // 竖向容差：脚底离顶面这么近就算踩住了，并且愿意被抬上去。
+                  // 和 stepK 取同一个值，两个方向才不会"迈得过去却踩不上"（会切腿）。
+  bodyK:.115,     // 身体半径 = 系数 × 身高。取"脚下那根柱子"的粗细，不是肩宽：
+                  // 采伐迹地的树桩株距本来就只够一个人侧身过，按肩宽算会寸步难行
+  marK:.50,       // 栅格余量 = 系数 × 格距。取 .5 表示"身体边缘刚好碰到格子边界"：
+                  // 一格只能记到格心，留半个格子才等于把整格当成实心。
+  minH:.10,       // 高过地形这么多才值得踩（滤掉贴地贴片 / 地形本身的噪声）
+  climb:8,        // 脚下地面往上追的速度上限（局部单位/秒）—— 往下则由 EXPL.fall 限速
+  cellDeg:.35,    // 星球格距（度）≈ 0.12 局部单位
+  moonDeg:.7
+};
+function buildField(opt){
+  const root=opt.root,R=opt.R,deg=opt.deg,eps=opt.eps;
+  const ground=opt.ground,excl=opt.excl||[];
+  const headMax=opt.headMax||2.4,cap=opt.cap||400;
+  const under=opt.under||.5;      // 悬空判定：底面高出地表多少才算"底下有通道"（局部单位）
+  const t0=Date.now();
+  root.updateMatrixWorld(true);
+  const rootInv=new THREE.Matrix4().copy(root.matrixWorld).invert();
+  const ROWS=Math.max(4,Math.round(180/deg)),COLS=Math.max(8,Math.round(360/deg)),N=ROWS*COLS;
+  const lo=new Float32Array(N).fill(1e9),hi=new Float32Array(N),gc=new Float32Array(N).fill(-1e29);
+  const latOf=i=>-90+(i+.5)*deg,lonOf=j=>-180+(j+.5)*deg;
+  const gAt=(i,j)=>{const k=i*COLS+j;if(gc[k]<-1e28)gc[k]=ground(latOf(i),lonOf(j));return gc[k]};
+  const M=new THREE.Matrix4(),im=new THREE.Matrix4(),V=new THREE.Vector3();
+  let buf=new Float32Array(0);
+  let nTri=0,nKept=0,nBig=0,nMesh=0;
+  const meshes=[];
+  root.traverse(ob=>{
+    if(!ob.isMesh||!ob.geometry||!ob.geometry.attributes||!ob.geometry.attributes.position)return;
+    if(ob.userData&&ob.userData.noCollide)return;             // 互动层的特效 / 动物：不是实体
+    const m=Array.isArray(ob.material)?ob.material[0]:ob.material;
+    if(m&&m.transparent===true&&m.depthWrite===false)return;   // 雾霾 / 光柱 / 辉光：不是实体
+    meshes.push(ob);
+  });
+  nMesh=meshes.length;
+  // 点在 (u,v) 格坐标里是否落在三角形 abc 内
+  const inTri=(px,py,ax,ay,bx,by,cx,cy)=>{
+    const d1=(bx-ax)*(py-ay)-(by-ay)*(px-ax);
+    const d2=(cx-bx)*(py-by)-(cy-by)*(px-bx);
+    const d3=(ax-cx)*(py-cy)-(ay-cy)*(px-cx);
+    return !(((d1<0)||(d2<0)||(d3<0))&&((d1>0)||(d2>0)||(d3>0)));
+  };
+  for(const mesh of meshes){
+    const g=mesh.geometry,pa=g.attributes.position,ia=g.index;
+    const nv=pa.count,tn=ia?Math.floor(ia.count/3):Math.floor(nv/3);
+    const instN=mesh.isInstancedMesh?mesh.count:1;
+    for(let inst=0;inst<instN;inst++){
+      M.copy(rootInv).multiply(mesh.matrixWorld);
+      if(mesh.isInstancedMesh){mesh.getMatrixAt(inst,im);M.multiply(im)}
+      if(buf.length<nv*6)buf=new Float32Array(nv*6);
+      let lmin=1e9,lmax=-1e9,sx=0,sy=0,sz=0;
+      for(let v=0;v<nv;v++){
+        V.fromBufferAttribute(pa,v).applyMatrix4(M);
+        const i6=v*6;
+        buf[i6]=V.x;buf[i6+1]=V.y;buf[i6+2]=V.z;
+        const r=Math.hypot(V.x,V.y,V.z)||1e-9;buf[i6+3]=r;
+        buf[i6+4]=R2D(Math.asin(Math.max(-1,Math.min(1,V.y/r))));   // lat
+        buf[i6+5]=R2D(Math.atan2(V.z,V.x));                          // lon
+        if(r<lmin)lmin=r;if(r>lmax)lmax=r;
+        sx+=V.x;sy+=V.y;sz+=V.z;
+      }
+      nTri+=tn;
+      // 先按整个实例粗筛：全贴地 / 全在头顶以上 → 直接丢掉，省掉一整个三角形循环
+      const ml=Math.hypot(sx,sy,sz)||1e-9;
+      const ci=Math.min(ROWS-1,Math.max(0,Math.floor((R2D(Math.asin(sy/ml))+90)/deg)));
+      const cj=Math.min(COLS-1,Math.max(0,Math.floor((R2D(Math.atan2(sz,sx))+180)/deg)));
+      const rg=gAt(ci,cj);
+      if(lmax<rg+eps)continue;
+      if(lmin>rg+headMax)continue;
+      nKept+=tn;
+      for(let t=0;t<tn;t++){
+        const a0=(ia?ia.getX(t*3):t*3)*6,a1=(ia?ia.getX(t*3+1):t*3+1)*6,a2=(ia?ia.getX(t*3+2):t*3+2)*6;
+        const kx0=buf[a0],ky0=buf[a0+1],kz0=buf[a0+2],r0=buf[a0+3],v0=buf[a0+4],u0=buf[a0+5];
+        const kx1=buf[a1],ky1=buf[a1+1],kz1=buf[a1+2],r1=buf[a1+3],v1=buf[a1+4],u1=buf[a1+5];
+        const kx2=buf[a2],ky2=buf[a2+1],kz2=buf[a2+2],r2=buf[a2+3],v2=buf[a2+4],u2=buf[a2+5];
+        let tmin=r0,tmax=r0;
+        if(r1<tmin)tmin=r1;if(r2<tmin)tmin=r2;
+        if(r1>tmax)tmax=r1;if(r2>tmax)tmax=r2;
+        const cx=(kx0+kx1+kx2)/3,cy=(ky0+ky1+ky2)/3,cz=(kz0+kz1+kz2)/3;
+        // 先看三角形中心那一格的地表：整块都贴地（星球本体、道路、贴地贴片）或整块都在
+        // 头顶以上（雾霾、光柱）就直接丢掉 —— 星球本体有两万多个三角形，这一步最省
+        const cml=Math.hypot(cx,cy,cz)||1e-9;
+        const cci=Math.min(ROWS-1,Math.max(0,Math.floor((R2D(Math.asin(cy/cml))+90)/deg)));
+        const ccj=Math.min(COLS-1,Math.max(0,Math.floor((R2D(Math.atan2(cz,cx))+180)/deg)));
+        const cg=gAt(cci,ccj);
+        if(tmax<cg+eps)continue;
+        if(tmin>cg+headMax)continue;
+        // 井内那套东西（井壁 / 平台 / 井底辉光）不当墙，否则人进不去
+        if(excl.length){
+          let skip=false;
+          for(let e=0;e<excl.length;e++){
+            const z=excl[e];
+            const along=cx*z.dir.x+cy*z.dir.y+cz*z.dir.z;
+            if(along<z.lo||along>z.hi)continue;
+            const px=cx-z.dir.x*along,py=cy-z.dir.y*along,pz=cz-z.dir.z*along;
+            if(px*px+py*py+pz*pz<z.r*z.r){skip=true;break}
+          }
+          if(skip)continue;
+        }
+        // 顶点的格坐标
+        const pa0=u0/deg+COLS/2,pa1=u1/deg+COLS/2,pa2=u2/deg+COLS/2;
+        const pb0=v0/deg+ROWS/2,pb1=v1/deg+ROWS/2,pb2=v2/deg+ROWS/2;
+        const uma=Math.max(pa0,pa1,pa2),umi=Math.min(pa0,pa1,pa2);
+        if(uma-umi>COLS*.5)continue;                      // 跨了 ±180° 接缝，放弃
+        const vma=Math.max(pb0,pb1,pb2),vmi=Math.min(pb0,pb1,pb2);
+        let i0=Math.floor(vmi),i1=Math.ceil(vma),j0=Math.floor(umi),j1=Math.ceil(uma);
+        if(i0<0)i0=0;if(i1>ROWS-1)i1=ROWS-1;
+        if(j0<0)j0=0;if(j1>COLS-1)j1=COLS-1;
+        if(i0>i1||j0>j1)continue;
+        if((i1-i0+1)*(j1-j0+1)>cap){nBig++;continue}      // 地形尺度的大三角形，不做
+        for(let i=i0;i<=i1;i++){
+          const py=i+.5,row=i*COLS;
+          for(let j=j0;j<=j1;j++){
+            if(!inTri(j+.5,py,pa0,pb0,pa1,pb1,pa2,pb2))continue;
+            const gk=gAt(i,j);
+            if(tmax<gk+eps)continue;
+            if(tmin>gk+headMax)continue;
+            const k=row+j;
+            if(tmax>hi[k])hi[k]=tmax;
+            if(tmin<lo[k])lo[k]=tmin;
+          }
+        }
+      }
+    }
+  }
+  let cells=0;
+  for(let k=0;k<N;k++)if(hi[k]>0)cells++;
+  // ---------- 悬空通道的连通性检查 ----------
+  // 楼顶 / 平台板这类"大平顶"在格子里只留下一张水平面：lo 与 hi 都等于顶面高度，
+  // 看上去像一个悬空结构，于是判定就会放人从楼体内部穿过去（这是"穿模"的真正原因）。
+  // 真正的悬空通道（天桥、管线、有柱子的雨棚）底下那层空间一定与外面的空地水平连通；
+  // 被实心格围死的（楼体内部、实心大平台底下）则不是。所以这里泛洪一次：
+  // 只有能连通到空地的悬空格才算通道，其余按实心处理。
+  const open=new Uint8Array(N);
+  {
+    const can=new Uint8Array(N);
+    for(let i=0;i<ROWS;i++){
+      const row=i*COLS;
+      for(let j=0;j<COLS;j++){
+        const k=row+j;
+        if(hi[k]>0&&lo[k]-gAt(i,j)>=under)can[k]=1;
+      }
+    }
+    const q=new Int32Array(N);let qh=0,qt=0;
+    for(let i=0;i<ROWS;i++){
+      const row=i*COLS;
+      for(let j=0;j<COLS;j++){
+        const k=row+j;if(!can[k]||open[k])continue;
+        const jl=j>0?j-1:COLS-1,jr=j<COLS-1?j+1:0;
+        let touch=hi[row+jl]<=0||hi[row+jr]<=0;
+        if(!touch&&i>0)touch=hi[k-COLS]<=0;
+        if(!touch&&i<ROWS-1)touch=hi[k+COLS]<=0;
+        if(touch){open[k]=1;q[qt++]=k}
+      }
+    }
+    while(qh<qt){
+      const k=q[qh++],i=Math.floor(k/COLS),j=k-i*COLS;
+      const jl=j>0?j-1:COLS-1,jr=j<COLS-1?j+1:0;
+      const n0=i>0?k-COLS:-1,n1=i<ROWS-1?k+COLS:-1,n2=i*COLS+jl,n3=i*COLS+jr;
+      if(n0>=0&&can[n0]&&!open[n0]){open[n0]=1;q[qt++]=n0}
+      if(n1>=0&&can[n1]&&!open[n1]){open[n1]=1;q[qt++]=n1}
+      if(can[n2]&&!open[n2]){open[n2]=1;q[qt++]=n2}
+      if(can[n3]&&!open[n3]){open[n3]=1;q[qt++]=n3}
+    }
+  }
+  return {ROWS,COLS,deg,R,cell:D2R(deg)*R,latOf,lonOf,lo,hi,open,
+    ms:Date.now()-t0,meshes:nMesh,tris:nTri,kept:nKept,big:nBig,cells};
+}
+// 横向：这一步能不能走过去。撞上了可传 out，会回传"障碍在哪个方向"（东/北，局部单位），
+// 调用方据此把移动方向投影到障碍的切向 —— 就是贴着墙蹭过去，而不是原地顿住。
+function fieldBlocked(F,lat,lon,footR,bodyH,bodyR,out){
+  const stepH=OB.stepK*bodyH,headR=footR+bodyH;
+  const i0=Math.floor((lat+90)/F.deg),j0=Math.floor((lon+180)/F.deg);
+  const lim=bodyR+F.cell*OB.marK,cl=Math.cos(lat*DEG)*DEG*F.R;
+  let best=1e9,bx=0,by=0;
+  for(let di=-1;di<=1;di++){
+    const i=i0+di;if(i<0||i>=F.ROWS)continue;
+    const dLat=(lat-F.latOf(i))*DEG*F.R;
+    for(let dj=-1;dj<=1;dj++){
+      let j=j0+dj;if(j<0)j+=F.COLS;else if(j>=F.COLS)j-=F.COLS;
+      const k=i*F.COLS+j,top=F.hi[k];
+      if(top<=0)continue;
+      if(top<=footR+stepH)continue;        // 矮的：迈过去
+      if(F.lo[k]>=headR&&F.open&&F.open[k])continue; // 悬空、且底下确实连得通：从下面钻过去
+      const dLon=wrappedLonDelta(lon,F.lonOf(j))*cl;
+      const d2=dLat*dLat+dLon*dLon;
+      if(d2>lim*lim)continue;
+      if(out&&d2<best){best=d2;bx=dLon;by=dLat}
+      else if(!out)return true;
+    }
+  }
+  if(best>=1e9)return false;
+  if(out){out.x=bx;out.y=by}
+  return true;
+}
+// 撞上以后：把"想走的方向"投影到障碍表面的切向（去掉指向障碍的那一维）。
+// 回传的 (x,y) 是障碍格心相对人的偏移（东 / 北），取反就是法线。
+const _hit={x:0,y:0};
+function slideAngle(angDeg,hit){
+  const n=Math.hypot(hit.x,hit.y);
+  if(n<1e-6)return null;
+  const nx=-hit.x/n,ny=-hit.y/n;              // 法线：由障碍指向人
+  const a=D2R(angDeg);
+  let mx=Math.sin(a),my=Math.cos(a);          // 方位角 → (东, 北)
+  const dot=mx*nx+my*ny;
+  if(dot>0){                                  // 正在往障碍里钻：把这一维去掉
+    mx-=nx*dot;my-=ny*dot;
+    const L=Math.hypot(mx,my);
+    if(L<1e-3)return null;                    // 正对着撞，没有切向可走
+    mx/=L;my/=L;
+  }
+  return R2D(Math.atan2(mx,my));
+}
+// 纵向：脚下能踩到的最高顶面（绝对半径，没有就返回 0）
+function fieldSupport(F,lat,lon,footR,bodyH,baseR){
+  const tol=OB.land*bodyH,minH=OB.minH*bodyH;
+  const i0=Math.floor((lat+90)/F.deg),j0=Math.floor((lon+180)/F.deg);
+  const lim=OB.bodyK*bodyH+F.cell*OB.marK,cl=Math.cos(lat*DEG)*DEG*F.R;
+  let best=0;
+  for(let di=-1;di<=1;di++){
+    const i=i0+di;if(i<0||i>=F.ROWS)continue;
+    const dLat=(lat-F.latOf(i))*DEG*F.R;
+    for(let dj=-1;dj<=1;dj++){
+      let j=j0+dj;if(j<0)j+=F.COLS;else if(j>=F.COLS)j-=F.COLS;
+      const k=i*F.COLS+j,top=F.hi[k];
+      if(top<=best)continue;
+      if(top>footR+tol)continue;
+      if(top<baseR+minH)continue;
+      const dLon=wrappedLonDelta(lon,F.lonOf(j))*cl;
+      if(dLat*dLat+dLon*dLon>lim*lim)continue;
+      best=top;
+    }
+  }
+  return best;
+}
+
+// ---------- 贯穿星球的穿梭隧道：井筒内部的"地面" ----------
+// 井口是一个向下收束的锥形竖井（earthCannon 里的 bore），整组放大 2 倍后：
+//   井口内半径 3.84、高出地表 0.48；井底内半径 0.52、深 14.32。
+// 于是井里也有一套"地面"：离井轴越近，脚底越低——走进去就是往下滑，
+// 松手会一路落到井底。中间还有一圈环形平台（下面那圈检修走道），可以站着看井底的辉光。
+function makeShaft(lat,lon,ground,opt){
+  const s=Object.assign({
+    lat,lon,
+    mouthR:1.92*2,mouthY:.24*2,       // 井口内半径 / 高出地表（整组放大 2 倍后的值）
+    tipR:.26*2,tipD:7.16*2,           // 井底内半径 / 井底深度
+    holeR:HOLE_R,                     // 地表上真正挖掉的圆半径（洞穴边界）
+    catIn:.72,catOut:2.50,catD:5.49,  // 井内环形检修平台（外沿正好落在井壁上）
+    capR:.57,capD:14.10               // 井底那点小平地
+  },opt||{});
+  // 井筒整组是"贴在地表"放下去的，所以深度要相对**井口处的地表高度**来算
+  s.originH=ground?ground(lat,lon):0;
+  const k=(s.tipD+s.mouthY)/(s.mouthR-s.tipR);
+  s.dir=latLonToDir(lat,lon);                 // 井轴（= 该点的球面法线），机位避让用
+  s.radial=(d)=>s.tipR+(s.tipD-d)/k;          // 深度 → 该处井筒半径
+  s.depth=function(la,lo,R){                  // 返回井内地面高度（相对 R）；井外返回 null
+    const r=D2R(angDistDeg(la,lo,s.lat,s.lon))*R;
+    if(r>=s.holeR)return null;
+    let d;
+    if(r<=s.capR)d=s.capD;
+    else if(r>=s.catIn&&r<=s.catOut)d=s.catD;
+    else d=s.tipD-k*(r-s.tipR);
+    return s.originH-d;
+  };
+  return s;
+}
+// 脚下的"地表"：纯地形 + 井内剖面（井里是负值）。
+// 第四个参数 st 传进来就顺手把井内信息写回去（当前深度 / 该处井筒半径 / 井轴），
+// 手电筒那种每帧上百次的采样不传 st，免得把状态冲掉。
+function groundAt(o,la,lo,st){
+  let g=o.ground?o.ground(la,lo):0;
+  const sh=o.shafts;
+  if(sh)for(let i=0;i<sh.length;i++){
+    const v=sh[i].depth(la,lo,o.R);        // 井内地面高度（相对 R，越深越负）
+    if(v===null)continue;
+    if(st){const d=sh[i].originH-v;st.shaftD=d;st.shaftR=sh[i].radial(d);
+      st.shaftAxis=sh[i].dir;st.shaftIdx=i}
+    if(v<g)g=v;
+  }
+  return g;
+}
+function groundRaw(o,la,lo){
+  o.shaftD=0;o.shaftR=0;o.shaftAxis=null;
+  return groundAt(o,la,lo,o);
+}
+
+// ---------- 手电筒：前方一片贴地的扇形亮区 + 一盏真实的聚光灯 ----------
+// 光斑不是贴图，而是**每帧重画的一张贴地扇形网格**：顶点按扇形极坐标算出经纬度，
+// 再取地形高度把它们按到真实地面上。所以它完全贴合起伏的地形，也能跟着视线转。
+// 材质是加法混合 + 顶点色（径向衰减 × 张角边缘柔化），近处亮、远端与两侧淡出。
+// 亮度走右上角「手电筒」面板，与灵敏度同一套 ± 按钮；
+// 聚光灯负责同时照亮前方的立体物（残骸、树桩），光斑负责地面上的那片扇形。
+const TORCH={
+  on:true,
+  bright:1,                 // 亮度系数（面板步进 ×0.82 / ×1.25，范围 0.08~2.6）
+  color:0xffdfab,           // 暖白，像老式卤素手电
+  spread:36,                // 扇形半张角（度）
+  reach:5.6,                // 扇形半径（局部单位）
+  inner:.34,                // 从脚前这个距离开始亮，免得脚下糊成一团
+  segS:20,segR:6,           // 角度分段 / 径向分段（顶点数 (segS+1)×(segR+1)）
+  lift:.014,                // 抬高一点，避免和地面 z-fighting
+  spotK:5.6,                // 聚光灯基础强度
+  spotDist:26,              // 聚光灯射程：**这是世界单位**（不随父级缩放），parent 还有 3 倍缩放，
+                            // 给 7.4 时实际只照到脚边 2.5 个身位，扇形大半截是黑的
+  tilt:.85                  // 聚光灯目标点随俯仰抬升的比例
+};
+function makeTorch(o){
+  const segS=TORCH.segS,segR=TORCH.segR;
+  const n=(segS+1)*(segR+1);
+  const pos=new Float32Array(n*3),col=new Float32Array(n*3),idx=[];
+  for(let j=0;j<segR;j++)for(let i=0;i<segS;i++){
+    const a=j*(segS+1)+i,b=a+1,c=a+segS+1,d=c+1;
+    idx.push(a,c,b,b,c,d);
+  }
+  const geo=new THREE.BufferGeometry();
+  geo.setAttribute('position',new THREE.BufferAttribute(pos,3));
+  geo.setAttribute('color',new THREE.BufferAttribute(col,3));
+  geo.setIndex(idx);
+  const mat=new THREE.MeshBasicMaterial({vertexColors:true,transparent:true,opacity:0,
+    blending:THREE.AdditiveBlending,depthWrite:false,side:THREE.DoubleSide,fog:false});
+  const mesh=new THREE.Mesh(geo,mat);
+  mesh.frustumCulled=false;mesh.renderOrder=2;mesh.visible=false;
+  o.parent.add(mesh);
+  // 聚光灯挂在小人胸前；目标点每帧按「视线方向」摆，转身时不用等身体拧过来
+  const spot=new THREE.SpotLight(TORCH.color,0,TORCH.spotDist,D2R(TORCH.spread*1.2),.55,.9);
+  spot.castShadow=false;spot.position.set(0,.86,.05);spot.visible=false;
+  o.avatar.add(spot);
+  const tgt=new THREE.Object3D();o.avatar.add(tgt);spot.target=tgt;
+  return {mesh,geo,mat,spot,tgt,pos,col,k:0};
+}
+const _tc=new THREE.Color();
+function updateTorch(o,dt){
+  const T=o.torch;if(!T)return;
+  // 只有正在观察的那个探险者点灯（其余人不但不画光斑，聚光灯也直接摘掉，省一次光照遍历）
+  const act=(TORCH.on&&o===activeExp);
+  T.k+=((act?1:0)-T.k)*ease(7,dt);
+  const sc=TORCH.bright*T.k;
+  T.mesh.visible=act&&T.k>.012;      // 关灯 / 切走时立刻收掉，开灯时再按 k 渐亮
+  T.spot.visible=T.mesh.visible;
+  T.spot.intensity=TORCH.spotK*sc;
+  T.mat.opacity=.88*Math.min(1.9,sc);   // 加法混合下 opacity 就是"亮度"；浅灰地面上要够亮才看得出
+  if(!T.mesh.visible)return;
+  // 聚光灯朝「视线」方向：avatar 局部 +Z 是身体朝向，故把光锥按 (yaw−hdg) 偏过去
+  const rel=D2R(o.yaw-o.hdg),rc=TORCH.reach,pitch=o.pitch;
+  T.tgt.position.set(Math.sin(rel)*rc,-.18+Math.sin(pitch)*rc*TORCH.tilt,Math.cos(rel)*rc);
+  // ---- 重画贴地扇形 ----
+  const segS=TORCH.segS,segR=TORCH.segR,pos=T.pos,col=T.col;
+  _tc.setHex(TORCH.color);
+  const r0=TORCH.inner,r1=rc*(1-Math.max(0,pitch-.10)*.30);   // 抬头看天时，地上那片自然缩一点
+  let k=0;
+  const put=(x,y,z,a)=>{pos[k]=x;pos[k+1]=y;pos[k+2]=z;
+    col[k]=_tc.r*a;col[k+1]=_tc.g*a;col[k+2]=_tc.b*a;k+=3};
+  if(o.mode==='sphere'){
+    for(let j=0;j<=segR;j++){
+      const t=j/segR,rr=r0+(r1-r0)*t,rad=(1-t*t)*.95+.05;
+      for(let i=0;i<=segS;i++){
+        const u=i/segS*2-1,e=Math.pow(1-Math.abs(u),1.4);
+        const p=stepGeo(o.lat,o.lon,o.yaw+u*TORCH.spread,rr);
+        // 这里必须用 groundAt（不写状态），不能用 groundRaw：
+        // groundRaw 会把"采样点"的井内信息写回玩家对象，于是站在井口附近、
+        // 手电往井里一照，玩家就被误判成"人在井里"（飞升 ×2.4、机位缩到肩上）。
+        const nd=latLonToDir(p[0],p[1]),h=o.R+groundAt(o,p[0],p[1])+TORCH.lift;
+        put(nd.x*h,nd.y*h,nd.z*h,rad*e);
+      }
+    }
+  }else{
+    // 空间站脚下不是平地，而是半径 .7 的筒面（沿筒轴平直、绕筒弯曲）。
+    // 前方铺一片长扇形会顺着弯曲的假高度钻出筒体，所以这里改成在筒面上铺一小片
+    // **环形光池**（张角铺满 360°、半径 ≈ 筒径的 1.7 倍），并把 z 钳在筒面里侧，
+    // 多的顶点压在筒缘上 —— 看上去就是光顺着筒面淌下去、到边沿被切断。
+    const dk=typeof o.deck==='function'?o.deck:()=>o.deck;
+    const RP=rc*.21,T0=RP*.16;
+    for(let j=0;j<=segR;j++){
+      const t=j/segR,rr=T0+(RP-T0)*t,rad=(1-t*t)*.95+.05;
+      for(let i=0;i<=segS;i++){
+        const u=i/segS*2-1,a=D2R(o.yaw+u*180);
+        const x=o.x+Math.sin(a)*rr;
+        const z=Math.max(-.695,Math.min(.695,o.z+Math.cos(a)*rr));
+        put(x,dk(x,z)+TORCH.lift,z,rad);
+      }
+    }
+  }
+  T.geo.attributes.position.needsUpdate=true;
+  T.geo.attributes.color.needsUpdate=true;
+}
+function addExplorer(o){
+  o.avatar=createExplorer();
+  o.scale=o.scale||1;
+  o.avatar.scale.setScalar(o.scale);
+  o.parent.add(o.avatar);
+  o.heading=o.heading||0;
+  o.yawTgt=o.heading;o.yaw=o.heading;o.hdg=o.heading;   // 视线朝向 / 身体朝向
+  o.pitch=o.pitch||0;o.pitchTgt=o.pitch;                // 当前俯仰 / 输入累积的俯仰
+  o.x=o.x||0;o.z=o.z||0;
+  o.speed=0;o.phase=Math.PI/2;o.lean=0;
+  o.alt=0;o.fly=0;                              // 离地高度 / 离地程度（驱动飞行姿态过渡）
+  // 互动层用的状态（见 14c）：fx/fy = 外力（东 / 北，局部单位每秒，由 14c 每帧写、这里消费掉）；
+  // air/launchV = 抛射（被岩浆冲走）；burn = 灼烧剩余秒；locked = 穿梭动画中交出控制权；
+  // tk = 穿梭时的机位收紧系数（0~1，updateExplorerCam 读）。
+  o.fx=0;o.fy=0;o.air=false;o.launchV=0;o.burn=0;o.locked=false;o.tk=0;o.blast=null;
+  o.bodyH=1.0*o.scale;                          // 身高（局部单位）
+  o.bodyR=OB.bodyK*o.bodyH;                     // 身体半径（横向碰撞用）
+  o.shaftD=0;o.shaftR=0;
+  o.gnd=o.mode==='sphere'?groundRaw(o,o.lat,o.lon):0;   // 平滑后的地面高度（相对 R）
+  o.footR=o.mode==='sphere'?o.R+o.gnd:0;                // 脚底半径（碰撞 / 着陆判定用）
+  o.altMax=o.altMax!==undefined?o.altMax:EXPL.altK*o.scale;
+  o.camDist=EXPL.camK*o.scale;o.camDist0=o.camDist;
+  o.camMin=EXPL.camZoomMin*o.camDist0;o.camMax=EXPL.camZoomMax*o.camDist0;
+  o.camAz=o.yaw;
+  o.pivotY=EXPL.pivotK*o.scale;
+  o.aimLift=0;
+  placeExplorer(o);
+  o.torch=makeTorch(o);                    // 手电筒：贴地扇形光斑 + 聚光灯
+  updateTorch(o,1);
+  explorers.push(o);return o;
+}
+function placeExplorer(o){
+  const ud=o.avatar.userData,az=D2R(o.hdg);
+  if(o.mode==='sphere'){
+    const n=latLonToDir(o.lat,o.lon);
+    o.avatar.position.copy(n).multiplyScalar(o.R+o.gnd+o.alt);
+    o.footR=o.R+o.gnd+o.alt;
+    const up=n.clone().normalize();
+    const fwd=tangentNorth(o.lat,o.lon).multiplyScalar(Math.cos(az))
+             .addScaledVector(tangentEast(o.lat,o.lon),Math.sin(az)).normalize();
+    const rt=new THREE.Vector3().crossVectors(up,fwd).normalize();
+    _M4.makeBasis(rt,up,fwd);o.avatar.quaternion.setFromRotationMatrix(_M4);
+  }else{
+    o.avatar.position.set(o.x,(typeof o.deck==='function'?o.deck(o.x,o.z):o.deck)+o.alt,o.z);
+    const up=new THREE.Vector3(0,1,0),fwd=new THREE.Vector3(Math.sin(az),0,Math.cos(az));
+    const rt=new THREE.Vector3().crossVectors(up,fwd).normalize();
+    _M4.makeBasis(rt,up,fwd);o.avatar.quaternion.setFromRotationMatrix(_M4);
+  }
+}
+function animateExplorer(o,dt,moving,strafe){
+  const ud=o.avatar.userData,a=o.fly;            // a: 0 = 站/走在地面，1 = 悬空
+  const amp=moving?Math.min(.82,.16+o.speed*.14):0;
+  const sw=Math.sin(o.phase)*amp;
+  ud.legL.rotation.x=sw*(1-a)-a*.44;             // 悬空：两腿微收
+  ud.legR.rotation.x=-sw*(1-a)-a*.30;
+  ud.armL.rotation.x=-sw*.7*(1-a)-a*.62;         // 悬空：手臂张开前举，像在控姿
+  ud.armR.rotation.x=sw*.7*(1-a)-a*.62;
+  ud.armL.rotation.z=.06+a*.40;
+  ud.armR.rotation.z=-.06-a*.40;
+  ud.rig.position.y=(moving?Math.abs(Math.sin(o.phase))*.026:Math.sin(tAcc*1.45)*.007)
+                   +a*Math.sin(tAcc*1.7)*.022;   // 悬空时轻轻起伏
+  ud.rig.rotation.x=-(moving?Math.min(.15,o.speed*.028):0)+a*.13;
+  o.lean+=(strafe*-.16-o.lean)*ease(7,dt);
+  ud.rig.rotation.z=o.lean;
+  // 头随光标俯仰一起抬 / 低（局部 +X 为正 = 低头，所以取负号）
+  ud.head.rotation.x=(moving?Math.min(.10,o.speed*.02):0)-o.pitch*.5;
+}
+function updateExplorer(o,dt){
+  // ---- 视野 ← 相对位移：光标锁在画面正中，手指往哪边滑、视野就往哪边转 ----
+  if(o===activeExp)updateEdgeLook(dt);                        // 指针顶到屏幕边时的续转
+  o.yaw+=shortestDeg(o.yaw,o.yawTgt)*ease(EXPL.lookRate,dt);
+  o.pitch+=(o.pitchTgt-o.pitch)*ease(EXPL.pitchRate,dt);
+  o.camAz=o.yaw;                                            // 机位立刻跟住视野
+  o.hdg+=shortestDeg(o.hdg,o.yaw)*ease(EXPL.bodyRate,dt);    // 身体慢一拍拧过来：看得见转身
+  // ---- Z / W 前进（沿当前朝向，也就是朝鼠标光标那一侧），S 后退，A / D 侧移 ----
+  let mf=((keyState.z||keyState.w)?1:0)-(keyState.s?1:0);
+  let ms=(keyState.d?1:0)-(keyState.a?1:0);
+  let len=Math.hypot(mf,ms);
+  if(o.locked){len=0;mf=0;ms=0}                             // 穿梭动画中：完全交出控制权
+  const want=len>0?(keyState.shift?EXPL.run:EXPL.spd):0;
+  o.speed+=(want-o.speed)*ease(EXPL.accel,dt);
+  let moving=false,strafe=0;
+  const dist=o.speed*dt;
+  if(len>0){mf/=len;ms/=len;strafe=ms}      // 斜着走不加速：先归一化再按速度走
+  if(o.mode==='sphere'){
+    // 整颗星球处处可走：陆地、海岸、灰黑色的低地（海底）都是同一套连续地形，
+    // 不再用 isLand 当隐形墙 —— 那会在陆地边缘凭空立起一堵看不见的墙。
+    // 真需要禁区的星球，才给它 o.block(lat,lon) 返回 true。
+    // 地上那些突起物（树桩 / 残骸 / 楼体 / 石林）则由 OB 那张栅格挡住：
+    // 一步太长时切成小段走，免得高速奔跑一步跨过一格从道具里穿过去。
+    // 注意：这里**不能**给"已经嵌进道具里"开一条后门。曾经试过"嵌住时就只准往外挪"，
+    // 结果最近格心距离这个判据被栅格量化骗过去（往旁边偏半格，最近格心就"变远"了），
+    // 人反而顺着后门一路把道具穿了过去。现在改成：横向一律严格判定，嵌住时另走
+    // 下面那段"往外挤"（见 unstick），两个方向都不放行穿模。
+    const out={x:0,y:0};
+    const walk=(la,lo)=>{
+      if(o.block&&o.block(la,lo))return false;
+      if(!o.field)return true;
+      return !fieldBlocked(o.field,la,lo,o.footR,o.bodyH,o.bodyR,out);
+    };
+    const step=(ang,d)=>{
+      const q=stepGeo(o.lat,o.lon,ang,d);
+      q[0]=Math.max(-89.5,Math.min(89.5,q[0]));
+      if(walk(q[0],q[1])){o.lat=q[0];o.lon=q[1];return true}
+      return false;
+    };
+    // 沿某个方位角走 dist：分段步进 + 贴墙滑动 + 方向扫描。
+    // 外力（引力 / 冲走 / 击退）和键盘走的是**同一个** goDist，
+    // 所以"被吸过去"一样会贴着道具滑，不会从树桩、楼体里穿过去。
+    const goDist=(ang,dist)=>{
+      if(!(dist>1e-6))return false;
+      const segs=Math.max(1,Math.ceil(dist/(o.field?o.field.cell*.5:.5)));
+      const one=dist/segs;
+      let got=false,stuck=false;
+      for(let s=0;s<segs;s++){if(step(ang,one))got=true;else{stuck=true;break}}
+      if(stuck){
+        // 贴着障碍蹭过去：先按法线把移动投影成切向（最顺），不行再逐个方向试，最后小步靠近。
+        let tg=null;
+        if(o.field&&fieldBlocked(o.field,o.lat,o.lon,o.footR,o.bodyH,o.bodyR,_hit))
+          tg=slideAngle(ang,_hit);
+        if(tg!==null&&step(tg,one))got=true;
+        if(!got){
+          const offs=[-25,25,-50,50,-75,75,-90,90,-115,115,-140,140,180];
+          for(let i=0;i<offs.length;i++)if(step(ang+offs[i],one*.7)){got=true;break}
+        }
+        if(!got)got=step(ang,one*.3);
+      }
+      return got;
+    };
+    if(len>0){
+      moving=goDist(o.yaw+R2D(Math.atan2(ms,mf)),o.speed*dt);
+    }
+    // ---- 外力：由互动层（14c）每帧写进 o.fx / o.fy（东、北，局部单位每秒）----
+    // 隧道引力、火山岩浆的冲走、外星动物扑上来的顶撞，全部从这里进。
+    // 穿梭动画中不放行（o.locked），免得被自己的引力在井底反复踢。
+    if(!o.locked){
+      const fd=Math.hypot(o.fx,o.fy);
+      if(fd>1e-6&&goDist(R2D(Math.atan2(o.fx,o.fy)),fd*dt))moving=true;
+    }
+    o.fx=0;o.fy=0;
+    // 嵌在道具里的兜底（出生点没对准 / 从空中落进楼里 / 道具是后加的）：
+    // 连续几帧都出不来，就在附近一圈圈找最近的一个"空格心"挪过去。
+    // 只在真的嵌住时才动手，所以不影响正常行走；挪的距离最多两三格，
+    // 而且目标是空地，绝不会顺势把道具穿过去。
+    if(o.field&&fieldBlocked(o.field,o.lat,o.lon,o.footR,o.bodyH,o.bodyR,_hit)){
+      o.emb=(o.emb||0)+1;
+      if(o.emb>=2){
+        const F2=o.field;
+        const i0=Math.floor((o.lat+90)/F2.deg),j0=Math.floor((o.lon+180)/F2.deg);
+        let tgt=null;
+        for(let r=0;r<=6&&!tgt;r++){
+          for(let di=-r;di<=r&&!tgt;di++){
+            const i=i0+di;if(i<0||i>=F2.ROWS)continue;
+            for(let dj=-r;dj<=r&&!tgt;dj++){
+              if(r>0&&Math.max(Math.abs(di),Math.abs(dj))!==r)continue;
+              let j=j0+dj;if(j<0)j+=F2.COLS;else if(j>=F2.COLS)j-=F2.COLS;
+              const la=F2.latOf(i),lo=F2.lonOf(j);
+              if(walk(la,lo))tgt=[la,lo];
+            }
+          }
+        }
+        if(tgt){
+          let dla=tgt[0]-o.lat,dlo=tgt[1]-o.lon;
+          while(dlo>180)dlo-=360;while(dlo<-180)dlo+=360;
+          const n=Math.max(Math.abs(dla),Math.abs(dlo))/F2.deg;     // 目标离这儿几格
+          const k=Math.min(1,2.5/Math.max(1,n));                    // 一帧最多挪 2.5 格
+          o.lat=Math.max(-89.5,Math.min(89.5,o.lat+dla*k));
+          const L=o.lon+dlo*k;o.lon=L-360*Math.floor((L+180)/360);
+          moving=true;o.emb=0;
+        }
+      }
+    }else o.emb=0;
+  }else{
+    const az=D2R(o.yaw);
+    const dx=(Math.sin(az)*mf+Math.cos(az)*ms)*dist;
+    const dz=(Math.cos(az)*mf-Math.sin(az)*ms)*dist;
+    const px=o.x+dx,pz=o.z+dz;
+    if(o.free(px,pz)){o.x=px;o.z=pz;moving=true;}
+    else if(o.free(px,o.z)){if(Math.abs(dx)>1e-5){o.x=px;moving=true;}}
+    else if(o.free(o.x,pz)){if(Math.abs(dz)>1e-5){o.z=pz;moving=true;}}
+  }
+  // ---- 脚下地面：地形 / 井筒剖面 / 可站立的突起顶面，三者取"当前这口气能踩到的最高处" ----
+  // 地面不是瞬间跳变的：往下最多按自由落体速度沉、往上快得多。于是走进井口就是一路滑下去，
+  // 从道具顶上走下来也是一段自然的下落，而不会"啪"地弹一下。
+  if(o.mode==='sphere'){
+    const raw=groundRaw(o,o.lat,o.lon);
+    const supp=o.field?fieldSupport(o.field,o.lat,o.lon,o.footR,o.bodyH,o.R+raw):0;
+    const tgt=supp>0?supp-o.R:raw;
+    const down=EXPL.fall*dt,up=OB.climb*dt;
+    o.gnd+=Math.max(-down,Math.min(up,tgt-o.gnd));
+  }
+  // ---- 空格：缓缓上升；一松手就落回地表（落到脚下的地形上，海底也能踩）----
+  // 井里另有加成：上升快得多、下沉减半，免得掉进井底只能干等着飞上来。
+  // 被外力抛出去时（岩浆冲走 / 冲击波）走另一套：初速 + 重力，落回地面才算数。
+  const inShaft=o.shaftD>0;
+  const cap=inShaft?Math.max(o.altMax,o.shaftD+3):o.altMax;
+  if(o.air){
+    o.alt+=o.launchV*dt;
+    o.launchV-=EXPL.airG*dt;
+    if(o.alt<=0){o.alt=0;o.launchV=0;o.air=false}
+  }else if(keyState.space&&!o.locked){
+    o.alt=Math.min(cap,o.alt+EXPL.flyUp*(inShaft?2.4:1)*dt);
+  }else{
+    o.alt=Math.max(0,o.alt-EXPL.fall*(inShaft?.5:1)*dt);
+  }
+  const air=o.alt>EXPL.airEps;
+  o.fly+=((air?1:0)-o.fly)*ease(6,dt);
+  if(moving&&!air)o.phase+=o.speed*(keyState.shift?1.30:1.85)*dt;   // 悬空时不再迈步
+  else o.phase+=dt*1.35;
+  placeExplorer(o);
+  animateExplorer(o,dt,moving&&!air,strafe);
+  updateTorch(o,dt);
+}
+// 第三人称跟拍：机位绕小人环绕，方位角 = 视野朝向，仰角由俯仰决定，镜头注视小人胸口。
+// 身体（o.hdg）会慢一拍才拧到视野方向，所以转头时先看见他侧过身，随后再站正。
+function updateExplorerCam(o,dt){
+  const az=D2R(o.camAz);
+  const up=new THREE.Vector3(),fwd=new THREE.Vector3();
+  if(o.mode==='sphere'){
+    up.copy(latLonToDir(o.lat,o.lon)).normalize();
+    fwd.copy(tangentNorth(o.lat,o.lon)).multiplyScalar(Math.cos(az))
+       .addScaledVector(tangentEast(o.lat,o.lon),Math.sin(az)).normalize();
+  }else{
+    up.set(0,1,0);fwd.set(Math.sin(az),0,Math.cos(az));
+  }
+  const lo=o.thMin!==undefined?o.thMin:EXPL.thMin;
+  const hi=o.thMax!==undefined?o.thMax:EXPL.thMax;
+  const th=Math.max(lo,Math.min(hi,EXPL.orbit0-o.pitch));   // 环绕仰角
+  o.parent.updateWorldMatrix(true,false);      // 父级矩阵刷到当帧，避免相机抖一下
+  const pivot=o.avatar.position.clone().addScaledVector(up,o.pivotY);
+  // 井里空间又窄又深：机位不能再用"绕着小人转"那套 —— 环绕距离一收就钻进人身体里，
+  // 画面上只剩井壁（一片灰）。改成沿井轴退到小人**上方**、再往回带一点，俯视他。
+  let camLocal;
+  if(o.shaftD>0&&o.shaftAxis){
+    // o.tk 是"穿梭动画进行到哪一步"（0~1，由 14c 写）：越到后面镜头收得越紧，
+    // 于是画面上井壁由远及近扑面而来，再被全屏的琥珀色隧道接住。
+    const tk=o.tk||0;
+    const ax=o.shaftAxis;
+    camLocal=pivot.clone()
+      .addScaledVector(ax,Math.max(o.bodyH*1.15,.85)*(1-.62*tk))   // 沿井轴往上退
+      .addScaledVector(fwd,-Math.max(o.bodyH*.42,.30)*(1-.35*tk)); // 再稍微往后一点
+  }else{
+    camLocal=pivot.clone().addScaledVector(up,Math.sin(th)*o.camDist)
+                          .addScaledVector(fwd,-Math.cos(th)*o.camDist);
+  }
+  if(o.shaftD>0&&o.shaftAxis){
+    const ax=o.shaftAxis,along=camLocal.dot(ax);
+    const rx=camLocal.x-ax.x*along,ry=camLocal.y-ax.y*along,rz=camLocal.z-ax.z*along;
+    const rad=Math.hypot(rx,ry,rz),maxR=Math.max(.22,o.shaftR-.16);
+    if(rad>maxR){
+      const k=maxR/rad;
+      camLocal.set(ax.x*along+rx*k,ax.y*along+ry*k,ax.z*along+rz*k);
+    }
+  }
+  o.parent.localToWorld(camLocal);
+  camera.position.copy(camLocal);
+  camera.up.copy(up).transformDirection(o.parent.matrixWorld).normalize();
+  // 抬头看天：机位被地面卡住（th 触到下限）之后，改由抬高注视点把视线继续往上送
+  const free=EXPL.orbit0-lo,extra=o.pitch-free;
+  o.aimLift=extra>0?Math.sin(th)*o.camDist+Math.cos(th)*o.camDist*Math.tan(Math.min(1.25,extra))*.60:0;
+  const aim=pivot.clone().addScaledVector(up,o.aimLift);
+  o.parent.localToWorld(aim);
+  camera.lookAt(aim);
+}
+
+// ======================= 14c. 星系互动：引力井 / 穿星 / 火山 / 外星动物 / 太阳 =======================
+// 这一节把死星从"能走能看"变成"有脾气"：
+//   ① 两座穿星隧道（地球大炮）各带一圈引力场 —— 越靠近井心拉力越强，进到锁定半径里
+//      连 Shift 冲刺也拉不回来，最后被吸进井里一路滑到井底；
+//   ② 落到井底 → 4.2 秒穿梭动画 → 从对跖那一端的井底出来；
+//   ③ 走近火山就喷发（岩浆 / 碎石 / 烟柱），走远自己停；站在火山口里会被岩浆灼烧、
+//      被向上冲走，灼烧期间视野发亮、身上带火；
+//   ④ 地表几只外星动物，探险者靠太近就追 —— 跑得比 Shift 冲刺慢，跑得掉；
+//   ⑤ 星系里补一颗真太阳：死星自转，任一地表点 2 分钟一轮昼夜（白天亮、夜里暗）。
+//
+// 关键：这一节新建的所有网格都打了 userData.noCollide，障碍栅格会跳过它们。
+// 否则动物会被烘进碰撞表变成一堵会走路的墙，岩浆会被烘成天上掉下来的隐形平台。
+// 还有一件容易踩的事：这一节排在"造探险者"之前（底座 → 探险者模块 → 这一节 → 视角/交互），
+// 所以 explorers 这时还是空的 —— 凡是"每个探险者一份"的东西都放到首帧惰性建（见 IX.ready）。
+const IX_C01=v=>v<0?0:v>1?1:v;
+const IX_CL=(v,a,b)=>v<a?a:v>b?b:v;
+const IX_T1=new THREE.Vector3(),IX_T2=new THREE.Vector3(),IX_T3=new THREE.Vector3();
+const IX_QM=new THREE.Quaternion(),IX_M4=new THREE.Matrix4();
+function ixMark(obj){                       // 标"不是实体"：buildField 见到就跳过
+  obj.traverse(ob=>{ob.userData.noCollide=true});
+  return obj;
+}
+// 球面上按经纬度摆放（和 placeExplorer 同一套基：局部 +Y = 法线、+Z = 朝向）
+function ixPlace(obj,lat,lon,heading,groundY){
+  const g=(groundY===undefined?terrainHeight(lat,lon):groundY);
+  const up=IX_T1.copy(latLonToDir(lat,lon));
+  obj.position.copy(up).multiplyScalar(planetRadius+g);
+  const az=D2R(heading);
+  const fwd=IX_T2.copy(tangentNorth(lat,lon)).multiplyScalar(Math.cos(az))
+           .addScaledVector(tangentEast(lat,lon),Math.sin(az)).normalize();
+  const rt=IX_T3.crossVectors(up,fwd).normalize();
+  IX_M4.makeBasis(rt,up,fwd);obj.quaternion.setFromRotationMatrix(IX_M4);
+}
+// 1 局部单位 ≈ 2 米（小人身高 0.75 局部单位 ≈ 1.5 m），HUD 上按米/公里显示
+const IX_M=1.8;
+function ixDist(d){return d*IX_M<1000?(d*IX_M).toFixed(0)+' m':(d*IX_M/1000).toFixed(1)+' km'}
+const IX_ARROW=['↑','↗','→','↘','↓','↙','←','↖'];
+function ixArrow(az){return IX_ARROW[Math.round(((az%360)+360)%360/45)%8]}
+
+// ---------------------------------------------------------------- ⑤ 太阳 / 昼夜
+const DAY={rate:Math.PI*2/120,f:1,sun:1,t:0,expo:.72};
+const SUN_DIR=SUN_POS.clone().normalize();
+(function buildSun(){
+  const g=new THREE.Group();
+  g.position.copy(SUN_DIR).multiplyScalar(690);
+  // 核心 + 两层光晕：纯自发光，并关掉雾（不然 690 单位外的指数雾会把它糊掉）
+  g.add(new THREE.Mesh(new THREE.SphereGeometry(21,20,14),
+    new THREE.MeshBasicMaterial({color:0xfff6e2,fog:false})));
+  const halo=(r,c,o)=>g.add(new THREE.Mesh(new THREE.SphereGeometry(r,18,12),
+    new THREE.MeshBasicMaterial({color:c,transparent:true,opacity:o,
+      blending:THREE.AdditiveBlending,depthWrite:false,fog:false})));
+  halo(34,0xffdca6,.34);halo(58,0xffbe72,.17);halo(96,0xff9a44,.075);
+  // 一层"光冠"：canvas 画的径向渐变贴片，正对相机
+  try{
+    const cv=document.createElement('canvas');cv.width=cv.height=256;
+    const cx=cv.getContext('2d');
+    if(cx&&cx.createRadialGradient){
+      const rg=cx.createRadialGradient(128,128,0,128,128,128);
+      rg.addColorStop(0,'rgba(255,250,236,.95)');rg.addColorStop(.16,'rgba(255,226,164,.55)');
+      rg.addColorStop(.42,'rgba(255,176,92,.18)');rg.addColorStop(1,'rgba(255,140,60,0)');
+      cx.fillStyle=rg;cx.fillRect(0,0,256,256);
+      const sp=new THREE.Sprite(new THREE.SpriteMaterial({map:new THREE.CanvasTexture(cv),
+        transparent:true,blending:THREE.AdditiveBlending,depthWrite:false,fog:false}));
+      sp.scale.setScalar(430);g.add(sp);
+    }
+  }catch(e){}
+  g.userData.noCollide=true;
+  scene.add(g);
+  DAY.obj=g;
+})();
+// 每帧：把"当前看的那个人脚下这一点的日照"算出来。星球在自转、太阳方向固定，
+// 所以同一个地方会自己走进白天、再走进夜里。
+function updateDayNight(dt){
+  DAY.t+=dt;
+  // 自转放在这里（而不是主循环里），整个昼夜就是"一处自洽的逻辑"：
+  // 拖动星球时暂停自转，免得和手感打架。
+  if(!dragging)world.rotation.y+=DAY.rate*dt;
+  const o=activeExp;
+  if(o&&o.mode==='sphere'&&o.parent){
+    o.parent.updateWorldMatrix(true,false);
+    const nw=IX_T1.copy(latLonToDir(o.lat,o.lon))
+      .applyQuaternion(o.parent.getWorldQuaternion(IX_QM)).normalize();
+    DAY.sun=IX_CL(nw.dot(SUN_DIR),-1,1);
+    DAY.f+=(IX_C01((DAY.sun+.12)/.34)-DAY.f)*ease(1.6,dt);   // 0=夜 1=昼
+  }else DAY.f+=(1-DAY.f)*ease(1.6,dt);
+  // 沙尘暴会把天遮暗（DAY.dim 由 ⑦ 每帧写）。这是"同一处自洽的逻辑"的下一层：
+  // 昼夜决定底色，沙尘暴在底色上再压一层。
+  const dm=DAY.dim===undefined?1:DAY.dim;
+  sun.intensity=(1.02+.52*DAY.f)*dm;                         // 白天刺眼、夜里只剩星光
+  hemi.intensity=(.10+.25*DAY.f)*(0.45+.55*dm);
+  fill.intensity=(.05+.15*DAY.f)*dm;
+  rim.intensity=(.04+.10*DAY.f)*dm;
+}
+
+// ---------------------------------------------------------------- ① 穿星隧道的引力场
+// 拉力随"离井心的球面距离"衰减：v(d) = vmax·(1 − d/reach)^exp。
+// 关键数字：走路 2.4、Shift 冲刺 5.6（局部单位/秒）。注意 ① 和 ② 是**两段**：
+//   ① 远场 v(d)：d=4.4 → 4.60（冲刺能走掉）；d=8 → 2.00（走路顶得住）；d=11 → 0
+//   ② 近场"捕获"（capture/hold）：一进井口圈就额外叠一股只向心的硬拉，
+//      横向怎么顶都没用，唯一的结果是被拽过井口、落进竖井。
+//
+// 为什么必须有②：只有①的话，玩家"按住 W 朝前走"会和引力在 d≈3.3 处达成平衡
+// （引力向内 6.19、键盘向外 5.6），人被**钉在井沿上**——既进不去（得正对轴心
+// 才掉得下去）、又出不来（冲刺顶不过拉力），正是"无法逃离引力场、一直被困住"。
+// 实测过：只按①时，玩家能在井沿 2.7 处僵持 15 秒以上。
+const GRAV={reach:11,vmax:10,exp:1.7,lock:4.2,inK:.28,
+  capture:4.0,      // 捕获半径。必须**小于护墙内径 3.8 附近**：不可挣脱的边界正好落在井口里侧，
+                    // 井外（贴着护墙外表面 4.1~5.4）不会形成"顶不动"的死区。
+  hold:7,           // 捕获强度：额外叠加的向心力，按 (1-(d/capture)²) 衰减
+  holdMax:14,       // 合成后的向内速度上限：12 的时候 0.3 秒就被拽到轴心，太像瞬移
+  holdDoc:12.0,     // 一直叠到快贴井底（capD-2）为止——否则人会在检修平台环上停住
+  grace:4.0,        // 余压弹出后这几秒内完全不施力，防止"弹出→又被吸回→再穿梭"死循环
+  graceT:0};
+function shaftPull(o){                       // → {ang,v,d,sh,i,lock} 或 null
+  if(!o.shafts)return null;
+  let best=null;
+  for(let i=0;i<o.shafts.length;i++){
+    const sh=o.shafts[i];
+    const d=D2R(angDistDeg(o.lat,o.lon,sh.lat,sh.lon))*o.R;
+    if(d>=GRAV.reach)continue;
+    const v=GRAV.vmax*Math.pow(IX_C01(1-d/GRAV.reach),GRAV.exp);
+    if(!best||v>best.v)best={v,d,sh,i,ang:geoAz(o.lat,o.lon,sh.lat,sh.lon),lock:d<GRAV.lock};
+  }
+  return best;
+}
+// 井口那一圈挡墙（collar + 土堤环）只留了一个 66° 的豁口，正对地面加速导轨。
+// 豁口在模型里是固定的，但落到经纬度上不好硬算，所以直接拿碰撞场扫出来：
+// 从井心朝 72 个方位各推一条射线，看哪条能一路通到门外——那条就是门。
+// （延迟到第一次穿梭时才调用：F_EARTH 在 views 段才建，提前调会撞上 TDZ。）
+function shaftDoor(sh){
+  if(sh._door!==undefined)return sh._door;
+  const runOf=a=>{
+    let run=0;
+    for(let d=1.2;d<=9.0;d+=.3){
+      const q=stepGeo(sh.lat,sh.lon,a,d);
+      const g=terrainHeight(q[0],q[1]);
+      if(fieldBlocked(F_EARTH,q[0],q[1],planetRadius+g,OB.bodyH,OB.bodyR))return 0;
+      run=d;
+    }
+    return run;
+  };
+  let best=0,bestRun=-1;
+  try{
+    for(let a=0;a<360;a+=5){const r=runOf(a);if(r>bestRun){bestRun=r;best=a}}
+    if(bestRun>0)for(let a=best-5;a<=best+5;a+=1){      // 再按 1° 细扫一遍，把门心找准
+      const r=runOf(a);if(r>bestRun){bestRun=r;best=a}
+    }
+  }catch(e){IX.err=e;bestRun=-1}
+  best=((best%360)+360)%360;
+  if(bestRun<3.2)best=0;                 // 扫不出来就退回"正北"，反正还有兜底
+  sh._door=best;sh._doorRun=bestRun;
+  return best;
+}
+// ---------------------------------------------------------------- ①b 井底余压（穿梭的出口）
+// 要求②说"穿梭到另一端的隧道底部"，所以动画的落点仍然是井底。但井底是个四壁陡峭、
+// 四周还被护圈挡墙围死（只有 66° 豁口）的漏斗：走路 2.4 顶不住井外 5.2 的拉力，
+// 于是"被吸进去 → 穿梭 → 站在对面井底走不出去"就成了一间单向鼠笼。
+// 补上这一节：落到井底那一刻，隧道的余压把人从井里顶上井口、顺豁口甩到门外，
+// 闭环变成"吸进去 → 穿梭 → 弹出来"。同时兜底保证结束后一定在引力圈外。
+const VENT={t:0,dur:3.4,up:17.0,v:8.2,arm:.9,o:null,sh:null,ang:0,safe:0};
+function ventDist(o,sh){return D2R(angDistDeg(o.lat,o.lon,sh.lat,sh.lon))*o.R}
+function startVent(o){
+  const list=o.shafts||[];
+  let sh=null;
+  if(list.length){
+    const idx=(o.shaftIdx!=null&&list[o.shaftIdx])?o.shaftIdx:
+      ((TRANSIT.from+1)%list.length+list.length)%list.length;
+    sh=list[idx];
+  }
+  VENT.t=VENT.dur;VENT.o=o;VENT.sh=sh;VENT.safe=0;
+  VENT.ang=sh?shaftDoor(sh):0;
+  o.locked=false;o.air=true;o.launchV=VENT.up;
+  o.blast=null;o.speed=0;o.emb=0;o.fx=0;o.fy=0;
+  IX.shake=Math.max(IX.shake,.15);
+}
+function updateVent(o,dt){
+  if(VENT.t<=0)return;
+  VENT.t-=dt;
+  if(VENT.o!==o){                                // 中途切走了视角：只倒数，别把力写到别人身上
+    if(VENT.t<=0){VENT.o=null;VENT.sh=null}
+    return;
+  }
+  const u=IX_C01(VENT.t/VENT.dur);
+  // 刚离底时只顾着往上冲，等高过井口（alt 追上井深）才给侧向推力，
+  // 否则会在锥形井壁里横顶，一路蹭着墙上去。
+  const deep=o.shaftD>.01?o.shaftD:0;
+  const out=deep>0?IX_C01((o.alt-(deep-1.2))/VENT.arm):1;
+  const w=(.30+.70*u)*out;
+  if(w>0){
+    o.fx+=Math.sin(D2R(VENT.ang))*VENT.v*w;
+    o.fy+=Math.cos(D2R(VENT.ang))*VENT.v*w;
+  }
+  if(out>0)VENT.safe=1;
+  if(VENT.t<=0){
+    // 兜底：不管玩家怎么往回顶，落地时必须已经**出引力圈**。
+    // 落点直接放到 reach+1.4（拉力为 0），否则站在原地不动二十来秒又会被慢慢拖回去，
+    // 变成"弹出→吸回→再穿梭"的循环，玩家还是会觉得"被困住"。
+    const sh=VENT.sh;
+    if(sh&&o.mode==='sphere'&&o.parent===world){
+      const d=ventDist(o,sh);
+      if(d<GRAV.reach*0.9){
+        const q=stepGeo(sh.lat,sh.lon,VENT.ang,GRAV.reach+1.4);
+        o.lat=q[0];o.lon=q[1];
+        o.gnd=groundRaw(o,o.lat,o.lon);o.footR=o.R+o.gnd;
+        o.air=false;o.launchV=0;o.alt=0;o.fx=0;o.fy=0;
+        o.emb=0;o.burn=0;o.blast=null;
+        placeExplorer(o);
+      }
+    }
+    VENT.o=null;VENT.sh=null;
+    GRAV.graceT=GRAV.grace;      // 给玩家几秒自由时间，别刚弹出又被吸回去
+  }
+}
+// 井口视觉：贴着地形的一圈"被吸进去的尘埃"。引力场本身看不见，就靠这圈尘埃把吸力画出来：
+// 越靠内转速越快、越亮，到井口边缘就消失（然后从外圈重生）。位置每帧用 stepGeo 算，
+// 所以完全贴合起伏的地表。
+const VORTEX=[];
+function buildVortex(sh,idx){
+  const N=120;
+  const pos=new Float32Array(N*3),col=new Float32Array(N*3),st=new Float32Array(N*2);
+  for(let i=0;i<N;i++){st[i*2]=2.4+Math.pow(Math.random(),.7)*(GRAV.reach-2.6);
+    st[i*2+1]=Math.random()*360}
+  const geo=new THREE.BufferGeometry();
+  geo.setAttribute('position',new THREE.BufferAttribute(pos,3));
+  geo.setAttribute('color',new THREE.BufferAttribute(col,3));
+  const mat=new THREE.PointsMaterial({size:.135,vertexColors:true,transparent:true,
+    opacity:.9,blending:THREE.AdditiveBlending,depthWrite:false,sizeAttenuation:true});
+  const pts=new THREE.Points(geo,mat);
+  pts.frustumCulled=false;pts.renderOrder=3;
+  ixMark(pts);world.add(pts);
+  const rec={pts,geo,mat,st,N,pos,col,sh,idx};
+  VORTEX.push(rec);return rec;
+}
+function updateVortex(dt){
+  const o=activeExp;
+  for(let k=0;k<VORTEX.length;k++){
+    const V=VORTEX[k],sh=V.sh,st=V.st,pos=V.pos,col=V.col;
+    for(let i=0;i<V.N;i++){
+      let d=st[i*2],a=st[i*2+1];
+      const k2=IX_C01(1-d/GRAV.reach);
+      d-=GRAV.vmax*Math.pow(k2,GRAV.exp)*dt*1.05;         // 越近拉得越快
+      a+=(90+520*k2*k2)*dt;                               // 越近转得越快
+      if(d<2.15){d=GRAV.reach;a=Math.random()*360}        // 被吞掉 → 从外圈重生
+      st[i*2]=d;st[i*2+1]=a;
+      const p=stepGeo(sh.lat,sh.lon,a,d),dir=latLonToDir(p[0],p[1]);
+      const h=planetRadius+terrainHeight(p[0],p[1])+.10+.55*Math.pow(k2,2.2);
+      pos[i*3]=dir.x*h;pos[i*3+1]=dir.y*h;pos[i*3+2]=dir.z*h;
+      const w=IX_C01(k2*k2*2.6);
+      col[i*3]=.30*w;col[i*3+1]=.56*w;col[i*3+2]=1.0*w;   // 冷白偏蓝：和暖黄的手电筒区分开
+    }
+    V.geo.attributes.position.needsUpdate=true;
+    V.geo.attributes.color.needsUpdate=true;
+    if(o){
+      const dd=D2R(angDistDeg(o.lat,o.lon,sh.lat,sh.lon))*planetRadius;
+      V.mat.opacity=.94*IX_C01((GRAV.reach*1.9-dd)/(GRAV.reach*1.1));
+    }
+  }
+}
+
+// ---------------------------------------------------------------- ② 井底 → 对跖井底 穿梭
+const TRANSIT={on:false,t:0,dur:4.2,from:0,k:0,cool:0,armed:true,mid:.42,moved:false};
+// HUD / 叠加层：整块放在 try 里 —— 无头桩环境里 document 是假的，拿不到真节点就直接放弃
+// （逻辑照跑，只是没有界面）。
+const IX_UI=(function(){
+  try{
+    if(typeof document==='undefined'||!document.body||!document.body.appendChild)return null;
+    const probe=document.createElement('div');
+    if(!probe.style||!probe.appendChild)return null;
+    const root=document.createElement('div');
+    root.className='ix-hud';
+    root.style.cssText='position:fixed;z-index:3;left:52px;top:132px;pointer-events:none;'
+      +'padding:11px 14px;border:1px solid #c8b18933;border-radius:13px;background:#191410a8;'
+      +'color:#b9ac95;font-size:11.5px;line-height:1.8;letter-spacing:.03em;'
+      +'backdrop-filter:blur(8px);min-width:190px;font-variant-numeric:tabular-nums';
+    document.body.appendChild(root);
+    const mk=css=>{const d=document.createElement('div');if(!d.style)throw 0;
+      d.style.cssText=css||'white-space:nowrap';root.appendChild(d);return d};
+    const lines={zone:mk(),time:mk(),stat:mk(),bio:mk(),
+      nav:mk('white-space:nowrap;margin-top:5px;padding-top:5px;border-top:1px solid #c8b18926;color:#a99d88'),
+      tip:mk('white-space:nowrap;margin-top:5px;color:#8d8371;font-size:10.5px')};
+    // 穿梭：全屏琥珀色隧道 + 旋转速度线
+    const tr=document.createElement('div');
+    tr.style.cssText='position:fixed;z-index:40;inset:-32%;pointer-events:none;opacity:0;'
+      +'background:radial-gradient(circle at 50% 50%,#fff6dd 0%,#ffcf85 7%,#e0812c 21%,'
+      +'rgba(90,34,6,.88) 45%,rgba(10,5,2,.97) 74%)';
+    document.body.appendChild(tr);
+    const stk=document.createElement('div');
+    stk.style.cssText='position:absolute;inset:0;opacity:.55;'
+      +'background:repeating-conic-gradient(from 0deg,rgba(255,238,200,0) 0deg 1.6deg,'
+      +'rgba(255,238,200,.85) 1.6deg 2.2deg);'
+      +'-webkit-mask-image:radial-gradient(circle at 50% 50%,transparent 13%,#000 44%,transparent 79%);'
+      +'mask-image:radial-gradient(circle at 50% 50%,transparent 13%,#000 44%,transparent 79%)';
+    tr.appendChild(stk);
+    // 灼烧：暖色暗角
+    const burn=document.createElement('div');
+    burn.style.cssText='position:fixed;z-index:35;inset:0;pointer-events:none;opacity:0;'
+      +'background:radial-gradient(circle at 50% 62%,rgba(255,196,110,0) 26%,'
+      +'rgba(255,132,44,.30) 62%,rgba(140,46,8,.62) 100%)';
+    document.body.appendChild(burn);
+    // 冲击波 / 触地时的白闪
+    const flash=document.createElement('div');
+    flash.style.cssText='position:fixed;z-index:38;inset:0;pointer-events:none;opacity:0;'
+      +'background:radial-gradient(circle at 50% 52%,rgba(255,255,255,.95),rgba(255,246,220,0) 62%)';
+    document.body.appendChild(flash);
+    // 沙尘暴：全屏土黄罩（比雾更直接，遮天蔽日的感觉）
+    const dust=document.createElement('div');
+    dust.style.cssText='position:fixed;z-index:34;inset:0;pointer-events:none;opacity:0;'
+      +'background:linear-gradient(180deg,rgba(168,132,84,.52),rgba(118,90,56,.70))';
+    document.body.appendChild(dust);
+    return {root,lines,tr,stk,burn,flash,dust,last:{}};
+  }catch(e){return null}
+})();
+function ixSet(k,v){
+  const U=IX_UI;if(!U)return;
+  if(U.last[k]===v)return;
+  U.last[k]=v;U.lines[k].textContent=v;
+}
+function startTransit(o,from){
+  if(TRANSIT.on||TRANSIT.cool>0)return;
+  TRANSIT.on=true;TRANSIT.t=0;TRANSIT.from=from|0;TRANSIT.k=0;
+  TRANSIT.moved=false;TRANSIT.cool=1.6;TRANSIT.armed=false;
+  o.locked=true;o.fx=0;o.fy=0;o.air=false;o.launchV=0;o.alt=0;o.speed=0;
+  o.blast=null;o.burn=0;
+  if(IX_UI){IX_UI.tr.style.opacity='0';IX_UI.flash.style.opacity='0'}
+}
+function updateTransit(o,dt){
+  if(TRANSIT.cool>0)TRANSIT.cool=Math.max(0,TRANSIT.cool-dt);
+  if(!TRANSIT.on)return;
+  TRANSIT.t+=dt;
+  const u=TRANSIT.t/TRANSIT.dur;
+  if(u<.20){                                   // 沉入井底：镜头收紧
+    TRANSIT.k=u/.20;
+    if(IX_UI)IX_UI.tr.style.opacity=(u/.20*.22).toFixed(3);
+  }else if(u<.72){                             // 全屏穿行
+    TRANSIT.k=1;
+    const s=(u-.20)/.52;
+    if(IX_UI){
+      IX_UI.tr.style.opacity='1';
+      IX_UI.stk.style.transform='rotate('+(s*s*780).toFixed(1)+'deg) scale('
+        +(1.05+.55*Math.sin(s*3.1)).toFixed(3)+')';
+    }
+    if(!TRANSIT.moved&&s>TRANSIT.mid){         // 中点：把状态挪到对跖井底
+      TRANSIT.moved=true;
+      const sh=o.shafts[(TRANSIT.from+1)%o.shafts.length];
+      o.lat=sh.lat;o.lon=sh.lon;
+      o.gnd=groundRaw(o,o.lat,o.lon);o.footR=o.R+o.gnd;
+      if(IX_UI)IX_UI.flash.style.opacity='1';
+    }
+  }else{                                       // 另一端浮出
+    const s=(u-.72)/.28;
+    TRANSIT.k=1-s;
+    if(IX_UI){
+      IX_UI.tr.style.opacity=(1-s).toFixed(3);
+      IX_UI.flash.style.opacity=(Math.max(0,1-s*3)).toFixed(3);
+    }
+    if(s>=1){
+      TRANSIT.on=false;TRANSIT.k=0;o.locked=false;
+      if(IX_UI){IX_UI.tr.style.opacity='0';IX_UI.flash.style.opacity='0'}
+      startVent(o);                            // 落底 → 余压把人在井里顶出来（见 VENT）
+    }
+  }
+}
+
+// ---------------------------------------------------------------- ③ 火山喷发
+// volcanoes 由底座里的 deadVolcano() 登记。位置一律用**火山组自己的局部坐标**：
+// 局部 +Y 就是法线方向，所以粒子只要在 y 上做抛体运动就自然"往外喷"，
+// 星球转到哪儿都不受影响。注意火山组被 place() 乘过 surfacePropScale，
+// 于是要同时存两套尺寸：*Raw 是组内局部单位（建粒子用），不带 Raw 的是世界局部单位（算距离用）。
+const VOLC={rise:1/2.0,fall:1/3.2,onK:1.0,offK:1.5};
+const GLOW_LAVA=[1.0,.62,.20],GLOW_STONE=0xff5a14,GLOW_SMOKE=[.46,.44,.42];
+function buildVolcano(v){
+  const fx=new THREE.Group();v.group.add(fx);ixMark(fx);
+  v.fx=fx;v.e=0;
+  // 火山口的炽热灯：把喷发"照"到周围岩壁上
+  const light=new THREE.PointLight(0xff6a20,0,9,2);
+  light.position.y=v.rawH*.95;fx.add(light);v.light=light;
+  // 火山口里的一汪岩浆
+  const pool=new THREE.Mesh(new THREE.CircleGeometry(v.rawCraterR*.94,26),
+    new THREE.MeshBasicMaterial({color:0xffb257,transparent:true,opacity:0,
+      blending:THREE.AdditiveBlending,depthWrite:false,side:THREE.DoubleSide}));
+  pool.rotation.x=-Math.PI/2;pool.position.y=v.rawH*.935;fx.add(pool);v.pool=pool;
+  // 岩浆：加法混合的点 → 黑就是透明，用颜色淡出，不用动 alpha
+  const LN=150;
+  const lp=new Float32Array(LN*3),lc=new Float32Array(LN*3);
+  const lg=new THREE.BufferGeometry();
+  lg.setAttribute('position',new THREE.BufferAttribute(lp,3));
+  lg.setAttribute('color',new THREE.BufferAttribute(lc,3));
+  const lava=new THREE.Points(lg,new THREE.PointsMaterial({size:.175,vertexColors:true,
+    transparent:true,blending:THREE.AdditiveBlending,depthWrite:false,sizeAttenuation:true}));
+  lava.frustumCulled=false;fx.add(lava);
+  v.lava=lava;v.lp=lp;v.lc=lc;v.lG=lg;
+  // 碎石：一小堆能翻滚的块
+  const smat=new THREE.MeshStandardMaterial({color:0x2a2320,emissive:GLOW_STONE,
+    emissiveIntensity:0,roughness:.95,flatShading:true});
+  v.stones=[];
+  for(let i=0;i<10;i++){
+    const m=new THREE.Mesh(G.box,smat);
+    m.scale.set(.10+Math.random()*.09,.09+Math.random()*.08,.10+Math.random()*.09);
+    m.visible=false;fx.add(m);v.stones.push(m);
+  }
+  v.smat=smat;
+  // 烟：两层（大团 + 小絮）
+  v.smoke=[];
+  for(let layer=0;layer<2;layer++){
+    const SN=layer?110:80;
+    const sp=new Float32Array(SN*3),sc=new Float32Array(SN*3);
+    const sg=new THREE.BufferGeometry();
+    sg.setAttribute('position',new THREE.BufferAttribute(sp,3));
+    sg.setAttribute('color',new THREE.BufferAttribute(sc,3));
+    const m=new THREE.Points(sg,new THREE.PointsMaterial({size:layer?.75:.34,
+      vertexColors:true,transparent:true,opacity:.5,depthWrite:false,sizeAttenuation:true}));
+    m.frustumCulled=false;fx.add(m);
+    const d=[];
+    for(let i=0;i<SN;i++){
+      const a=Math.random()*Math.PI*2,r=Math.sqrt(Math.random())*v.rawCraterR*.8;
+      const b=Math.random()*Math.PI*2;
+      d.push({x:Math.cos(a)*r,y:v.rawH*(.95+Math.random()*.25),z:Math.sin(a)*r,
+        vx:Math.cos(b)*.35,vz:Math.sin(b)*.35,vy:.55+Math.random()*1.15,
+        t:Math.random()*4.5,life:4.5+Math.random()*3.5});
+    }
+    v.smoke.push({m,p:sp,c:sc,g:sg,n:SN,d});
+  }
+  v.pd=[];
+  v.spawnLava=p=>{
+    const a=Math.random()*Math.PI*2,r=Math.sqrt(Math.random())*v.rawCraterR*.82;
+    p.x=Math.cos(a)*r;p.z=Math.sin(a)*r;p.y=v.rawH*.95;
+    const b=Math.random()*Math.PI*2,sp=.5+Math.random()*1.5;
+    p.vx=Math.cos(b)*sp;p.vz=Math.sin(b)*sp;
+    p.vy=4.0+Math.random()*5.5;p.land=0;
+  };
+  for(let i=0;i<LN;i++){const p={};v.spawnLava(p);v.pd.push(p)}
+  v.sd=[];
+  v.spawnStone=p=>{
+    const a=Math.random()*Math.PI*2,r=Math.sqrt(Math.random())*v.rawCraterR*.7;
+    p.x=Math.cos(a)*r;p.z=Math.sin(a)*r;p.y=v.rawH*.95;
+    const b=Math.random()*Math.PI*2,sp=.4+Math.random()*1.3;
+    p.vx=Math.cos(b)*sp;p.vz=Math.sin(b)*sp;
+    p.vy=3.6+Math.random()*4.6;p.rx=Math.random()*6;p.ry=Math.random()*6;p.land=0;
+  };
+  for(let i=0;i<10;i++){const p={};v.spawnStone(p);v.sd.push(p)}
+}
+function stepEruption(v,dt,near){
+  // 靠近就喷、走远就歇（带迟滞，免得站在边界上抖）
+  const trig=v.craterR*2.0+3.0;
+  const want=(near<trig*VOLC.onK)?1:((near>trig*VOLC.offK)?0:v.e);
+  if(want>v.e)v.e=Math.min(want,v.e+VOLC.rise*dt);
+  else v.e=Math.max(want,v.e-VOLC.fall*dt);
+  const e=v.e;
+  v.light.intensity=2.6*e*e;
+  v.pool.material.opacity=.72*e;
+  v.smat.emissiveIntensity=1.1*e;
+  if(v.plume)v.plume.points.material.opacity=.12+.42*e;
+  const show=e>.02;
+  v.lava.visible=show;
+  v.smoke[0].m.visible=show;v.smoke[1].m.visible=show;
+  if(!show){
+    for(const m of v.stones)m.visible=false;
+    return;
+  }
+  // ---- 岩浆 ----
+  const lp=v.lp,lc=v.lc,floor=v.rawH*.92;
+  for(let i=0;i<v.pd.length;i++){
+    const p=v.pd[i];
+    if(p.land>0){                       // 落地：熄成一颗余烬再淡出
+      p.land-=dt;
+      const k=IX_C01(p.land/2.6)*e;
+      if(p.land<=0)v.spawnLava(p);
+      lc[i*3]=GLOW_LAVA[0]*k;lc[i*3+1]=GLOW_LAVA[1]*k*k;lc[i*3+2]=GLOW_LAVA[2]*k*k*k;
+      continue;
+    }
+    p.vy-=7.5*dt;p.x+=p.vx*dt;p.y+=p.vy*dt;p.z+=p.vz*dt;
+    if(p.y<=floor){p.y=floor;p.land=2.6}
+    const k=IX_C01(.35+p.vy*.16);       // 初速大 = 明亮黄白，快落地 = 暗红
+    lc[i*3]=GLOW_LAVA[0]*(.45+.55*k);lc[i*3+1]=GLOW_LAVA[1]*k;lc[i*3+2]=GLOW_LAVA[2]*k*k;
+    if(p.y>v.rawH*6.5||Math.abs(p.x)>v.rawBaseR*3.2)v.spawnLava(p);
+  }
+  v.lG.attributes.position.needsUpdate=true;
+  v.lG.attributes.color.needsUpdate=true;
+  // ---- 碎石 ----
+  for(let i=0;i<v.sd.length;i++){
+    const p=v.sd[i],m=v.stones[i];
+    if(p.land>0){p.land-=dt}
+    else{
+      p.vy-=6.6*dt;p.x+=p.vx*dt;p.y+=p.vy*dt;p.z+=p.vz*dt;
+      p.ry+=dt*3.4;p.rx+=dt*2.1;
+      if(p.y<=floor){p.y=floor;p.land=2.2}
+      if(p.y>v.rawH*7||Math.abs(p.x)>v.rawBaseR*3.4)v.spawnStone(p);
+    }
+    m.position.set(p.x,p.y,p.z);m.rotation.set(p.rx,p.ry,0);
+    m.visible=true;
+  }
+  // ---- 烟 ----
+  for(let L=0;L<2;L++){
+    const S=v.smoke[L],sp=S.p,sc=S.c;
+    for(let i=0;i<S.n;i++){
+      const d=S.d[i];
+      d.t+=dt;
+      if(d.t>d.life){
+        const a=Math.random()*Math.PI*2,r=Math.sqrt(Math.random())*v.rawCraterR*.8;
+        d.x=Math.cos(a)*r;d.z=Math.sin(a)*r;d.y=v.rawH*(.95+Math.random()*.2);
+        d.t=0;d.life=4.5+Math.random()*3.5;
+        const b=Math.random()*Math.PI*2;
+        d.vx=Math.cos(b)*.35;d.vz=Math.sin(b)*.35;d.vy=.55+Math.random()*1.15;
+      }
+      const g=dt*(.35+1.5*e);
+      d.x+=d.vx*g;d.y+=d.vy*g;d.z+=d.vz*g;
+      d.vx*=1-.35*dt;d.vz*=1-.35*dt;d.vy*=1-.12*dt;
+      const f=IX_C01(d.t/Math.max(.001,d.life));
+      const aa=(.16+.72*e)*(1-f)*(1-f);
+      sp[i*3]=d.x;sp[i*3+1]=d.y;sp[i*3+2]=d.z;
+      sc[i*3]=GLOW_SMOKE[0]*aa;sc[i*3+1]=GLOW_SMOKE[1]*aa*(1-.12*f);
+      sc[i*3+2]=GLOW_SMOKE[2]*aa*(1-.1*f);
+    }
+    S.g.attributes.position.needsUpdate=true;
+    S.g.attributes.color.needsUpdate=true;
+    S.m.material.opacity=.55*e;
+  }
+}
+// 站在火山口里 → 灼烧 + 被岩浆冲走
+const BURN_T=7.0;
+function volcanoTouch(o,dt){
+  for(const v of volcanoes){
+    if(v.e<.35)continue;
+    const d=D2R(angDistDeg(o.lat,o.lon,v.lat,v.lon))*o.R;
+    if(d>v.craterR*1.12)continue;
+    if(o.alt>1.1)continue;                                   // 飞在火山口上方不算
+    o.burn=BURN_T;o.burnFlick=1;
+    if(!o.air||o.launchV<2.2){o.air=true;o.launchV=6.6}      // 向上冲走
+    o.blast={t:.7,ang:geoAz(v.lat,v.lon,o.lat,o.lon),v:3.4}; // 同时被往外甩
+  }
+}
+
+// ---------------------------------------------------------------- ④ 外星动物
+const ANIMALS=[];
+const ALIEN={
+  aggro:3.9,lose:10.5,run:3.75,walk:.95,bodyH:.8,bodyR:.30,
+  spots:[[-4,53],[11,30],[6,49],[-27,-45],[31,90],[51,-11],[63,-26]],
+  hdg:[70,200,300,140,20,250,95]
+};
+function makeAlien(){
+  const g=new THREE.Group();
+  const shell=new THREE.MeshStandardMaterial({color:0x1d2422,roughness:.62,metalness:.15,flatShading:true});
+  const plate=new THREE.MeshStandardMaterial({color:0x2b3532,roughness:.5,metalness:.25,flatShading:true});
+  const glowM=new THREE.MeshStandardMaterial({color:0x08120f,emissive:0x36f2c6,
+    emissiveIntensity:.8,roughness:.35,metalness:0});
+  const body=new THREE.Mesh(new THREE.SphereGeometry(.5,12,9),plate);
+  body.scale.set(.64,.50,.96);body.position.y=.58;body.castShadow=true;g.add(body);
+  const hump=new THREE.Mesh(new THREE.SphereGeometry(.5,10,8),shell);
+  hump.scale.set(.50,.44,.62);hump.position.set(0,.72,-.10);hump.castShadow=true;g.add(hump);
+  const head=new THREE.Mesh(G.box,shell);
+  head.scale.set(.36,.28,.44);head.position.set(0,.60,.50);head.castShadow=true;g.add(head);
+  const jaw=new THREE.Mesh(G.box,plate);
+  jaw.scale.set(.30,.10,.36);jaw.position.set(0,.42,.52);g.add(jaw);
+  for(let i=0;i<3;i++){                       // 三只发光眼
+    const e=new THREE.Mesh(new THREE.SphereGeometry(.055,8,6),glowM);
+    e.position.set((i-1)*.115,.645,.72);g.add(e);
+  }
+  for(let i=0;i<4;i++){                       // 背上的发光棘刺
+    const s=new THREE.Mesh(new THREE.ConeGeometry(.055,.24,5),glowM);
+    s.position.set(0,.90-i*.03,-.30+i*.22);s.rotation.x=-.25;g.add(s);
+  }
+  const legs=[];
+  for(const h of [[-.30,.30],[-.30,-.32],[.30,.30],[.30,-.32]]){
+    const t=new THREE.Mesh(G.box,shell);
+    t.scale.set(.085,-.40,.085);t.position.set(h[0],.50,h[1]);   // 负高度 = 往下长
+    t.castShadow=true;g.add(t);legs.push(t);
+  }
+  const tail=new THREE.Mesh(G.box,plate);
+  tail.scale.set(.10,.10,.40);tail.position.set(0,.62,-.62);tail.rotation.x=.32;g.add(tail);
+  const tail2=new THREE.Mesh(G.box,shell);
+  tail2.scale.set(.07,.07,.30);tail2.position.set(0,.74,-.88);g.add(tail2);
+  g.userData={glowM,legs,head,jaw,tail,tail2,hump,body};
+  return g;
+}
+function buildAnimals(){
+  for(let i=0;i<ALIEN.spots.length;i++){
+    const sp=ALIEN.spots[i],sc=(.92+Math.random()*.26)*surfacePropScale*1.25;
+    const g=makeAlien();g.scale.setScalar(sc);ixMark(g);world.add(g);
+    const rec={lat:sp[0],lon:sp[1],hdg:ALIEN.hdg[i%ALIEN.hdg.length],yaw:0,
+      phase:Math.random()*6.283,spd:0,g:g,sc:sc,run:ALIEN.run*(.90+Math.random()*.22),
+      state:'idle',t:Math.random()*3,lost:0,recoil:0,recoilAng:0,recoilSpd:0,snap:0};
+    rec.yaw=rec.hdg;
+    ixPlace(g,rec.lat,rec.lon,rec.hdg);
+    ANIMALS.push(rec);
+  }
+}
+function animalMove(a,ang,dist){
+  const q=stepGeo(a.lat,a.lon,ang,dist);
+  q[0]=IX_CL(q[0],-89.5,89.5);
+  const g=terrainHeight(q[0],q[1]);
+  if(fieldBlocked(F_EARTH,q[0],q[1],planetRadius+g,ALIEN.bodyH*a.sc,
+    ALIEN.bodyR*a.sc,null))return false;
+  a.lat=q[0];a.lon=q[1];return true;
+}
+function updateAnimals(dt){
+  const o=activeExp;
+  const ref=(o&&o.mode==='sphere'&&o.parent===world)?o:null;
+  let near=1e9,count=0;
+  for(const a of ANIMALS){
+    let d=1e9,az=0;
+    if(ref){d=D2R(angDistDeg(a.lat,a.lon,ref.lat,ref.lon))*planetRadius;
+      az=geoAz(a.lat,a.lon,ref.lat,ref.lon)}
+    if(d<ALIEN.lose)count++;
+    if(d<near)near=d;
+    if(a.recoil>0){                            // 被冲击波震退
+      a.recoil-=dt;
+      if(!animalMove(a,a.recoilAng,a.recoilSpd*dt))a.recoil*=.4;
+    }else if(ref&&d<ALIEN.aggro){
+      a.state='hunt';a.lost=0;
+    }else if(a.state==='hunt'){
+      a.lost+=dt;
+      if(a.lost>2.2||d>ALIEN.lose){a.state='idle';a.t=0}
+    }
+    if(a.recoil<=0){
+      let tgt;
+      if(a.state==='hunt'&&ref){
+        tgt=az;a.spd+=(a.run-a.spd)*ease(3.2,dt);
+        if(d<1.5)a.snap=Math.min(1,a.snap+dt*4);else a.snap=Math.max(0,a.snap-dt*3);
+      }else{
+        a.t-=dt;
+        if(a.t<=0){a.t=1.8+Math.random()*3.4;a.hdg+=(Math.random()-.5)*190}
+        tgt=a.hdg;a.spd+=(ALIEN.walk-a.spd)*ease(2.4,dt);a.snap=Math.max(0,a.snap-dt*3);
+      }
+      a.yaw+=shortestDeg(a.yaw,tgt)*ease(a.state==='hunt'?6:2.2,dt);
+      const step=a.spd*dt;
+      if(!animalMove(a,a.yaw,step)){           // 被道具挡住 → 顺着切向蹭
+        if(!animalMove(a,a.yaw+35,step*.6))animalMove(a,a.yaw-35,step*.6);
+      }
+      a.phase+=a.spd*(a.state==='hunt'?3.5:2.2)*dt;
+    }
+    ixPlace(a.g,a.lat,a.lon,a.yaw);
+    const ud=a.g.userData;
+    const amp=Math.min(.95,.25+a.spd*.18);
+    ud.legs[0].rotation.x=Math.sin(a.phase)*amp;
+    ud.legs[3].rotation.x=Math.sin(a.phase)*amp;
+    ud.legs[1].rotation.x=-Math.sin(a.phase)*amp;
+    ud.legs[2].rotation.x=-Math.sin(a.phase)*amp;
+    const bob=Math.abs(Math.sin(a.phase))*.035*amp;
+    ud.body.position.y=.58+bob;ud.hump.position.y=.72+bob;
+    ud.head.position.y=.60+bob;ud.head.rotation.x=-a.snap*.5;
+    ud.jaw.rotation.x=a.snap*.85;
+    ud.tail.rotation.y=Math.sin(a.phase*.6)*.28;
+    // 夜里生物荧光更亮（"活物"的昼夜线索）
+    ud.glowM.emissiveIntensity=.30+1.55*(1-DAY.f)+(a.state==='hunt'?.75:0);
+    // 扑上来时轻轻把人顶一下，有"被撞到"的实感
+    if(ref&&a.snap>.6&&d<1.35){
+      const push=D2R(geoAz(a.lat,a.lon,ref.lat,ref.lon));
+      ref.fx+=Math.sin(push)*1.7;ref.fy+=Math.cos(push)*1.7;
+    }
+  }
+  IX.bioCount=count;IX.bioNear=near;
+}
+
+// ---------------------------------------------------------------- Q：脉冲冲击波（多出来的一件互动）
+// 给被追的人一个反制手段：一圈膨胀的球壳 + 把附近的外星动物震退。
+const PULSE={cd:0,cool:5.0,r:5.2};
+const PULSES=[];
+function buildPulse(o){
+  const m=new THREE.Mesh(new THREE.SphereGeometry(1,22,14),
+    new THREE.MeshBasicMaterial({color:0xcfe6ff,transparent:true,opacity:0,
+      blending:THREE.AdditiveBlending,depthWrite:false,side:THREE.DoubleSide,fog:false}));
+  m.visible=false;ixMark(m);world.add(m);
+  const rec={m,t:-1,o};PULSES.push(rec);return rec;
+}
+function firePulse(o){
+  if(!o||o.mode!=='sphere'||PULSE.cd>0||!o.pulse)return false;
+  PULSE.cd=PULSE.cool;
+  o.pulse.t=0;
+  for(const a of ANIMALS){
+    const d=D2R(angDistDeg(a.lat,a.lon,o.lat,o.lon))*planetRadius;
+    if(d>PULSE.r)continue;
+    a.recoil=.85;a.recoilAng=geoAz(o.lat,o.lon,a.lat,a.lon);
+    a.recoilSpd=7.2*(1-d/PULSE.r)+2.2;
+    a.state='idle';a.t=1.5;
+  }
+  IX.shake=Math.max(IX.shake,.09);
+  return true;
+}
+function updatePulses(dt){
+  if(PULSE.cd>0)PULSE.cd=Math.max(0,PULSE.cd-dt);
+  for(const rec of PULSES){
+    if(rec.t<0)continue;
+    rec.t+=dt;
+    const u=rec.t/.78;
+    if(u>=1){rec.t=-1;rec.m.visible=false;continue}
+    const o=rec.o;
+    IX_T1.copy(latLonToDir(o.lat,o.lon)).multiplyScalar(o.R+o.gnd+o.alt);
+    rec.m.position.copy(IX_T1);
+    rec.m.scale.setScalar(Math.max(.2,PULSE.r*Math.pow(u,.55)));
+    rec.m.material.opacity=.42*(1-u)*(1-u);
+    rec.m.visible=true;
+  }
+}
+
+// ---------------------------------------------------------------- 灼烧：身上火苗 + 视野发亮
+const FLAMES=[];
+function buildFlame(o){
+  const N=34;
+  const pos=new Float32Array(N*3),col=new Float32Array(N*3);
+  const geo=new THREE.BufferGeometry();
+  geo.setAttribute('position',new THREE.BufferAttribute(pos,3));
+  geo.setAttribute('color',new THREE.BufferAttribute(col,3));
+  const m=new THREE.Points(geo,new THREE.PointsMaterial({size:.09,vertexColors:true,
+    transparent:true,opacity:.95,blending:THREE.AdditiveBlending,depthWrite:false}));
+  m.frustumCulled=false;m.visible=false;
+  const light=new THREE.PointLight(0xff7a22,0,3.4,2);
+  light.position.set(0,.42,0);o.avatar.add(light);
+  o.avatar.add(m);
+  const d=[];
+  for(let i=0;i<N;i++)d.push({x:0,y:0,z:0,vy:0,t:0,life:0,c:0});
+  const rec={m,geo,pos,col,d,N,light,o};
+  FLAMES.push(rec);return rec;
+}
+function updateFlames(dt){
+  const now=(typeof performance!=='undefined'&&performance.now)?performance.now():Date.now();
+  for(const F of FLAMES){
+    const o=F.o,k=IX_C01(o.burn/BURN_T),on=k>0;
+    F.m.visible=on||IX_C01(o.burnFlick||0)>0;
+    F.light.intensity=on?1.6*(.6+.4*Math.sin(now*.02)):0;
+    if(!F.m.visible)continue;
+    const pos=F.pos,col=F.col;
+    for(let i=0;i<F.N;i++){
+      const d=F.d[i];
+      d.t+=dt;
+      if(d.t>d.life){
+        d.t=0;d.life=.32+Math.random()*.44;
+        const a=Math.random()*Math.PI*2,r=.06+Math.random()*.19;
+        d.x=Math.cos(a)*r;d.z=Math.sin(a)*r;d.y=Math.random()*.30;
+        d.vy=.55+Math.random()*1.0;
+      }
+      d.y+=d.vy*dt;d.x*=1-.9*dt;d.z*=1-.9*dt;
+      const f=1-d.t/Math.max(.001,d.life);
+      pos[i*3]=d.x;pos[i*3+1]=d.y;pos[i*3+2]=d.z;
+      const w=f*f*(on?1:0);
+      col[i*3]=1.0*w;col[i*3+1]=.42*w*w;col[i*3+2]=.08*w*w*w;
+    }
+    F.geo.attributes.position.needsUpdate=true;
+    F.geo.attributes.color.needsUpdate=true;
+  }
+}
+
+
+// ---------------------------------------------------------------- ⑥ 流星雨 / 陨石坠落
+// 死星被一整条碎屑带扫过：每 24~46 秒来一波，多数在头顶烧掉，偶尔一颗真的砸下来。
+// 砸下来会：白闪 + 震屏 + 尘埃抛射 + 地上留一圈焦痕（约 26 秒后被风抹平）；
+// 落点附近的人还会被掀翻、被燎到。
+const MET={next:12,list:[],scars:[],warn:0,flash:0,lastLL:null,count:0};
+const MET_MAT_C=new THREE.MeshBasicMaterial({color:0xfff3d6,fog:false});
+const MET_MAT_G=new THREE.MeshBasicMaterial({color:0xffa844,transparent:true,opacity:.42,
+  blending:THREE.AdditiveBlending,depthWrite:false,fog:false});
+const MET_GEO_C=new THREE.SphereGeometry(.26,9,7);
+const MET_GEO_G=new THREE.SphereGeometry(.78,9,7);
+const MET_TN=26,MET_DEB_N=80;
+const MET_CFG={nearR:22,blastR:9.5,minGap:24,maxGap:46};
+// 焦痕：一圈同心环，**逐顶点贴到真实地形上**（球面上平圆盘会沉进地里），
+// 颜色写进顶点色：中心炭黑 → 暗红 → 最外一圈仍在发红的翻土边。
+// 用不带光照的顶点色材质，白天被太阳照亮、夜里漆黑，都能看清这枚疤。
+const MET_SCAR_RINGS=[0,.34,.60,.80,.93,1.02];
+// 顶点色按"线性值→屏幕 sRGB"抬亮过，数值要压得很低，屏幕上才是黑炭
+const MET_SCAR_COL=[[.004,.003,.002],[.010,.006,.004],[.030,.013,.007],
+                    [.16,.055,.015],[1.0,.42,.10]];
+function metScarGeo(la,lo,rad){
+  const SEG=26,n=MET_SCAR_RINGS.length;
+  const pos=new Float32Array(n*SEG*3),col=new Float32Array(n*SEG*3),idx=[];
+  for(let r=0;r<n;r++){
+    const t=MET_SCAR_RINGS[r],rr=t*rad;
+    const c=MET_SCAR_COL[Math.min(r,MET_SCAR_COL.length-1)];
+    for(let i=0;i<SEG;i++){
+      const q=stepGeo(la,lo,i/SEG*360,rr);
+      const d=latLonToDir(q[0],q[1]);
+      const h=planetRadius+terrainHeight(q[0],q[1])+.075;   // 抬 0.075 防止被地形面片切进去
+      const k=(r*SEG+i)*3;
+      pos[k]=d.x*h;pos[k+1]=d.y*h;pos[k+2]=d.z*h;
+      col[k]=c[0];col[k+1]=c[1];col[k+2]=c[2];
+    }
+  }
+  for(let r=0;r<n-1;r++)for(let i=0;i<SEG;i++){
+    const i2=(i+1)%SEG,ra=r*SEG,rb=(r+1)*SEG;
+    idx.push(ra+i,ra+i2,rb+i, ra+i2,rb+i2,rb+i);
+  }
+  const g=new THREE.BufferGeometry();
+  g.setAttribute('position',new THREE.BufferAttribute(pos,3));
+  g.setAttribute('color',new THREE.BufferAttribute(col,3));
+  g.setIndex(idx);g.computeVertexNormals();
+  return g;
+}
+function metScar(la,lo,rad){
+  const mesh=new THREE.Mesh(metScarGeo(la,lo,rad),
+    new THREE.MeshBasicMaterial({vertexColors:true,transparent:true,opacity:.92,
+      depthWrite:false,side:THREE.DoubleSide}));
+  ixMark(mesh);world.add(mesh);           // 顶点已是 world 局部坐标 → 挂在原点即可
+  const rec={g:mesh,m:mesh.material,t:0,life:26};
+  MET.scars.push(rec);
+  while(MET.scars.length>7){
+    const old=MET.scars.shift();
+    world.remove(old.g);old.m.dispose();old.g.geometry.dispose();
+  }
+  return rec;
+}
+// 一颗流星：核心 + 光晕 + 26 点尾迹 + 落地后抛射的尘埃
+function spawnMeteor(o){
+  let la,lo;
+  if(o&&o.mode==='sphere'&&Math.random()<.68){     // 偏爱落在探险者附近，看得见才好看
+    const q=stepGeo(o.lat,o.lon,Math.random()*360,3.5+Math.random()*(MET_CFG.nearR-3.5));
+    la=q[0];lo=q[1];
+  }else{la=(Math.random()*2-1)*78;lo=Math.random()*360-180}
+  const dir=latLonToDir(la,lo);
+  const to=dir.clone().multiplyScalar(planetRadius+terrainHeight(la,lo));
+  const east=tangentEast(la,lo),north=tangentNorth(la,lo),a=Math.random()*Math.PI*2;
+  const side=east.clone().multiplyScalar(Math.cos(a)).addScaledVector(north,Math.sin(a));
+  const from=dir.clone().multiplyScalar(planetRadius+118)
+    .addScaledVector(side,34+Math.random()*46).addScaledVector(east,(Math.random()-.5)*30);
+  const v=to.clone().sub(from).normalize().multiplyScalar(46+Math.random()*22);
+  const grp=new THREE.Group();
+  grp.add(new THREE.Mesh(MET_GEO_C,MET_MAT_C));
+  grp.add(new THREE.Mesh(MET_GEO_G,MET_MAT_G));
+  grp.position.copy(from);grp.frustumCulled=false;
+  ixMark(grp);world.add(grp);
+  const tp=new Float32Array(MET_TN*3),tc=new Float32Array(MET_TN*3);
+  for(let i=0;i<MET_TN;i++){
+    tp[i*3]=from.x;tp[i*3+1]=from.y;tp[i*3+2]=from.z;
+    const w=1-i/MET_TN;tc[i*3]=1.0*w;tc[i*3+1]=.62*w*w;tc[i*3+2]=.22*w*w*w;
+  }
+  const tg=new THREE.BufferGeometry();
+  tg.setAttribute('position',new THREE.BufferAttribute(tp,3));
+  tg.setAttribute('color',new THREE.BufferAttribute(tc,3));
+  const trail=new THREE.Points(tg,new THREE.PointsMaterial({size:.30,vertexColors:true,
+    transparent:true,opacity:.9,blending:THREE.AdditiveBlending,depthWrite:false,
+    sizeAttenuation:true}));
+  trail.frustumCulled=false;ixMark(trail);world.add(trail);
+  const dp=new Float32Array(MET_DEB_N*3),dc=new Float32Array(MET_DEB_N*3),dd=[];
+  for(let i=0;i<MET_DEB_N;i++)dd.push({x:0,y:0,z:0,vx:0,vy:0,vz:0,t:0,life:1});
+  const dg=new THREE.BufferGeometry();
+  dg.setAttribute('position',new THREE.BufferAttribute(dp,3));
+  dg.setAttribute('color',new THREE.BufferAttribute(dc,3));
+  const deb=new THREE.Points(dg,new THREE.PointsMaterial({size:.16,vertexColors:true,
+    transparent:true,opacity:.95,blending:THREE.AdditiveBlending,depthWrite:false,
+    sizeAttenuation:true}));
+  deb.frustumCulled=false;deb.visible=false;ixMark(deb);world.add(deb);
+  const rec={grp,trail,deb,from,to,v,dir,east,north,la,lo,
+    tp,tg,dp,dc,dg,dd,life:0,light:null,lightT:-1,landed:false,dead:false};
+  MET.list.push(rec);MET.warn=1.6;MET.count++;
+  return rec;
+}
+function metImpact(M){
+  MET.flash=1;
+  const q=explorers.find(e=>e.mode==='sphere'&&e.parent===world);
+  let near=1e9;
+  if(q)near=D2R(angDistDeg(q.lat,q.lon,M.la,M.lo))*q.R;
+  IX.shake=Math.max(IX.shake,Math.max(.12,.42*(1-near/34)));
+  const light=new THREE.PointLight(0xffc070,0,30,2);
+  light.position.copy(M.to);ixMark(light);world.add(light);
+  M.light=light;M.lightT=.85;
+  metScar(M.la,M.lo,1.15+Math.random()*.9);
+  for(let i=0;i<MET_DEB_N;i++){
+    const d=M.dd[i],b=Math.random()*Math.PI*2,sp=1.4+Math.random()*4.6;
+    d.x=0;d.y=0;d.z=0;
+    d.vx=Math.cos(b)*sp;d.vy=3.2+Math.random()*5.4;d.vz=Math.sin(b)*sp;
+    d.t=0;d.life=1.5+Math.random()*1.6;
+  }
+  M.deb.visible=true;
+  for(const o of explorers){
+    if(o.mode!=='sphere'||o.parent!==world)continue;
+    const d=D2R(angDistDeg(o.lat,o.lon,M.la,M.lo))*o.R;
+    if(d>MET_CFG.blastR)continue;
+    const k=1-d/MET_CFG.blastR;
+    o.burn=Math.max(o.burn,BURN_T*Math.min(1,k*1.5));      // 太近也会被燎到
+    o.burnFlick=1;
+    o.air=true;o.launchV=Math.max(o.launchV,3.2+6.4*k);
+    o.blast={t:.8,ang:geoAz(M.la,M.lo,o.lat,o.lon),v:3.0+3.0*k};
+  }
+  MET.lastLL=[M.la,M.lo];
+}
+function updateMeteors(dt,o){
+  MET.next-=dt;
+  if(MET.next<=0){
+    MET.next=MET_CFG.minGap+Math.random()*(MET_CFG.maxGap-MET_CFG.minGap);
+    const n=1+(Math.random()<.34?1:0)+(Math.random()<.12?1:0);
+    for(let i=0;i<n;i++)ixLater(()=>spawnMeteor(activeExp),i*(.15+Math.random()*.35));
+  }
+  if(MET.warn>0)MET.warn=Math.max(0,MET.warn-dt);
+  if(MET.flash>0)MET.flash=Math.max(0,MET.flash-dt*2.4);
+  for(let i=MET.list.length-1;i>=0;i--){
+    const M=MET.list[i];
+    if(!M.landed){
+      M.life+=dt;
+      const step=M.v.length()*dt;
+      M.grp.position.addScaledVector(M.v,dt);
+      const rem=M.to.distanceTo(M.grp.position);
+      M.landed=(rem<=step||rem>M.to.distanceTo(M.from)||M.life>7);
+      const tp=M.tp;
+      for(let k=MET_TN-1;k>0;k--){
+        tp[k*3]=tp[(k-1)*3];tp[k*3+1]=tp[(k-1)*3+1];tp[k*3+2]=tp[(k-1)*3+2];
+      }
+      tp[0]=M.grp.position.x;tp[1]=M.grp.position.y;tp[2]=M.grp.position.z;
+      M.tg.attributes.position.needsUpdate=true;
+      if(M.landed){
+        M.grp.position.copy(M.to);
+        M.grp.visible=false;M.trail.visible=false;
+        metImpact(M);
+      }
+    }
+    if(M.lightT>=0){
+      M.lightT-=dt;
+      M.light.intensity=M.lightT>0?26*M.lightT*M.lightT:0;
+      if(M.lightT<=0){world.remove(M.light);M.light=null}
+    }
+    if(M.deb.visible){
+      let alive=0;
+      for(let k=0;k<MET_DEB_N;k++){
+        const d=M.dd[k];
+        d.t+=dt;
+        if(d.t<d.life){
+          alive++;
+          d.vy-=9.5*dt;d.x+=d.vx*dt;d.y+=d.vy*dt;d.z+=d.vz*dt;
+          if(d.y<0){d.y=0;d.vy*=-.32;d.vx*=.6;d.vz*=.6}
+        }
+        const f=Math.max(0,1-d.t/Math.max(.001,d.life)),w=f*f;
+        const t0=M.to,e=M.east,n=M.north,u=M.dir;
+        M.dp[k*3]  =t0.x+e.x*d.x+n.x*d.z+u.x*d.y;
+        M.dp[k*3+1]=t0.y+e.y*d.x+n.y*d.z+u.y*d.y;
+        M.dp[k*3+2]=t0.z+e.z*d.x+n.z*d.z+u.z*d.y;
+        M.dc[k*3]=1.0*w;M.dc[k*3+1]=.66*w*w;M.dc[k*3+2]=.28*w*w*w;
+      }
+      M.dg.attributes.position.needsUpdate=true;
+      M.dg.attributes.color.needsUpdate=true;
+      if(!alive)M.deb.visible=false;
+    }
+    if(M.landed&&M.lightT<0&&!M.deb.visible){
+      world.remove(M.deb);M.dg.dispose();M.tg.dispose();
+      MET.list.splice(i,1);
+    }
+  }
+  for(let i=MET.scars.length-1;i>=0;i--){
+    const s=MET.scars[i];
+    s.t+=dt;
+    const f=Math.max(0,1-s.t/s.life);
+    s.m.opacity=.92*Math.min(1,f*1.6);        // 前 60% 生命保持浓重，最后才淡掉
+    if(f<=0){world.remove(s.g);s.m.dispose();s.g.geometry.dispose();MET.scars.splice(i,1)}
+  }
+}
+// 极简"延时调用"：只在 updateInteractions 里推进，不依赖 setTimeout（无头环境更稳）
+const IX_TASKS=[];
+function ixLater(fn,sec){IX_TASKS.push({fn,t:sec})}
+function updateTasks(dt){
+  for(let i=IX_TASKS.length-1;i>=0;i--){
+    const t=IX_TASKS[i];t.t-=dt;
+    if(t.t<=0){IX_TASKS.splice(i,1);try{t.fn()}catch(e){}}
+  }
+}
+
+// ---------------------------------------------------------------- ⑦ 沙尘暴
+// 一颗会自己漂移的沙尘暴。进去之后：雾变浓、太阳被遮暗、全屏蒙一层土黄，
+// 人还被切向的风推着走 —— 想走直线得顶着风。
+const STORM={next:30,on:false,lat:0,lon:0,t:0,life:0,r:15,local:0,away:1e9,az:0,
+  drift:6,dAz:0,gust:1,cloud:null,pts:null,st:null,N:0,bills:null,wall:0};
+const FOG0=.00125;
+// 柔和圆斑贴片：给"大团沙尘"用（细尘只是一粒粒亮点，远看不成形）
+let STORM_TEX=null,STORM_MADE=false;
+function stormPuffTex(){
+  if(!STORM_MADE){
+    STORM_MADE=true;STORM_TEX=null;
+    try{
+      const cv=document.createElement('canvas');cv.width=cv.height=64;
+      const cx=cv.getContext('2d');
+      if(cx&&cx.createRadialGradient){
+        const rg=cx.createRadialGradient(32,32,0,32,32,32);
+        rg.addColorStop(0,'rgba(255,246,228,.95)');
+        rg.addColorStop(.38,'rgba(226,198,158,.55)');
+        rg.addColorStop(.72,'rgba(196,166,126,.18)');
+        rg.addColorStop(1,'rgba(180,150,112,0)');
+        cx.fillStyle=rg;cx.fillRect(0,0,64,64);
+        STORM_TEX=new THREE.CanvasTexture(cv);
+      }
+    }catch(e){STORM_TEX=null}
+  }
+  return STORM_TEX;
+}
+function buildStormCloud(){
+  const N=200;
+  const pos=new Float32Array(N*3),col=new Float32Array(N*3),st=new Float32Array(N*3);
+  for(let i=0;i<N;i++){
+    st[i*3]=Math.random()*360;                       // 方位角（度）
+    st[i*3+1]=Math.sqrt(Math.random());              // 半径系数
+    st[i*3+2]=Math.random();                         // 高度系数
+  }
+  const g=new THREE.BufferGeometry();
+  g.setAttribute('position',new THREE.BufferAttribute(pos,3));
+  g.setAttribute('color',new THREE.BufferAttribute(col,3));
+  const m=new THREE.Points(g,new THREE.PointsMaterial({size:.42,vertexColors:true,
+    transparent:true,opacity:.5,depthWrite:false,sizeAttenuation:true}));
+  m.frustumCulled=false;m.visible=false;ixMark(m);world.add(m);
+  STORM.cloud=m;STORM.pts=pos;STORM.st=st;STORM.N=N;
+  // 「沙尘团」：3 片柔和圆斑公告板。细尘只是一粒粒亮点，远看不成形；
+  // 用 Sprite（和太阳光冠同一套 canvas 径向渐变纹理）才有"那边天色发黄"的一眼。
+  STORM.bills=[];
+  const tx=stormPuffTex();
+  for(let i=0;i<3;i++){
+    const sp=new THREE.Sprite(new THREE.SpriteMaterial({map:tx,color:0xc9a678,
+      transparent:true,opacity:0,depthWrite:false}));
+    sp.visible=false;ixMark(sp);world.add(sp);
+    STORM.bills.push(sp);
+  }
+}
+function stormStart(o){
+  const la=(Math.random()*2-1)*60;
+  let lo=o&&o.mode==='sphere'&&Math.random()<.6?(o.lon+(Math.random()*2-1)*70)
+    :(Math.random()*360-180);
+  while(lo>180)lo-=360;while(lo<-180)lo+=360;
+  STORM.on=true;STORM.lat=la;STORM.lon=lo;STORM.t=0;
+  STORM.life=52+Math.random()*38;
+  // 半径 5.5~10 局部单位（≈16°~29° 弧）。别贪大：站在地上的人，地平线只有 ~6 单位远，
+  // 半径一旦超过这个数，就变成"要么在里面、要么根本看不见"，少了远远望见风眼那一眼。
+  STORM.r=5.5+Math.random()*4.5;
+  STORM.drift=.30+Math.random()*.55;      // 慢慢挪（一次 76 秒也就走 20~60 单位，找得到）
+  STORM.dAz=Math.random()*360;            // 漂移方位（跟"玩家→风眼"方位分开，否则风暴会一直逃离玩家）
+  STORM.az=STORM.dAz;
+}
+function updateStorm(dt,o){
+  STORM.next-=dt;
+  if(STORM.next<=0){
+    STORM.next=64+Math.random()*46;
+    if(!STORM.on)stormStart(o);
+  }
+  if(!STORM.on){STORM.away=1e9}
+  else{
+    STORM.t+=dt;
+    if(STORM.t>STORM.life)STORM.on=false;
+    const q=stepGeo(STORM.lat,STORM.lon,STORM.dAz,STORM.drift*dt);
+    STORM.lat=Math.max(-84,Math.min(84,q[0]));
+    let L=q[1];while(L>180)L-=360;while(L<-180)L+=360;STORM.lon=L;
+  }
+  let near=1e9;
+  if(o&&o.mode==='sphere'&&o.parent===world){
+    near=D2R(angDistDeg(o.lat,o.lon,STORM.lat,STORM.lon))*o.R;
+    STORM.away=near;STORM.az=geoAz(o.lat,o.lon,STORM.lat,STORM.lon);
+  }
+  const k=STORM.on?IX_C01(1-near/STORM.r):0;
+  STORM.local+=(k-STORM.local)*ease(.9,dt);
+  STORM.gust=1+.45*Math.sin(STORM.t*2.3)+.22*Math.sin(STORM.t*7.1);
+  scene.fog.density=FOG0*(1+7.5*STORM.local);
+  DAY.dim=1-.62*STORM.local;
+  if(IX_UI)IX_UI.dust.style.opacity=(STORM.local*.62).toFixed(3);
+  if(o&&STORM.local>.05&&o.mode==='sphere'&&!o.locked){
+    const p=1.35*STORM.local*STORM.gust;               // 绕着风眼转的切向风
+    o.fx+=Math.sin(D2R(STORM.az+90))*p;
+    o.fy+=Math.cos(D2R(STORM.az+90))*p;
+  }
+  const C=STORM.cloud;
+  if(C){
+    C.visible=STORM.on&&near<90;
+    if(C.visible){
+      const pos=STORM.pts,col=STORM.st;
+      const h0=terrainHeight(STORM.lat,STORM.lon);
+      for(let i=0;i<STORM.N;i++){
+        const a=col[i*3]+STORM.t*(.5+1.7*STORM.local);
+        const rr=col[i*3+1]*STORM.r;
+        const hh=col[i*3+2]*(1.2+2.4*STORM.local)+.12;
+        const p=stepGeo(STORM.lat,STORM.lon,a,rr);
+        const d=latLonToDir(p[0],p[1]);
+        const rr2=planetRadius+terrainHeight(p[0],p[1])+hh-h0*.4;
+        pos[i*3]=d.x*rr2;pos[i*3+1]=d.y*rr2;pos[i*3+2]=d.z*rr2;
+        const w=IX_C01(.35+.65*(1-col[i*3+1]));
+        col[i*3]=.62*w;col[i*3+1]=.55*w;col[i*3+2]=.44*w;
+      }
+      C.geometry.attributes.position.needsUpdate=true;
+      C.geometry.attributes.color.needsUpdate=true;
+    }
+  }
+  // 大团沙尘：按"离风眼多远"淡入（local 只在风暴内部才涨，远看会是 0）
+  const B=STORM.bills;
+  STORM.wall=STORM.on?IX_C01(1-near/(STORM.r*2.6)):0;
+  if(B){
+    const h0=terrainHeight(STORM.lat,STORM.lon);
+    for(let i=0;i<3;i++){
+      const b=B[i];
+      b.visible=STORM.on&&near<150&&STORM.wall>.02;
+      if(!b.visible)continue;
+      const p=stepGeo(STORM.lat,STORM.lon,STORM.dAz+i*120+STORM.t*5,STORM.r*(.22+.26*i));
+      const d=latLonToDir(p[0],p[1]);
+      const hh=(1.1+.85*i)*STORM.r*.55+.4;
+      b.position.copy(d).multiplyScalar(planetRadius+terrainHeight(p[0],p[1])+hh-h0*.4);
+      const s=STORM.r*(3.6+.6*i);                      // 局部单位，world 再统一放大
+      b.scale.set(s,s,1);
+      b.material.opacity=.30*Math.min(1,STORM.wall*1.9)*STORM.gust*(i?0.78:1);
+    }
+  }
+}
+
+// ---------------------------------------------------------------- ⑧ 地表喷气孔
+// 死星地表裂着一些气孔，周期性地往上喷一股白气。站上去会被顶到高空 ——
+// 免费的高空视野，也是从"北岭山系"那种台阶地形里上来的捷径。
+const VENTS=[];
+const GYS_PAL={
+  spots:[[-6,44],[12,-70],[-30,12],[44,96],[-56,-110],[22,150],[-14,-30],[62,30],[-40,70],[8,-160]]
+};
+function buildVents(){
+  const N=54;
+  for(const [la,lo] of GYS_PAL.spots){
+    const pos=new Float32Array(N*3),col=new Float32Array(N*3);
+    const d=[];
+    for(let i=0;i<N;i++)d.push({r:Math.random(),a:Math.random()*Math.PI*2,
+      t:Math.random(),sp:.6+Math.random()*.9});
+    const g=new THREE.BufferGeometry();
+    g.setAttribute('position',new THREE.BufferAttribute(pos,3));
+    g.setAttribute('color',new THREE.BufferAttribute(col,3));
+    const m=new THREE.Points(g,new THREE.PointsMaterial({size:.22,vertexColors:true,
+      transparent:true,opacity:.85,blending:THREE.AdditiveBlending,depthWrite:false,
+      sizeAttenuation:true}));
+    m.frustumCulled=false;ixMark(m);world.add(m);
+    const light=new THREE.PointLight(0xbfe2ff,0,5,2);
+    light.position.copy(point(la,lo,.3));ixMark(light);world.add(light);
+    VENTS.push({lat:la,lon:lo,r:1.15,period:11+Math.random()*7,phase:Math.random()*10,
+      pts:pos,geo:g,col,d,N,light,act:0,on:false,t:0});
+  }
+}
+function updateVents(dt,o){
+  for(const v of VENTS){
+    v.t+=dt;
+    const u=((v.t+v.phase)%v.period)/v.period;
+    // 前 30% 猛喷，其余时间熄灭
+    const act=u<.30?Math.pow(Math.sin(u/.30*Math.PI),1.6):0;
+    v.act=act;v.on=act>.05;
+    v.light.intensity=act*2.2;
+    const d=v.d,pos=v.pts,col=v.col;
+    const h0=terrainHeight(v.lat,v.lon);
+    for(let i=0;i<v.N;i++){
+      const p=d[i];
+      p.t+=dt*p.sp*(.6+1.8*act);
+      if(p.t>1)p.t-=1;
+      const h=.15+p.t*(1.1+3.4*act);
+      const rr=p.r*.34*(1+p.t*1.5);
+      const q=stepGeo(v.lat,v.lon,p.a*180/Math.PI,rr);
+      const dir=latLonToDir(q[0],q[1]);
+      const R2=planetRadius+terrainHeight(q[0],q[1])+h-h0*.5;
+      pos[i*3]=dir.x*R2;pos[i*3+1]=dir.y*R2;pos[i*3+2]=dir.z*R2;
+      const w=(1-p.t)*(.25+.75*act);
+      col[i*3]=.70*w;col[i*3+1]=.84*w;col[i*3+2]=1.0*w;
+    }
+    v.geo.attributes.position.needsUpdate=true;
+    v.geo.attributes.color.needsUpdate=true;
+    // 站上去 → 被顶飞（不灼烧，纯白气）
+    if(o&&o.mode==='sphere'&&act>.45&&o.alt<1.6&&!o.locked){
+      const dd=D2R(angDistDeg(o.lat,o.lon,v.lat,v.lon))*o.R;
+      if(dd<v.r){
+        o.air=true;
+        o.launchV=Math.max(o.launchV,5.0+4.6*act);
+        IX.shake=Math.max(IX.shake,.09);
+      }
+    }
+  }
+}
+
+// ---------------------------------------------------------------- HUD / 总入口
+const IX={shake:0,bioCount:0,bioNear:1e9,ready:0,err:null};
+const IX_ZONE={deadforest:'采伐迹地',industrial:'工业废墟',city:'废弃都市',
+  mountain:'北岭山系',volcano:'火山群',ash:'灰黑低地'};
+function updateIX_HUD(o){
+  const U=IX_UI;if(!U)return;
+  const onStar=!!(o&&o.mode==='sphere'&&o.parent===world);
+  const zone=onStar?biomeAt(o.lat,o.lon):'';
+  ixSet('zone','区域　'+(IX_ZONE[zone]||zone||'—'));
+  const isDay=DAY.sun>0;
+  const left=Math.acos(IX_CL(DAY.sun,-1,1))/Math.PI*60;      // 离下一次昼夜翻转还有几秒
+  ixSet('time','时刻　'+(isDay?'白昼':'夜间')+'　余 '+Math.min(60,left).toFixed(0)+'s'
+    +'　日照 '+Math.round(DAY.f*100)+'%'
+    +(STORM.local>.04?'　能见度 '+Math.round((1-STORM.local)*100)+'%':''));
+  let st='状态　正常';
+  if(TRANSIT.on)st='状态　穿梭中 '+Math.max(0,TRANSIT.dur-TRANSIT.t).toFixed(1)+'s';
+  else if(VENT.t>0&&VENT.o===o)st='状态　井底余压 · 被弹出 '+VENT.t.toFixed(1)+'s';
+  else if(o&&o.burn>0)st='状态　灼烧中 '+o.burn.toFixed(1)+'s';
+  else if(o&&o.shaftD>0)st='状态　井中　深 '+o.shaftD.toFixed(1);
+  else if(o&&o.air&&o.launchV>3)st='状态　被气流顶起';
+  else if(STORM.local>.30)st='状态　沙尘暴中';
+  ixSet('stat',st);
+  ixSet('bio',(IX.bioNear<ALIEN.lose)?('附近　'+IX.bioCount+' 只外星动物　最近 '+ixDist(IX.bioNear))
+    :'附近　无生物活动');
+  let nav='';
+  if(onStar){
+    let best=null;
+    for(const sh of (o.shafts||[])){
+      const d=D2R(angDistDeg(o.lat,o.lon,sh.lat,sh.lon))*o.R;
+      if(!best||d<best.d)best={d,az:geoAz(o.lat,o.lon,sh.lat,sh.lon),n:'井口'};
+    }
+    for(const v of volcanoes){
+      const d=D2R(angDistDeg(o.lat,o.lon,v.lat,v.lon))*o.R;
+      if(!best||d<best.d)best={d,az:geoAz(o.lat,o.lon,v.lat,v.lon),n:'火山'};
+    }
+    if(best)nav='最近 '+best.n+'　'+ixArrow(best.az)+' '+ixDist(best.d);
+    const g=shaftPull(o);
+    // 余压弹出中 / 刚弹出这几秒，别再说"已被引力捕获"——那几秒根本没施力，自相矛盾
+    if(g&&g.d<GRAV.capture&&VENT.t<=0&&GRAV.graceT<=0)nav+='　⚠ 已被引力捕获（无法挣脱）';
+    if(GRAV.graceT>0)nav+='　⇗ 脱出引力场 '+GRAV.graceT.toFixed(1)+'s';
+    if(VENT.t>0&&VENT.o===o)nav+='　⇗ 余压弹出中';
+    else if(o&&o.shaftD>0){
+      // 站在井里：把"出去的路"指出来——那圈护墙只有一个 66° 的豁口
+      const sh=o.shafts&&o.shafts[o.shaftIdx];
+      if(sh){
+        const q=stepGeo(sh.lat,sh.lon,shaftDoor(sh),4.2);
+        nav+='　⇗ 出口 '+ixArrow(geoAz(o.lat,o.lon,q[0],q[1]))+' '+
+          ixDist(D2R(angDistDeg(o.lat,o.lon,q[0],q[1]))*o.R);
+      }
+    }
+    for(const v of volcanoes)if(v.e>.35&&D2R(angDistDeg(o.lat,o.lon,v.lat,v.lon))*o.R<v.craterR*6)
+      nav+='　▲ 火山喷发中';
+    if(MET.warn>0)nav+='　⚠ 流星雨';
+    if(STORM.on&&STORM.away<STORM.r*2.4)
+      nav+='　▲ 沙尘暴 '+ixArrow(STORM.az)+' '+ixDist(STORM.away)
+        +(STORM.away<STORM.r?'（身处其中）':'');
+    let vent=null;
+    for(const vt of VENTS){
+      const d=D2R(angDistDeg(o.lat,o.lon,vt.lat,vt.lon))*o.R;
+      if(vt.act>.25&&d<9&&(!vent||d<vent.d))vent={d};
+    }
+    if(vent)nav+='　▲ 气孔喷发 '+vent.d.toFixed(1);
+  }
+  ixSet('nav',nav||'—');
+  ixSet('tip','Q 冲击波'+(PULSE.cd>0?'（'+PULSE.cd.toFixed(1)+'s）':'')+'　F 手电　Shift 冲刺');
+}
+function updateInteractions(dt){
+  try{
+    // 首帧惰性建：这一节排在"造探险者"之前，evaluating 的时候 explorers 还是空的
+    if(!IX.ready){
+      IX.ready=1;
+      for(const e of explorers){
+        if(e.mode==='sphere'&&e.parent===world)e.pulse=buildPulse(e);
+        buildFlame(e);
+      }
+    }
+    updateTasks(dt);
+    if(GRAV.graceT>0)GRAV.graceT=Math.max(0,GRAV.graceT-dt);   // 刚被余压弹出：这几秒不施力
+    updateDayNight(dt);
+    updateVortex(dt);
+    updateAnimals(dt);
+    updatePulses(dt);
+    updateFlames(dt);
+    updateMeteors(dt,activeExp);
+    updateStorm(dt,activeExp);
+    updateVents(dt,activeExp);
+    // 每座火山：找离它最近的地表探险者 → 决定喷不喷
+    for(const v of volcanoes){
+      let near=1e9;
+      for(const e of explorers){
+        if(e.mode!=='sphere'||e.parent!==world)continue;
+        const d=D2R(angDistDeg(e.lat,e.lon,v.lat,v.lon))*planetRadius;
+        if(d<near)near=d;
+      }
+      v.near=near;
+      stepEruption(v,dt,near);
+      const trig=v.craterR*2+3;
+      if(near<trig)IX.shake=Math.max(IX.shake,.055*v.e*(1-near/trig));
+    }
+    const o=activeExp;
+    const onStar=!!(o&&o.mode==='sphere'&&o.parent===world);
+    // 灼烧 → 视野发亮（先复位，免得切视角后卡在亮档）
+    if(o&&o.burn>0)o.burn=Math.max(0,o.burn-dt);
+    o&&(o.burnFlick=Math.max(0,(o.burnFlick||0)-dt*1.2));
+    const bk=(onStar&&o&&o.burn>0)?IX_C01(o.burn/BURN_T):0;
+    renderer.toneMappingExposure=DAY.expo+.34*bk;
+    if(IX_UI){
+      const now=(typeof performance!=='undefined'&&performance.now)?performance.now():Date.now();
+      const fl=bk*(.72+.28*Math.sin(now*.017));
+      IX_UI.burn.style.opacity=(fl*.95).toFixed(3);
+      // 陨石落地那一下的白闪（穿梭时那个罩子自己会写，别打架）
+      if(!TRANSIT.on)IX_UI.flash.style.opacity=Math.min(1,MET.flash*.92).toFixed(3);
+    }
+    if(!onStar){updateIX_HUD(o);return}
+    // 外力①：井口引力。井底余压那几秒先关掉，否则会跟"被顶出去"对着干；
+    // 弹出后的宽限期同样关掉，免得刚落地就又被吸回井里来回穿梭。
+    const pull=((VENT.t>0&&VENT.o===o)||GRAV.graceT>0)?null:shaftPull(o);
+    if(pull){
+      const k=o.shaftD>0?GRAV.inK:1;              // 已经在井里：只留一点"漏斗"力
+      let m=pull.v*k;
+      // 捕获：贴到井口圈以内就叠一股只向心的硬拉。这样"按住方向键往外顶"只会
+      // 在切向被抹掉，径向永远是净向内 —— 唯一结局是被拽过井口、落进竖井。
+      // 衰减用二次（不是线性）：线性在 r≈2.5 处只剩 4.7，玩家踩在检修平台环上
+      // 还能用冲刺顶住，人就卡在环上不出来。二次在近处更陡，一直拉到井底前才收手。
+      if(pull.d<GRAV.capture&&o.gnd>-(GRAV.holdDoc)){
+        const q=Math.max(0,pull.d)/GRAV.capture;
+        m+=GRAV.hold*(1-q*q);
+      }
+      if(m>GRAV.holdMax)m=GRAV.holdMax;
+      o.fx+=Math.sin(D2R(pull.ang))*m;
+      o.fy+=Math.cos(D2R(pull.ang))*m;
+      if(pull.lock)IX.shake=Math.max(IX.shake,.012);
+    }
+    // 井筒里的"吸附"：人一旦落进井筒，就按比例把人挪到井轴上（是位置吸附，不是给速度）。
+    // 为什么必须这样：井底那块小平地只有 r<0.57，井筒内壁又是锥形，光给"向内速度"会在
+    // 轴心两侧来回弹；而检修平台（0.72≤r≤2.50 都是 5.49 深）会把每次弹出去的 gnd 又拉高，
+    // 结果 gnd 在 -12 上下反复横跳，穿梭阈值 -13.30 永远够不着 —— 人就悬在井底不上不下。
+    // 位置吸附没有超调，一落到底，穿梭才会准时触发。
+    if(o.shaftD>0&&!TRANSIT.on&&VENT.t<=0&&GRAV.graceT<=0&&o.shafts&&o.shafts[o.shaftIdx]){
+      const sx=o.shafts[o.shaftIdx];
+      const k=Math.min(1,5*dt);
+      let dLon=sx.lon-o.lon;while(dLon>180)dLon-=360;while(dLon<-180)dLon+=360;
+      o.lat+=(sx.lat-o.lat)*k;
+      o.lon+=dLon*k;
+    }
+    // 外力②：火山口灼烧 / 冲走
+    volcanoTouch(o,dt);
+    if(o.burn>0)IX.shake=Math.max(IX.shake,.02*bk);
+    // 外力③：被甩出去的一次性冲量
+    if(o.blast&&o.blast.t>0){
+      o.blast.t-=dt;
+      o.fx+=Math.sin(D2R(o.blast.ang))*o.blast.v;
+      o.fy+=Math.cos(D2R(o.blast.ang))*o.blast.v;
+    }
+    // 井底 → 穿梭。判据用**平滑后的实际高度 o.gnd**而不是井筒剖面：
+    // 剖面是"站在这个经纬度会落到多深"，一进井口就立刻是井底深度；
+    // 用剖面判定会让人刚被吸进井口就瞬间传走，那段"一路坠到井底"的过程全没了。
+    if(o.shaftD>0&&o.shafts&&o.shafts[o.shaftIdx]){
+      const shd=o.shafts[o.shaftIdx];
+      if(o.gnd>-(shd.capD-3.0))TRANSIT.armed=true;
+      if(TRANSIT.armed&&o.gnd<=-(shd.capD-0.8))startTransit(o,o.shaftIdx);
+    }
+    updateTransit(o,dt);
+    o.tk=TRANSIT.k;
+    updateVent(o,dt);                              // 外力④：井底余压（穿梭的出口）
+    updateIX_HUD(o);
+  }catch(e){
+    IX.err=e;
+    if(typeof console!=='undefined'&&console.warn)console.warn('[ix]',e);
+  }
+}
+// 相机后处理：震屏（火山 / 灼烧 / 引力锁定 / 冲击波）
+function postCamera(dt){
+  if(IX.shake>1e-4){
+    const s=IX.shake*3;
+    camera.position.x+=(Math.random()-.5)*s;
+    camera.position.y+=(Math.random()-.5)*s;
+    camera.position.z+=(Math.random()-.5)*s;
+  }
+  IX.shake*=Math.max(0,1-4.2*dt);
+  if(IX.shake<1e-4)IX.shake=0;
+}
+// 建场（只用底座里已经有的东西：HOLES / volcanoes / terrainHeight）
+for(let i=0;i<HOLES.length;i++)buildVortex(makeShaft(HOLES[i].lat,HOLES[i].lon,terrainHeight),i);
+for(const v of volcanoes)buildVolcano(v);
+buildAnimals();
+buildStormCloud();
+buildVents();
+
+// ======================= 15. 视角切换 / 交互 / 动画 =======================
+// 数字键 1-6：
+//   1 地球中心   2 月球中心   3 空间站中心
+//   4 地表探险者 5 月面探险者 6 空间站探险者
+// 中心视角：拖动旋转整颗星球（轨道层已挂进 space，会跟着一起转），滚轮调远近。
+// 探险者视角：第三人称越肩跟拍。光标锁在画面正中，靠"滑动"决定视野朝向
+//             （往右滑就右转，往上滑就抬头），视角随视野一起走。
+//             Z 前进、空格上升 / 松手下落、A/D 侧移、S 后退、Shift 奔跑、滚轮拉近拉远。
+const ORIGIN=new THREE.Vector3(0,0,0);
+// SUN_POS（太阳方位）已经在底座 1 节里连太阳光一起定义了，这里直接复用。
+scene.updateMatrixWorld(true);
+function sunwardDir(frameNode,node,keep){          // 让中心视角落在受光面
+  const q=frameNode.getWorldQuaternion(new THREE.Quaternion()).invert();
+  const s=SUN_POS.clone().sub(node.getWorldPosition(new THREE.Vector3())).applyQuaternion(q).normalize();
+  return s.multiplyScalar(.8).addScaledVector(node.position.clone().normalize().negate(),keep).normalize();
+}
+
+// ---------- 地表突起物实体化：给星球和月球各建一张"障碍栅格" ----------
+// 必须在造小人之前建：否则小人的模型自己也会被当成一坨障碍物画进格子里。
+// 排除区：井筒内部那一段（井壁 / 检修平台 / 井底）不算实体，人才能走进隧道里去。
+// 半径取 2.9 而不是更大：井口内圈（<2.9）保持干净就够了；再往外那圈是井口的
+// 护圈 / 围栏 / 导轨，它们是"地表的突起物"，必须保持实体 —— 取 4.15 时把人能穿过
+// 护圈的区域也一起挖空了，人会从护圈上直接走过去（穿模）。
+// 火山同理：锥体已经并进 terrainHeight（可以走上去），山体上那些装饰 ——
+// 熔岩沟壑、寄生火山口 —— 就不要再当碰撞了，否则它们在山脚连成一圈 0.76 高的坎，
+// 而抬脚高度只有 0.41，人还是上不去。整座山按"地貌"处理。
+const _moonG=orbital.moon,_moonR=_moonG.userData.R||8;
+const HOLE_EXCL=HOLES.map(h=>({dir:h.dir,r:2.9,lo:planetRadius-19,hi:planetRadius+3}));
+const VOLC_EXCL=volcanoes.map(v=>({dir:latLonToDir(v.lat,v.lon),r:v.baseR*1.35,
+  lo:planetRadius-1,hi:planetRadius+v.h+1.5}));
+const F_EARTH=buildField({
+  root:world,R:planetRadius,deg:OB.cellDeg,eps:.15,
+  ground:(la,lo)=>planetRadius+terrainHeight(la,lo),
+  under:.5,
+  excl:HOLE_EXCL.concat(VOLC_EXCL)
+});
+const F_MOON=buildField({
+  root:_moonG,R:_moonR,deg:OB.moonDeg,eps:.10,
+  under:.5,
+  ground:(la,lo)=>_moonR+(_moonG.userData.heightAt?_moonG.userData.heightAt(latLonToDir(la,lo)):0)
+});
+
+// 落点如果在某个道具里（比如正好站在树桩上、或钻进了太阳能板阵列），就近挪到空地上。
+// 道具实体化以后这件事必须做：否则一出生就被自己卡在里头，往哪个方向都走不动。
+function settle(o,la,lo){
+  o.lat=la;o.lon=lo;o.gnd=groundRaw(o,la,lo);o.footR=o.R+o.gnd;
+  if(!o.field)return;
+  const at=(dla,dlo)=>{
+    const p=[la+dla,lo+dlo],g=groundRaw(o,p[0],p[1]);
+    return fieldBlocked(o.field,p[0],p[1],o.R+g,o.bodyH,o.bodyR)?null:p;
+  };
+  if(at(0,0))return;
+  const k=1/Math.max(.2,Math.cos(D2R(la)));
+  for(let r=1;r<=16;r++)for(let n=0;n<12;n++){
+    const a=n/12*6.283,d=r*.2;
+    const p=at(Math.cos(a)*d,Math.sin(a)*d*k);
+    if(p){o.lat=p[0];o.lon=p[1];o.gnd=groundRaw(o,o.lat,o.lon);o.footR=o.R+o.gnd;placeExplorer(o);
+      console.log('[settle] 出生点被道具占了，就近挪了 '+d.toFixed(1)+' 局部单位到 '+p[0].toFixed(2)+', '+p[1].toFixed(2));return}
+  }
+}
+
+// ---------- 三个探险者的落点 ----------
+// 地表：落在南陆「被砍伐的森林」里 —— 满地树桩、倒木与集材道，走出去一步就有东西看
+// 朝向背着太阳，让他的背包受光、面前的地表也被照亮
+const E_EARTH=addExplorer({
+  mode:'sphere',parent:world,R:planetRadius,ground:terrainHeight,scale:surfacePropScale,
+  lat:2,lon:40,heading:205,
+  field:F_EARTH,
+  shafts:HOLES.map(h=>makeShaft(h.lat,h.lon,terrainHeight))   // 两个井口：走得进去、能落到井底
+});
+settle(E_EARTH,2,40);
+// 月面：按"太阳方向 + 星球方向"解算落点，保证脚下受光；朝向再偏 45°，正好把月面基地
+// 和悬在天上的地球边缘一起收进画面
+const _moon=_moonG;
+const _moonPos=_moon.getWorldPosition(new THREE.Vector3());
+const _qM=_moon.getWorldQuaternion(new THREE.Quaternion()).invert();
+const _mSun=SUN_POS.clone().sub(_moonPos).applyQuaternion(_qM).normalize();      // 月面坐标下的太阳方向
+const _mPlanet=_moonPos.clone().negate().applyQuaternion(_qM).normalize();       // 月面坐标下指向地球
+const _mDir=dirAtAngle(_mSun,_mPlanet,16.3);                                     // 距日心点 16.3° → 光照充足
+const _mLL=dirToLatLon(_mDir);
+const E_MOON=addExplorer({
+  mode:'sphere',parent:_moon,R:_moonR,scale:.5,lat:_mLL[0],lon:_mLL[1],
+  altMax:6,                                       // 月面能飘的高度（月球半径只有 8）
+  heading:tangentAzTo(_mLL[0],_mLL[1],_mPlanet)+45,pitch:.18,
+  field:F_MOON,                                   // 月面上的穹顶 / 吊机 / 太阳能板也碰得着了
+  ground:(la,lo)=>(_moon.userData.heightAt?_moon.userData.heightAt(latLonToDir(la,lo)):0)
+});
+settle(E_MOON,_mLL[0],_mLL[1]);      // 别落在太阳能板阵列里
+// 空间站：站在中央中枢模块的筒体顶上，沿筒体轴线往外走；脚下贴着筒面（半径 0.7）
+const E_STATION=addExplorer({
+  mode:'plane',parent:orbital.station,scale:.34,x:0,z:0,heading:90,pitch:.10,
+  thMin:-.85,                                     // 太空里没有地面，可以仰头看站体
+  altMax:1.8,                                     // 太空站上能飘的高度（约 5 个身位）
+  deck:(x,z)=>Math.sqrt(Math.max(.02,.49-z*z)),    // 高度随筒体表面变化，脚不会悬空
+  // 可走范围：沿筒轴走到筒端（筒长 ±1.2），绕筒面能绕到侧面 ±0.60（约 59°）。
+  // 原来只给了 ±0.42，一迈步就撞上看不见的墙；贴到边界时也会沿边滑，不再完全顿住。
+  free:(x,z)=>Math.abs(x)<=1.18&&Math.abs(z)<=.60
+});
+
+const VIEWS=[
+  {name:'地球中心',kind:'C',frame:()=>scene,focus:()=>ORIGIN,
+   dir:new THREE.Vector3(0,.14,.99).normalize(),dist:206,min:118,max:330},
+  {name:'月球中心',kind:'C',frame:()=>orbital.moonPivot,focus:()=>orbital.moon,
+   dir:sunwardDir(orbital.moonPivot,orbital.moon,.42),dist:38,min:14,max:130},
+  {name:'空间站中心',kind:'C',frame:()=>orbital.stPivot,focus:()=>orbital.station,
+   dir:sunwardDir(orbital.stPivot,orbital.station,.42),dist:34,min:12,max:120},
+  {name:'地表探险者',kind:'E',exp:E_EARTH},
+  {name:'月面探险者',kind:'E',exp:E_MOON},
+  {name:'空间站探险者',kind:'E',exp:E_STATION}
+];
+VIEWS.forEach(v=>{v.cur=v.dist||0});
+let viewMode=0;
+
+const hintEl=document.getElementById('hint');
+const viewBtns=document.querySelectorAll('#views button');
+
+// ---------- 灵敏度：出厂基准 + 屏幕上的 ± 按钮 ----------
+// 键盘快捷键（[ ] 水平、− = 竖直）在中文输入法下会被吃掉，所以两轴各配一组
+// 可点击的 ± 按钮放在右上角，怎么着都能调。键与按钮走同一个 bumpSens。
+const SX0=.1152,SY0=.0216;
+const sensBox=document.getElementById('sens');
+const sxOut=document.getElementById('sxv'),syOut=document.getElementById('syv');
+function syncSens(){
+  if(sxOut)sxOut.textContent=Math.round(LOOK.sensX/SX0*100)+'%';
+  if(syOut)syOut.textContent=Math.round(LOOK.sensY/SY0*100)+'%';
+}
+function bumpSens(ax,fast){
+  const k2=fast?1.3:.77;
+  if(ax==='x')LOOK.sensX=Math.max(.010,Math.min(.90,LOOK.sensX*k2));   // 水平
+  else        LOOK.sensY=Math.max(.004,Math.min(.34,LOOK.sensY*k2));   // 竖直
+  syncSens();
+}
+if(sensBox)sensBox.addEventListener('click',e=>{
+  const b=e.target&&e.target.closest?e.target.closest('button'):null;
+  if(!b)return;
+  bumpSens(b.getAttribute('data-ax'),b.getAttribute('data-d')==='1');
+  if(hintEl){
+    hintEl.textContent='灵敏度　水平 '+Math.round(LOOK.sensX/SX0*100)+'%　竖直 '
+      +Math.round(LOOK.sensY/SY0*100)+'%';
+  }
+});
+syncSens();
+
+// ---------- 手电筒：亮度面板（与灵敏度同一套 ± 按钮）+ F 键开关 ----------
+const torchBox=document.getElementById('torch');
+const tbvOut=document.getElementById('tbv'),tonBtn=document.getElementById('ton');
+function syncTorch(){
+  if(tbvOut)tbvOut.textContent=Math.round(TORCH.bright*100)+'%';
+  if(tonBtn){tonBtn.textContent=TORCH.on?'开':'关';tonBtn.className=TORCH.on?'on':'';}
+}
+function bumpTorch(dir){          // 1 变亮 / -1 变暗 / 0 开关
+  if(dir===0)TORCH.on=!TORCH.on;
+  else TORCH.bright=Math.max(.08,Math.min(2.6,TORCH.bright*(dir>0?1.25:.82)));
+  syncTorch();
+  if(!TORCH.on)for(const o of explorers)updateTorch(o,1);   // 关灯立刻收掉，不用等下一帧
+  if(hintEl)hintEl.textContent='手电筒 '+(TORCH.on?'开':'关')+'　亮度 '+Math.round(TORCH.bright*100)+'%';
+}
+if(torchBox)torchBox.addEventListener('click',e=>{
+  const b=e.target&&e.target.closest?e.target.closest('button'):null;
+  if(!b)return;
+  bumpTorch(b.id==='ton'?0:(b.getAttribute('data-t')==='1'?1:-1));
+});
+syncTorch();
+
+// 提示文案随「光标是否锁住」变化。转视野一律是单指；滚轮（双指）固定给缩放。
+function updateHint(){
+  const v=VIEWS[viewMode];
+  if(!hintEl)return;
+  if(v.kind==='C'){hintEl.textContent='拖动：旋转星球 · 滚轮：缩放';return}
+  hintEl.textContent=(LOOK.locked?'单指滑动：转视野（Esc 解锁）':'单指滑动：转视野')
+    +' · 双指滑动 / 捏合：缩放 · Z 前进 · 空格 飞行 · A/D 侧移 · S 后退 · Shift 冲刺'
+    +' · F 手电筒 · Q 冲击波 · 当心：隧道引力（坠底会被射到对面井口）· 火山喷发 · 流星雨 · 沙尘暴 · 气孔 · 外星动物';
+}
+LOOK.onChange=updateHint;
+function setView(i){
+  viewMode=(i+VIEWS.length)%VIEWS.length;
+  const v=VIEWS[viewMode];
+  if(v.kind==='C')v.cur=v.dist;
+  camera.near=v.kind==='C'?.1:.08;
+  camera.updateProjectionMatrix();
+  for(let k=0;k<viewBtns.length;k++)viewBtns[k].className=(k===viewMode?'on':'');
+  setActiveExplorer(v.kind==='E'?v.exp:null);      // 进出探险者视角时接管 / 交还光标
+  for(const o of explorers)if(o!==activeExp)updateTorch(o,1);   // 把切走的那个人的手电筒收掉
+  if(v.kind==='C')document.body.style.cursor='default';
+  if(sensBox)sensBox.className='sens'+(v.kind==='E'?' on':'');   // 只有探险者视角才需要它
+  if(torchBox)torchBox.className='sens'+(v.kind==='E'?' on':'');
+  syncSens();syncTorch();
+  updateHint();
+}
+for(let k=0;k<viewBtns.length;k++)viewBtns[k].addEventListener('click',()=>setView(k));
+
+// ---------- 键盘：视角切换 + 行走 ----------
+let sensTimer=0;
+function setKey(e,down){
+  const k=e.key;
+  if(k==='Shift'){keyState.shift=down?1:0;return}
+  if(k===' '||k==='Spacebar'||e.code==='Space'){keyState.space=down?1:0;e.preventDefault();return}
+  const c=k.length===1?k.toLowerCase():'';
+  if(c==='['||c===']'||c==='-'||c==='='){     // 键盘调档（与右上角按钮同源）
+    if(!down)return;                          // 只在按下时调（否则 keyup 会多调一次）
+    bumpSens((c==='['||c===']')?'x':'y',c===']'||c==='=');
+    if(hintEl){
+      hintEl.textContent='灵敏度　水平 '+Math.round(LOOK.sensX/SX0*100)+'%　竖直 '
+        +Math.round(LOOK.sensY/SY0*100)+'%　（[ ] 调水平 · − = 调竖直）';
+      clearTimeout(sensTimer);sensTimer=setTimeout(updateHint,1900);
+    }
+    return;
+  }
+  if(c==='f'){                                // F：手电筒开关（ASCII 键，输入法下也能穿透）
+    if(!down)return;
+    bumpTorch(0);return;
+  }
+  if(c==='q'){                                // Q：脉冲冲击波（震退外星动物）
+    if(!down)return;
+    const ok=firePulse(activeExp);
+    if(hintEl)hintEl.textContent=ok?'脉冲冲击波已释放：附近的外星动物被震退'
+      :(PULSE.cd>0?'冲击波冷却中 '+PULSE.cd.toFixed(1)+'s':'脉冲冲击波（只有地表探险者能用）');
+    return;
+  }
+  if(c==='w'||c==='a'||c==='s'||c==='d'||c==='z'){keyState[c]=down?1:0;e.preventDefault();return}
+  if(k==='ArrowUp'){keyState.w=down?1:0;e.preventDefault();}
+  else if(k==='ArrowDown'){keyState.s=down?1:0;e.preventDefault();}
+  else if(k==='ArrowLeft'){keyState.a=down?1:0;e.preventDefault();}
+  else if(k==='ArrowRight'){keyState.d=down?1:0;e.preventDefault();}
+}
+addEventListener('keydown',e=>{
+  const n=(e.key>='1'&&e.key<='6')?e.key.charCodeAt(0)-48:0;
+  if(n){setView(n-1);return}
+  if(e.key==='0'){setView(0);return}
+  setKey(e,true);
+});
+addEventListener('keyup',e=>setKey(e,false));
+addEventListener('blur',()=>{for(const k in keyState)keyState[k]=0});
+
+// ---------- 鼠标：中心视角拖动转星球；探险者视角由光标驱动视线 ----------
+let dragging=false,lastX=0,lastY=0;
+world.rotation.set(-.08,-.25,0);
+renderer.domElement.addEventListener('pointerdown',e=>{
+  if(VIEWS[viewMode].kind!=='C')return;
+  dragging=true;lastX=e.clientX;lastY=e.clientY;
+  renderer.domElement.setPointerCapture(e.pointerId);
+});
+renderer.domElement.addEventListener('pointerup',()=>dragging=false);
+renderer.domElement.addEventListener('pointermove',e=>{
+  if(!dragging)return;
+  world.rotation.y+=(e.clientX-lastX)*.0045;
+  world.rotation.x=Math.max(-1.1,Math.min(1.1,world.rotation.x+(e.clientY-lastY)*.0035));
+  lastX=e.clientX;lastY=e.clientY;
+});
+// ---------- 缩放：滚轮 / 双指滑动 / 双指捏合，全部走这一个入口 ----------
+// 触控板上"双指缩放"其实有两种来源，浏览器给的数据完全不同：
+//   ① 双指上下滑 → 普通 wheel，一次 deltaY 能有几百；
+//   ② 双指捏合   → Chrome 只给 ±1~3 的 deltaY，但带 ctrlKey，且一秒能来几十次。
+// 早先两者乘同一个系数，捏合就被吃掉了（1 × .006 ≈ 0，人眼看不见），
+// 这就是"双指缩放没反应"的原因。现在分开给系数，并且改成**指数缩放**：
+// 近处一步缩得细、远处一步跨得大，再小的 delta 也能积出看得见的位移。
+function zoomBy(dy,ctrl){
+  const v=VIEWS[viewMode];
+  if(v.kind==='C'){
+    v.dist=Math.max(v.min,Math.min(v.max,v.dist+dy*(ctrl?.60:.075)));
+    return;
+  }
+  const o=v.exp;
+  o.camDist=Math.max(o.camMin,Math.min(o.camMax,o.camDist*Math.exp(dy*(ctrl?.013:.0017))));
+}
+addEventListener('wheel',e=>{
+  e.preventDefault();        // 顺手挡掉浏览器的"捏合缩放整个页面"
+  zoomBy(e.deltaY,e.ctrlKey);
+},{passive:false});
+// Safari 的触控板捏合不产生 wheel，走的是 gesture 事件
+let _gs=1;
+addEventListener('gesturestart',e=>{e.preventDefault();_gs=e.scale||1;});
+addEventListener('gesturechange',e=>{e.preventDefault();const s=e.scale||1;zoomBy((_gs-s)*160,true);_gs=s;});
+addEventListener('gestureend',e=>e.preventDefault());
+
+const _f=new THREE.Vector3(),_q=new THREE.Quaternion(),_v=new THREE.Vector3();
+function updateCamera(dt){
+  const v=VIEWS[viewMode];
+  if(v.kind==='E'){
+    updateExplorer(v.exp,dt);
+    updateExplorerCam(v.exp,dt);
+    return;
+  }
+  const fo=v.focus();
+  if(fo.isObject3D)fo.getWorldPosition(_f);else _f.copy(fo);
+  v.frame().getWorldQuaternion(_q);
+  if(v.dist!==undefined)v.cur+=(v.dist-v.cur)*.08;
+  _v.copy(v.dir).multiplyScalar(v.cur).applyQuaternion(_q).add(_f);
+  camera.position.copy(_v);
+  camera.up.set(0,1,0);
+  camera.lookAt(_f);
+}
+setView(0);
+
+const clock=new THREE.Clock();
+let tAcc=0;
+function animate(){
+  const dt=Math.min(clock.getDelta(),.05);tAcc+=dt;
+  // 互动层：引力场 / 火山 / 外星动物 / 昼夜 / 太阳。放在相机之前 ——
+  // 它这帧算出来的外力（o.fx / o.fy）要交给同一帧的 updateExplorer 去消费。
+  // 死星的自转（昼夜来源）也在这一层里推（见 updateDayNight）。
+  updateInteractions(dt);
+  space.rotation.copy(world.rotation);        // 轨道层跟随星球旋转
+  orbital.pivots.forEach(p=>{p.node.rotation.y+=dt*p.speed*(p.dir||1)});
+  orbital.moon.rotation.y+=dt*.006;
+  orbital.station.rotation.x+=dt*.012;        // 废弃空间站在缓缓翻滚
+  orbital.station.rotation.z+=dt*.009;
+  orbital.debrisGroup.rotation.y+=dt*.028;
+  orbital.moteMesh.rotation.y-=dt*.012;
+  // 火山灰柱缓缓上升（喷发时被顶得更高）
+  plumes.forEach(pl=>{
+    const a=pl.points.geometry.attributes.position;
+    for(let i=0;i<a.count;i++){
+      let y=a.getY(i)+dt*(.2+2.6*(pl.erupt||0));
+      if(y>pl.span)y=.05;
+      a.setY(i,y);
+    }
+    a.needsUpdate=true;
+  });
+  // 井底的光在呼吸
+  cannonGlows.forEach(l=>{l.material.opacity=.3+.32*(.5+.5*Math.sin(tAcc*1.5))});
+  cannonCores.forEach((m,i)=>{m.emissiveIntensity=.45+.5*(.5+.5*Math.sin(tAcc*1.15+i*.7))});
+  // 基地与空间站的灯偶尔闪一下
+  twinkleLights.forEach((l,i)=>{l.material.opacity=Math.sin(tAcc*(1.05+i*.37)+i*2.1)<-.7?.1:.85});
+  updateCamera(dt);
+  postCamera(dt);                             // 震屏（火山 / 灼烧 / 引力锁定 / 冲击波）
+  renderer.render(scene,camera);requestAnimationFrame(animate);
+}
+animate();
+addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)});
+// 调试钩子：__dead.setView(0..5) 切视角、__dead.renderer.info 看渲染开销
+window.__dead={scene,camera,renderer,world,space,orbital,VIEWS,setView,explorers,EXPL,keyState,
+  LOOK,TORCH,setActiveExplorer,applyLook,requestLook,bumpTorch,syncTorch,
+  OB,TERRAIN:terrainHeight,F_EARTH,F_MOON,buildField,fieldBlocked,fieldSupport,
+  makeShaft,groundRaw,groundAt,
+  DAY,TRANSIT,GRAV,PULSE,VOLCANOES:volcanoes,volcanoes,ANIMALS,ALIEN,BURN_T,SUN_DIR,
+  MET,STORM,VENTS,MET_CFG,spawnMeteor,metImpact,stormStart,ixLater,IX,
+  VENT,startVent,updateVent,shaftDoor,
+  updateMeteors,updateStorm,updateVents,
+  updateInteractions,postCamera,shaftPull,firePulse,ixPlace,
+  dbg:{point,place,dirToLatLon,geoAz,placeExplorer,updateExplorer,updateExplorerCam,updateTorch,stepGeo,isLand}};
+})();
+
+  </script>
+</body></html>

@@ -1,0 +1,22 @@
+{
+  "layout": "liu-parent-share-v1",
+  "sourceFingerprint": "006cc5d31c1f70d85a5eb65fb2e83d5d458bb743bccde6b74905db1c69a9a7ff",
+  "posters": {
+    "island": "assets/share-island.png"
+  },
+  "sha256": {
+    "island": "e88abcc0219b6c2e83ee1d4ca8189a31f0f6d1f9d2c84cf249966843a3828982"
+  },
+  "dynamicScopes": [
+    "catalog",
+    "work-1",
+    "work-2",
+    "work-3",
+    "work-4",
+    "work-5",
+    "work-6",
+    "work-7",
+    "work-8"
+  ],
+  "previewDelivery": "Generated data URI in the actual share dialog; no static preview loader"
+}

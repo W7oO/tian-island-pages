@@ -7,8 +7,21 @@
     *{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#06070a;font-family:"Microsoft YaHei","PingFang SC",sans-serif;color:#fff}
     canvas{display:block;position:fixed;inset:0}.title{position:fixed;z-index:3;top:36px;left:52px;pointer-events:none;text-shadow:0 3px 18px #000}
     h1{margin:0;font-size:clamp(28px,3vw,44px);letter-spacing:.1em}.title p{margin:10px 0;color:#b9ac95;letter-spacing:.11em}
-    .hint{position:fixed;z-index:3;right:30px;bottom:26px;padding:11px 15px;border:1px solid #c8b18933;border-radius:13px;background:#191410a8;color:#e0d5c4;font-size:12px;line-height:1.8;pointer-events:none;backdrop-filter:blur(8px)}
-    .views{position:fixed;z-index:4;left:52px;bottom:26px;display:flex;flex-wrap:wrap;gap:6px;max-width:min(560px,60vw)}
+    .hint{max-width:45%;padding:11px 15px;border:1px solid #c8b18933;border-radius:13px;background:#191410a8;color:#e0d5c4;font-size:12px;line-height:1.8;pointer-events:none;backdrop-filter:blur(8px)}
+    .view-controls{position:fixed;z-index:4;left:52px;right:30px;bottom:26px;display:flex;align-items:flex-end;justify-content:space-between;gap:12px;pointer-events:none}
+    .views{display:flex;flex-wrap:wrap;gap:6px;min-width:0;max-width:560px;pointer-events:auto}
+    @media(max-width:700px){
+      .title{top:14px;left:12px;right:12px}
+      .title h1{font-size:24px}
+      .title p{margin:5px 0;font-size:12px}
+      .ix-hud{top:70px!important;left:12px!important;max-width:calc(100% - 24px);padding:5px 8px!important;line-height:1.45!important}
+      .ix-hud>div{white-space:normal!important}
+      .view-controls{left:max(10px,env(safe-area-inset-left));right:max(10px,env(safe-area-inset-right));bottom:max(10px,env(safe-area-inset-bottom));flex-direction:column;align-items:stretch;gap:6px}
+      .views{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));max-width:none}
+      .view-controls .views button{min-height:44px;padding:5px 3px;letter-spacing:0}
+      .view-controls .hint{max-width:none;max-height:22dvh;overflow:auto;pointer-events:auto;padding:5px 8px;line-height:1.4}
+    }
+    @media(pointer:coarse){.view-controls .hint{display:none}}
     .views button{font:inherit;font-size:11.5px;letter-spacing:.04em;cursor:pointer;padding:7px 11px;border-radius:9px;border:1px solid #c8b18933;background:#191410a8;color:#b9ac95;backdrop-filter:blur(8px);transition:all .18s}
     .views button:hover{color:#f0e6d4;border-color:#c8b18966}
     .views button.on{background:#c8b1892e;color:#f4ead8;border-color:#c8b1898c}
@@ -33,8 +46,10 @@
 </head>
 <body data-page-node-id="6C6PAQC89wFD4a6uNPTjF6">
   <div class="title" data-page-node-id="DodxHqTKTmoBaWtEUcf9lQ"><h1 data-page-node-id="wPuksjgYm8iEsHp20s3uka">死星遗迹</h1><p data-page-node-id="Q1boBxPp9qGYM3MSAv66yz">一颗被文明透支之后彻底废弃的星球</p></div>
-  <div class="hint" id="hint" data-page-node-id="hICT4PQwADoVyvfdWCkaoJ">拖动：旋转星球 · 滚轮：缩放</div>
+  <div class="view-controls">
   <div class="views" id="views" data-page-node-id="fQ0LdW2mXr9pTaBvNsKc31"><button class="on" data-page-node-id="a1">1 地球中心</button><button data-page-node-id="a2">2 月球中心</button><button data-page-node-id="a3">3 空间站中心</button><button data-page-node-id="a4">4 地表探险者</button><button data-page-node-id="a5">5 月面探险者</button><button data-page-node-id="a6">6 空间站探险者</button></div><div class="vignette" data-page-node-id="eXDhj4lHI9SEujeJx6SKmp"></div>
+  <div class="hint" id="hint" data-page-node-id="hICT4PQwADoVyvfdWCkaoJ">拖动：旋转星球 · 滚轮：缩放</div>
+  </div>
   <div class="aim" id="aim"></div>
   <div class="stack">
   <div class="sens" id="sens">

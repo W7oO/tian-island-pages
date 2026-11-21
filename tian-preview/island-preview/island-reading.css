@@ -59,3 +59,5 @@
 #stage-review :is(p,.brand-eyebrow){color:#456156}
 #stage-review .stage-phase-action::before{content:"＋";font-size:22px;line-height:1}
 #stage-review .stage-phase[open] .stage-phase-action::before{content:"−"}
+
+#stage-review .stage-phase-body h4{color:#304d49;font-size:16px;line-height:1.65;margin:0 0 10px}

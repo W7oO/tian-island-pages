@@ -15,7 +15,8 @@ $('stages').innerHTML = window.tianStageData.map((section, index) => `
     <div class="stage-phase-body">
       <h2>${esc(section.title)}</h2>
       ${(section.lead || []).map(paragraph).join('')}
-      ${(section.sections || []).map(part => `<section>${part.title ? `<h3>${esc(part.title)}</h3>` : ''}${(part.paragraphs || []).map(paragraph).join('')}</section>`).join('')}
+      ${section.sectionHeading ? `<h3>${esc(section.sectionHeading)}</h3>` : ''}
+      ${(section.sections || []).map(part => `<section>${part.title ? `<${section.sectionHeading ? 'h4' : 'h3'}>${esc(part.title)}</${section.sectionHeading ? 'h4' : 'h3'}>` : ''}${(part.paragraphs || []).map(paragraph).join('')}</section>`).join('')}
     </div>
   </details>`).join('');
 

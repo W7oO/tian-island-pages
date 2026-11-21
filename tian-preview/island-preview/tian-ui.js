@@ -21,10 +21,14 @@ async function share(scope,id=0){
  $('poster-open').hidden=true;
  $('poster-save').hidden=true;
  $('share-dialog').showModal();
+ let timeout;
  try{
-  const {renderTianPoster}=await import('./tian-poster.js?rev=1');
-  const poster=await renderTianPoster(u.href,title,label);
-  if(request!==shareRequest)return;
+  const generated=import('./tian-poster.js?rev=bounded').then(({renderTianPoster})=>renderTianPoster(u.href,title,label));
+  const deadline=new Promise((_,reject)=>{
+   timeout=setTimeout(()=>reject(new Error('海报加载超时')),12000);
+  });
+  const poster=await Promise.race([generated,deadline]);
+  if(request!==shareRequest||!$('share-dialog').open)return;
   if(posterUrl)URL.revokeObjectURL(posterUrl);
   posterUrl=URL.createObjectURL(poster);
   $('share-poster').src=posterUrl;
@@ -34,7 +38,9 @@ async function share(scope,id=0){
   $('poster-save').hidden=false;
   $('poster-status').textContent='长按海报保存，或点图片查看大图。';
  }catch{
-  if(request===shareRequest)$('poster-status').textContent='海报暂时无法加载，关闭后可重新打开分享。';
+  if(request===shareRequest&&$('share-dialog').open)$('poster-status').textContent='海报暂时无法加载，请关闭后重新打开分享。';
+ }finally{
+  clearTimeout(timeout);
  }
 }
 $('share-island').onclick=()=>share('分享小岛');$('share-current-work').onclick=()=>share('分享作品',window.currentTianWork());document.addEventListener('click',e=>{if(e.target.closest('.catalog-share'))share('分享全部作品')});window.addEventListener('galleryviewchange',()=>{$('gallery-dialog').dataset.expanded='false'});

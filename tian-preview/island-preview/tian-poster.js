@@ -35,7 +35,6 @@ export async function renderTianPoster(url, title, scope) {
     loadImage(asset('share-island-scene.webp')),
     loadImage(new URL('./assets/course-mark.svg', import.meta.url)),
     loadImage(asset('weiguang-qr.png')),
-    document.fonts.ready,
   ]);
   const canvas = document.createElement('canvas');
   canvas.width = 1200;

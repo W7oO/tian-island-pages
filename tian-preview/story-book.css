@@ -6,3 +6,8 @@ body.long-reading main[hidden]{display:none}
 #full-story h1,#full-story h2{line-height:1.45}
 #full-story h2:not(:first-child){margin-top:2em}
 #full-story img{display:block;width:min(100%,540px);height:auto;margin:1.6em auto}
+
+html,body{touch-action:manipulation}
+@media(max-width:680px){
+ .chapter-label select{font-size:16px}
+}

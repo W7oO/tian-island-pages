@@ -98,3 +98,8 @@ body[data-single-work="true"] #exhibit-identity{margin-right:auto;}
  min-height:56px;
 }
 #gallery-chapters .game-frame[data-expanded="true"] .expand-work{visibility:hidden}
+
+/* Keep double taps from zooming the reading page; pinch zoom remains available. */
+#gallery-dialog[data-view="work"],
+#gallery-dialog[data-view="work"] :is(#gallery-scroll,#gallery-chapters){touch-action:manipulation}
+#gallery-dialog[data-view="work"] #explore-loading{display:none}

@@ -5,10 +5,13 @@
   <title>死星遗迹</title>
   <style>
     *{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#06070a;font-family:"Microsoft YaHei","PingFang SC",sans-serif;color:#fff}
-    canvas{display:block;position:fixed;inset:0}.title{position:fixed;z-index:3;top:36px;left:52px;pointer-events:none;text-shadow:0 3px 18px #000}
+    canvas{display:block;position:fixed;inset:0;touch-action:none}.title{position:fixed;z-index:3;top:36px;left:52px;pointer-events:none;text-shadow:0 3px 18px #000}
     h1{margin:0;font-size:clamp(28px,3vw,44px);letter-spacing:.1em}.title p{margin:10px 0;color:#b9ac95;letter-spacing:.11em}
     .hint{max-width:45%;padding:11px 15px;border:1px solid #c8b18933;border-radius:13px;background:#191410a8;color:#e0d5c4;font-size:12px;line-height:1.8;pointer-events:none;backdrop-filter:blur(8px)}
     .view-controls{position:fixed;z-index:4;left:52px;right:30px;bottom:26px;display:flex;align-items:flex-end;justify-content:space-between;gap:12px;pointer-events:none}
+    .view-actions{display:grid;gap:6px;min-width:0}
+    .view-zoom{justify-self:start;display:flex;gap:6px;pointer-events:auto}
+    .view-zoom button{min-height:44px;padding:4px 12px;border-radius:9px;border:1px solid #c8b18966;background:#191410df;color:#f4ead8;font:inherit;font-size:13px;cursor:pointer}
     .views{display:flex;flex-wrap:wrap;gap:6px;min-width:0;max-width:560px;pointer-events:auto}
     @media(max-width:700px){
       .title{top:14px;left:12px;right:12px}
@@ -47,7 +50,13 @@
 <body data-page-node-id="6C6PAQC89wFD4a6uNPTjF6">
   <div class="title" data-page-node-id="DodxHqTKTmoBaWtEUcf9lQ"><h1 data-page-node-id="wPuksjgYm8iEsHp20s3uka">死星遗迹</h1><p data-page-node-id="Q1boBxPp9qGYM3MSAv66yz">一颗被文明透支之后彻底废弃的星球</p></div>
   <div class="view-controls">
+    <div class="view-actions">
+      <div class="view-zoom" role="group" aria-label="镜头缩放">
+        <button type="button" id="view-zoom-out">− 缩小</button>
+        <button type="button" id="view-zoom-in">+ 放大</button>
+      </div>
   <div class="views" id="views" data-page-node-id="fQ0LdW2mXr9pTaBvNsKc31"><button class="on" data-page-node-id="a1">1 地球中心</button><button data-page-node-id="a2">2 月球中心</button><button data-page-node-id="a3">3 空间站中心</button><button data-page-node-id="a4">4 地表探险者</button><button data-page-node-id="a5">5 月面探险者</button><button data-page-node-id="a6">6 空间站探险者</button></div><div class="vignette" data-page-node-id="eXDhj4lHI9SEujeJx6SKmp"></div>
+    </div>
   <div class="hint" id="hint" data-page-node-id="hICT4PQwADoVyvfdWCkaoJ">拖动：旋转星球 · 滚轮：缩放</div>
   </div>
   <div class="aim" id="aim"></div>
@@ -1738,7 +1747,7 @@ function updateEdgeLook(dt){
 }
 renderer.domElement.addEventListener('pointerdown',e=>{
   if(!activeExp)return;
-  if(e.button)return;                          // 只认主键：触控板上就是单指按下去
+  if(e.button||e.pointerType==='touch'&&!e.isPrimary)return; // 只认主键：触控板上就是单指按下去
   LOOK.dragging=true;beginDrag(e.clientX,e.clientY);
   try{renderer.domElement.setPointerCapture(e.pointerId);}catch(err){}
   requestLook();                               // 顺手讨一次光标锁定，成功的话下一滑就不必按了
@@ -4040,14 +4049,45 @@ addEventListener('blur',()=>{for(const k in keyState)keyState[k]=0});
 
 // ---------- 鼠标：中心视角拖动转星球；探险者视角由光标驱动视线 ----------
 let dragging=false,lastX=0,lastY=0;
+const zoomTouches=new Map();
+let pinchDistance=0;
+function readPinchDistance(){
+  const [a,b]=zoomTouches.values();
+  return a&&b?Math.hypot(a.x-b.x,a.y-b.y):0;
+}
 world.rotation.set(-.08,-.25,0);
 renderer.domElement.addEventListener('pointerdown',e=>{
+  if(e.pointerType==='touch'){
+    zoomTouches.set(e.pointerId,{x:e.clientX,y:e.clientY});
+    if(zoomTouches.size>1){
+      dragging=false;
+      LOOK.dragging=false;
+      LOOK.edgeT=0;
+      pinchDistance=readPinchDistance();
+      return;
+    }
+  }
   if(VIEWS[viewMode].kind!=='C')return;
   dragging=true;lastX=e.clientX;lastY=e.clientY;
   renderer.domElement.setPointerCapture(e.pointerId);
 });
-renderer.domElement.addEventListener('pointerup',()=>dragging=false);
+function endScenePointer(e){
+  zoomTouches.delete(e.pointerId);
+  pinchDistance=readPinchDistance();
+  dragging=false;
+}
+renderer.domElement.addEventListener('pointerup',endScenePointer);
+renderer.domElement.addEventListener('pointercancel',endScenePointer);
 renderer.domElement.addEventListener('pointermove',e=>{
+  if(zoomTouches.has(e.pointerId)){
+    zoomTouches.set(e.pointerId,{x:e.clientX,y:e.clientY});
+    if(zoomTouches.size>1){
+      const distance=readPinchDistance();
+      if(distance>0&&pinchDistance>0)zoomBy(Math.log(pinchDistance/distance)*100,true);
+      pinchDistance=distance;
+      return;
+    }
+  }
   if(!dragging)return;
   world.rotation.y+=(e.clientX-lastX)*.0045;
   world.rotation.x=Math.max(-1.1,Math.min(1.1,world.rotation.x+(e.clientY-lastY)*.0035));
@@ -4069,6 +4109,8 @@ function zoomBy(dy,ctrl){
   const o=v.exp;
   o.camDist=Math.max(o.camMin,Math.min(o.camMax,o.camDist*Math.exp(dy*(ctrl?.013:.0017))));
 }
+document.getElementById('view-zoom-out').addEventListener('click',()=>zoomBy(28,true));
+document.getElementById('view-zoom-in').addEventListener('click',()=>zoomBy(-28,true));
 addEventListener('wheel',e=>{
   e.preventDefault();        // 顺手挡掉浏览器的"捏合缩放整个页面"
   zoomBy(e.deltaY,e.ctrlKey);
@@ -4076,7 +4118,7 @@ addEventListener('wheel',e=>{
 // Safari 的触控板捏合不产生 wheel，走的是 gesture 事件
 let _gs=1;
 addEventListener('gesturestart',e=>{e.preventDefault();_gs=e.scale||1;});
-addEventListener('gesturechange',e=>{e.preventDefault();const s=e.scale||1;zoomBy((_gs-s)*160,true);_gs=s;});
+addEventListener('gesturechange',e=>{e.preventDefault();if(zoomTouches.size>1)return;const s=e.scale||1;zoomBy((_gs-s)*160,true);_gs=s;});
 addEventListener('gestureend',e=>e.preventDefault());
 
 const _f=new THREE.Vector3(),_q=new THREE.Quaternion(),_v=new THREE.Vector3();

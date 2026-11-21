@@ -16,22 +16,36 @@ if(homeParams.get('view')==='welcome'){
  document.querySelector('.explore-help').textContent='点击场景看作品，也可以查看全部作品。';
  document.getElementById('explore-reset').textContent='重置视角';
  // Current work row keeps the share action in its third column.
- for(const id of ['back-overview','exhibit-overview'])document.getElementById(id).textContent='回到小岛';
+ const backButtons=['back-overview','exhibit-overview'].map(id=>document.getElementById(id));
+ let catalogEntry=null;
  list.textContent='全部作品';
  const heading=document.createElement('div');heading.className='catalog-heading';
  heading.innerHTML='<div><h2>全部作品</h2><p>10个展位 · 9件已有展示素材，1件作品已完成、素材待补。</p></div><button type="button" class="catalog-close">回到小岛 ↗</button><button type="button" class="catalog-share">分享全部作品</button>';
  grid.prepend(heading);
  grid.setAttribute('aria-label','全部作品预览');
- function catalog(open){
+ function catalog(open,entry=null){
   if(gallery.dataset.view!=='overview')window.showIslandWork(0);
   grid.dataset.open=String(open);gallery.dataset.catalog=String(open);
   const pageURL=new URL(location.href);if(open)pageURL.searchParams.set('catalog','1');else pageURL.searchParams.delete('catalog');history.replaceState(history.state,'',pageURL);
   list.setAttribute('aria-expanded',String(open));all.setAttribute('aria-expanded',String(open));
   all.textContent=open?'回到小岛':'全部作品';
   all.setAttribute('aria-label',open?'关闭作品总览，回到小岛':'查看全部作品');
-  if(open){grid.scrollTop=0;all.focus({preventScroll:true});}
+  if(open){
+   grid.scrollTop=entry?.scrollTop??0;
+   (entry?.card??all).focus({preventScroll:true});
+  }
  }
  function map(){window.showIslandWork(0);catalog(false);}
+ function returnFromWork(){
+  if(catalogEntry)catalog(true,catalogEntry);
+  else map();
+ }
+ for(const button of backButtons){
+  button.addEventListener('click',e=>{
+   e.stopImmediatePropagation();
+   returnFromWork();
+  },true);
+ }
  all.addEventListener('click',e=>{e.preventDefault();e.stopImmediatePropagation();catalog(gallery.dataset.view!=='overview'||grid.dataset.open!=='true');},true);
  list.addEventListener('click',e=>{e.preventDefault();e.stopImmediatePropagation();catalog(grid.dataset.open!=='true');},true);
  brand.addEventListener('click',e=>{e.preventDefault();e.stopImmediatePropagation();map();},true);
@@ -39,7 +53,18 @@ if(homeParams.get('view')==='welcome'){
  gallery.addEventListener('cancel',e=>{
   if(window.aliySingleWork){e.preventDefault();return;}
   if(gallery.querySelector('.game-frame[data-expanded="true"]:not([hidden])'))return;
-  e.preventDefault();map();all.focus({preventScroll:true});
+  e.preventDefault();e.stopImmediatePropagation();
+  if(gallery.dataset.view==='work')returnFromWork();
+  else map();
  },true);
- window.addEventListener('galleryviewchange',e=>{if(e.detail.id){grid.dataset.open='false';gallery.dataset.catalog='false';all.textContent='全部作品';all.setAttribute('aria-expanded','false');}});
+ window.addEventListener('galleryviewchange',e=>{
+  if(e.detail.id){
+   if(grid.dataset.open==='true'){
+    catalogEntry={scrollTop:grid.scrollTop,card:grid.querySelector('.overview-card-'+e.detail.id)};
+   }
+   grid.dataset.open='false';gallery.dataset.catalog='false';
+   all.textContent='全部作品';all.setAttribute('aria-expanded','false');
+  }else catalogEntry=null;
+  for(const button of backButtons)button.textContent=catalogEntry?'返回全部作品':'回到小岛';
+ });
 }

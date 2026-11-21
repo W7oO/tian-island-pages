@@ -1,5 +1,68 @@
 (()=>{const $=id=>document.getElementById(id),esc=s=>String(s||'').replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c])),paragraph=p=>`<p>${p.strong?'<strong>':''}${esc(p.text)}${p.strong?'</strong>':''}</p>`;
-$('stage-intro-copy').innerHTML=window.tianHomeCopy.map(paragraph).join('');$('stages').innerHTML=window.tianStageData.map((s,i)=>`<details ${i===0?'open':''}><summary>${esc(s.label)} · ${esc(s.title)}</summary>${(s.lead||[]).map(paragraph).join('')}${(s.sections||[]).map(x=>`<section>${x.title?`<h3>${esc(x.title)}</h3>`:''}${(x.paragraphs||[]).map(paragraph).join('')}</section>`).join('')}</details>`).join('');$('stage-open').onclick=()=>$('stage-dialog').showModal();document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>$(b.dataset.close).close());
+const stage = $('stage-review');
+const stageButton = $('stage-open');
+const gallery = $('gallery-dialog');
+const pageHeader = gallery.querySelector('.gallery-top');
+const stageReturn = stage.querySelector('.island-reading-close');
+let background = [];
+
+$('stages').innerHTML = window.tianStageData.map((section, index) => `
+  <details class="stage-phase" ${index === 0 ? 'open' : ''}>
+    <summary class="stage-phase-summary">
+      <strong class="stage-phase-heading">${esc(section.label)}</strong>
+      <span class="stage-phase-action" aria-hidden="true"></span>
+    </summary>
+    <div class="stage-phase-body">
+      <h2>${esc(section.title)}</h2>
+      ${(section.lead || []).map(paragraph).join('')}
+      ${(section.sections || []).map(part => `<section>${part.title ? `<h3>${esc(part.title)}</h3>` : ''}${(part.paragraphs || []).map(paragraph).join('')}</section>`).join('')}
+    </div>
+  </details>`).join('');
+
+function fitStage() {
+  stage.style.top = pageHeader.getBoundingClientRect().height + 'px';
+}
+
+function closeStage(restoreFocus = true) {
+  if (stage.hidden) return;
+  stage.hidden = true;
+  stageButton.setAttribute('aria-expanded', 'false');
+  for (const [element, wasInert] of background) element.inert = wasInert;
+  background = [];
+  if (restoreFocus) stageButton.focus({preventScroll: true});
+}
+
+stageButton.setAttribute('aria-controls', stage.id);
+stageButton.setAttribute('aria-expanded', 'false');
+stageButton.onclick = () => {
+  background = [...gallery.children]
+    .filter(element => element !== stage && element !== pageHeader)
+    .map(element => [element, element.inert]);
+  for (const [element] of background) element.inert = true;
+  fitStage();
+  stage.hidden = false;
+  stageButton.setAttribute('aria-expanded', 'true');
+  $('stage-review-title').focus({preventScroll: true});
+};
+
+stageReturn.onclick = () => closeStage();
+pageHeader.addEventListener('click', event => {
+  if (event.target.closest('button,a')) closeStage(false);
+}, true);
+document.addEventListener('keydown', event => {
+  if (event.key !== 'Escape' || stage.hidden) return;
+  event.preventDefault();
+  event.stopImmediatePropagation();
+  closeStage();
+}, true);
+gallery.addEventListener('close', () => closeStage(false));
+window.addEventListener('galleryviewchange', () => closeStage(false));
+window.addEventListener('resize', () => {
+  if (!stage.hidden) fitStage();
+});
+document.querySelectorAll('[data-close]').forEach(button => {
+  button.onclick = () => $(button.dataset.close).close();
+});
 let shareRequest=0,posterUrl;
 async function share(scope,id=0){
  const request=++shareRequest;

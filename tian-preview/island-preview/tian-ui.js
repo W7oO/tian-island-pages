@@ -15,8 +15,6 @@ async function share(scope,id=0){
  }else if(catalog)u.searchParams.set('catalog','1');
  const label=work?'当前作品':catalog?'作品目录':'整座小岛';
  $('share-heading').textContent=work?'分享作品 · '+title:scope;
- $('share-link').value=u.href;
- $('copy-status').textContent='';
  const local=['localhost','127.0.0.1','0.0.0.0'].includes(location.hostname);
  $('share-notice').textContent=local?'当前分享链接仅在本机可打开。':'链接将打开'+label+'。';
  $('poster-status').textContent='正在生成海报…';
@@ -39,5 +37,5 @@ async function share(scope,id=0){
   if(request===shareRequest)$('poster-status').textContent='海报暂时无法加载，关闭后可重新打开分享。';
  }
 }
-$('share-island').onclick=()=>share('分享小岛');$('share-current-work').onclick=()=>share('分享作品',window.currentTianWork());document.addEventListener('click',e=>{if(e.target.closest('.catalog-share'))share('分享全部作品')});$('copy-link').onclick=async()=>{try{await navigator.clipboard.writeText($('share-link').value);$('copy-status').textContent='已复制链接'}catch{$('share-link').select();$('copy-status').textContent='请长按链接复制'}};window.addEventListener('galleryviewchange',()=>{$('gallery-dialog').dataset.expanded='false'});
+$('share-island').onclick=()=>share('分享小岛');$('share-current-work').onclick=()=>share('分享作品',window.currentTianWork());document.addEventListener('click',e=>{if(e.target.closest('.catalog-share'))share('分享全部作品')});window.addEventListener('galleryviewchange',()=>{$('gallery-dialog').dataset.expanded='false'});
 })();

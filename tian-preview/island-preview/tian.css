@@ -99,4 +99,4 @@ body[data-single-work="true"] #exhibit-identity{margin-right:auto;}
 }
 #gallery-chapters .game-frame[data-expanded="true"] .expand-work{visibility:hidden}
 
-#gallery-dialog[data-view="work"] #close-gallery{display:none}
+body[data-start="island"] #gallery-dialog[data-view="work"] .gallery-top #close-gallery{display:none}

@@ -44,9 +44,14 @@
     position: fixed; inset: 0;
     background: rgba(3, 2, 4, 0.9);
     display: flex; flex-direction: column;
-    align-items: center; justify-content: center;
+    align-items: center; justify-content: flex-start;
+    box-sizing: border-box; padding: 16px 12px; overflow-y: auto;
+    overscroll-behavior: contain;
     color: #d8c8c8; z-index: 10; text-align: center;
   }
+  #overlay > * { flex: none; }
+  #overlay > h1:first-child { margin-top: auto; }
+  #overlay > p:last-child { margin-bottom: auto; }
   #overlay.scare { background: #050101; }
   #jumpscare {
     position: fixed; inset: 0; width: 100vw; height: 100vh;
@@ -136,10 +141,12 @@
     #hud { font-size: 12px; gap: 4px; padding: 6px 8px; }
     #hearts { font-size: 15px; }
     #tip { display: none; }
-    #overlay h1 { font-size: 34px; }
-    #overlay p { font-size: 13px; padding: 0 16px; }
-    #levelGrid { grid-template-columns: repeat(2, 1fr); width: 92vw; }
-    .lvBtn { min-height: 84px; padding: 10px 6px; }
+    #overlay h1 { font-size: clamp(23px, 8vw, 34px); letter-spacing: .12em; margin-bottom: 8px; }
+    #overlay p { font-size: 13px; line-height: 1.55; padding: 0 4px; }
+    #levelGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; width: 100%; margin: 12px 0; }
+    #overlay .lvBtn { min-height: 76px; margin: 0; padding: 8px 6px; letter-spacing: 0; }
+    .lvName { font-size: 15px; letter-spacing: 1px; }
+    #ovBtns { flex-wrap: wrap; justify-content: center; margin-top: 12px; }
     #ovBtns button { padding: 12px 22px; font-size: 15px; }
   }
 </style>

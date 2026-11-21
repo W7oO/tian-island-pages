@@ -30,7 +30,10 @@ async function share(scope,id=0){
    ? Object.assign(new Image(),{src:staticUrl}).decode().then(()=>null)
    : import('./tian-poster.js?rev=bounded').then(({renderTianPoster})=>renderTianPoster(u.href,title,label));
   const deadline=new Promise((_,reject)=>{
-   timeout=setTimeout(()=>reject(new Error('海报加载超时')),12000);
+   timeout=setTimeout(()=>{
+    if(!staticUrl){reject(new Error('海报加载超时'));return;}
+    if(request===shareRequest&&$('share-dialog').open)$('poster-status').textContent='海报加载较慢，图片加载完成后会自动显示。';
+   },12000);
   });
   const poster=await Promise.race([generated,deadline]);
   if(request!==shareRequest||!$('share-dialog').open)return;

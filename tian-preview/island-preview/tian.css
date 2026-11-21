@@ -80,8 +80,8 @@ body[data-single-work="true"] #exhibit-identity{margin-right:auto;}
 #share-poster{display:block;width:100%;height:auto;border:1px solid #cbd7cb;border-radius:8px}
 #poster-save:not([hidden]){display:inline-block;margin:0 0 14px;color:#345751}
 
-/* Keep the book exit in the dialog layer, outside the scrolling iframe region. */
-#gallery-dialog #exit-book-fullscreen:not([hidden]){
+/* Keep the fullscreen exit in the dialog layer, outside the scrolling iframe region. */
+#gallery-dialog #exit-work-fullscreen:not([hidden]){
  position:fixed;
  top:calc(env(safe-area-inset-top,0px) + 6px);
  right:calc(env(safe-area-inset-right,0px) + 12px);
@@ -94,7 +94,7 @@ body[data-single-work="true"] #exhibit-identity{margin-right:auto;}
  color:#304d49;
  font-size:14px;
 }
-#gallery-dialog[data-view="work"] #chapter-3 .game-frame[data-expanded="true"] .game-toolbar{
+#gallery-dialog[data-view="work"] #gallery-chapters .game-frame[data-expanded="true"] .game-toolbar{
  min-height:56px;
 }
-#chapter-3 .game-frame[data-expanded="true"] .expand-work{visibility:hidden}
+#gallery-chapters .game-frame[data-expanded="true"] .expand-work{visibility:hidden}

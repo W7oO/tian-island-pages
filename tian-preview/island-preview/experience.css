@@ -21,8 +21,8 @@
 /* The coast: two original photographic worlds, with a larger main image. */
 #gallery-dialog[data-work="2"] .chapter-2{grid-template-columns:27% minmax(0,1fr);gap:5%;padding:4% 6%;background:#c2d1d229}
 #gallery-dialog[data-work="2"] .chapter-media{display:block;position:relative;min-height:580px;height:64dvh;max-height:760px;padding:0 19% 10% 0;transform:translate(var(--look-x,0px),var(--look-y,0px));transition:transform .5s ease-out}
-#gallery-dialog[data-work="2"] .chapter-media figure:first-child{height:100%;width:100%;margin:0;transform:rotate(-3deg)}
-#gallery-dialog[data-work="2"] .chapter-media figure:last-child{position:absolute;right:0;bottom:0;width:49%;height:auto;transform:rotate(5deg);margin:0}
+#gallery-dialog[data-work="2"] .chapter-media figure:first-child{height:100%;width:100%;margin:0}
+#gallery-dialog[data-work="2"] .chapter-media figure:last-child{position:absolute;right:0;bottom:0;width:49%;height:auto;margin:0}
 #gallery-dialog[data-work="2"] .image-open{outline:0;border:0;border-radius:3px;padding:0;background:none;box-shadow:0 20px 50px #3d505538}
 #gallery-dialog[data-work="2"] .image-open img{width:100%;height:100%;max-height:none;object-fit:cover}
 #gallery-dialog[data-work="2"] figure:first-child .image-open{height:100%}

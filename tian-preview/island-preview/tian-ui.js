@@ -23,17 +23,24 @@ async function share(scope,id=0){
  $('share-dialog').showModal();
  let timeout;
  try{
-  const generated=import('./tian-poster.js?rev=bounded').then(({renderTianPoster})=>renderTianPoster(u.href,title,label));
+  const file=work?'work-'+work.id:catalog?'catalog':'island';
+  const published=u.origin==='https://w7oo.github.io'&&u.pathname==='/tian-island-pages/tian-preview/';
+  const staticUrl=published?new URL('../assets/share-posters/'+file+'.jpg',document.baseURI).href:null;
+  const generated=staticUrl
+   ? Object.assign(new Image(),{src:staticUrl}).decode().then(()=>null)
+   : import('./tian-poster.js?rev=bounded').then(({renderTianPoster})=>renderTianPoster(u.href,title,label));
   const deadline=new Promise((_,reject)=>{
    timeout=setTimeout(()=>reject(new Error('海报加载超时')),12000);
   });
   const poster=await Promise.race([generated,deadline]);
   if(request!==shareRequest||!$('share-dialog').open)return;
   if(posterUrl)URL.revokeObjectURL(posterUrl);
-  posterUrl=URL.createObjectURL(poster);
-  $('share-poster').src=posterUrl;
-  $('poster-open').href=posterUrl;
-  $('poster-save').href=posterUrl;
+  posterUrl=poster?URL.createObjectURL(poster):null;
+  const imageUrl=staticUrl||posterUrl;
+  $('share-poster').src=imageUrl;
+  $('poster-open').href=imageUrl;
+  $('poster-save').href=imageUrl;
+  $('poster-save').download='田田的创作小岛'+(staticUrl?'.jpg':'.png');
   $('poster-open').hidden=false;
   $('poster-save').hidden=false;
   $('poster-status').textContent='长按海报保存，或点图片查看大图。';

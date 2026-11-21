@@ -1,13 +1,41 @@
 'use strict';
 const data=JSON.parse(document.getElementById('story-data').textContent),$=id=>document.getElementById(id);
 document.body.classList.toggle('embedded',window.self!==window.top);
+
+if(new URLSearchParams(location.search).get('reading')==='long'){
+  document.body.classList.add('long-reading');
+  document.querySelector('main').hidden=true;
+  const viewLink=$('reading-mode');
+  viewLink.href='./story-book.html';
+  viewLink.removeAttribute('target');
+  viewLink.textContent='翻页阅读';
+  const story=$('full-story');
+  for(const [index,block] of data.blocks.entries()){
+    const illustration=data.illustrations.find(item=>item.anchor===index);
+    if(illustration){
+      const image=document.createElement('img');
+      image.src=illustration.src;
+      image.alt=illustration.title;
+      image.loading='lazy';
+      story.append(image);
+    }
+    const paragraph=document.createElement(index===0?'h1':block.tag);
+    paragraph.innerHTML=block.html;
+    story.append(paragraph);
+  }
+  story.hidden=false;
+}else{
+  initializeBook();
+}
+function initializeBook(){
+
 const media=matchMedia('(max-width:680px)'),reduce=matchMedia('(prefers-reduced-motion:reduce)');
 let pages=[],chapters=[],at=0,step=media.matches?1:2,busy=false,resizeTimer;
 const plain=html=>{const e=document.createElement('div');e.innerHTML=html;return e.textContent;};
 const escape=s=>s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const allOriginal=data.blocks.map(b=>plain(b.html)).join('');
 const leaf=document.createElement('section');leaf.hidden=true;leaf.setAttribute('aria-hidden','true');$('book').appendChild(leaf);
-function shell(page,index){return `<div class="page-content">${page?.html||'<div class="frontispiece"><span class="ornament">✦</span><h2>故事读完了。</h2><p>感谢你走进刘踊田的想象世界。</p><button class="restart">重新翻开</button></div>'}</div><div class="running"><span>${escape(page?.chapter||'钢铁少年')}</span><span>${index<pages.length?String(index+1).padStart(2,'0'):'终'}</span></div>`;}
+function shell(page,index){return `<div class="page-content">${page?.html||'<div class="frontispiece"><span class="ornament">✦</span><h2>故事读完了。</h2><p>感谢你走进田田的想象世界。</p><button class="restart">重新翻开</button></div>'}</div><div class="running"><span>${escape(page?.chapter||'钢铁少年')}</span><span>${index<pages.length?String(index+1).padStart(2,'0'):'终'}</span></div>`;}
 function render(){at=Math.max(0,Math.min(at,Math.floor((pages.length-1)/step)*step));$('left-page').innerHTML=shell(pages[at],at);$('right-page').innerHTML=shell(pages[at+1],at+1);$('prev').disabled=at===0;$('next').disabled=at+step>=pages.length;$('next').querySelector('span').textContent=at===0?'翻开故事':'下一页';$('page-label').textContent=`${at+1}${step===2&&at+1<pages.length?'—'+(at+2):''} / ${pages.length} 页`;$('page-range').max=pages.length-1;$('page-range').value=at;$('chapters').value=String([...chapters].reverse().find(c=>c.page<=at)?.page||0);document.querySelectorAll('[data-chapter]').forEach(b=>b.onclick=()=>go(Number(b.dataset.chapter)));document.querySelectorAll('.restart').forEach(b=>b.onclick=()=>go(0));window.bookDebug.current=at;}
 function go(n,animate=true){if(busy)return;const target=Math.floor(Math.max(0,Math.min(pages.length-1,n))/step)*step;if(target===at)return;const forward=target>at;if(animate&&!reduce.matches){leaf.innerHTML=(step===1?$('left-page'):forward?$('right-page'):$('left-page')).innerHTML;leaf.className='sheet turning-leaf '+(forward?'forward':'backward');leaf.hidden=false;busy=true;setTimeout(()=>{leaf.hidden=true;busy=false;},650);}at=target;render();}
 function paginate(){
@@ -16,7 +44,7 @@ function paginate(){
  let current=[],chapter='钢铁少年',anchor=-1;
  const flush=()=>{if(current.length){pages.push({html:current.join(''),chapter,anchor});current=[];}};
  const fits=parts=>{box.innerHTML=parts.join('');return box.scrollHeight<=box.clientHeight+1;};
- pages.push({html:`<div class="cover"><div class="cover-kicker">刘踊田 · 文学改编作品</div><h2>钢铁少年</h2><img src="${data.illustrations[0].src}" alt="钢铁少年 · 来到盖茨海德"><p>保尔·柯察金在盖茨海德的岁月<br>完整故事 × 15 幅原作分镜</p></div>`,chapter:'封面',anchor:-1});pages.push({html:'',chapter:'目录',anchor:-1});
+ pages.push({html:`<div class="cover"><div class="cover-kicker">田田 · 文学改编作品</div><h2>钢铁少年</h2><img src="${data.illustrations[0].src}" alt="钢铁少年 · 来到盖茨海德"><p>保尔·柯察金在盖茨海德的岁月<br>完整故事 × 15 幅原作分镜</p></div>`,chapter:'封面',anchor:-1});pages.push({html:'',chapter:'目录',anchor:-1});
  for(const [i,b]of data.blocks.entries()){
   const illustration=data.illustrations.find(x=>x.anchor===i);
   if(illustration){if(!current.every(x=>x.startsWith('<h2')))flush();pages.push({html:`<figure class="illustration"><img src="${illustration.src}" alt="${escape(illustration.title)}"><figcaption><small>原作分镜 / ${String(data.illustrations.indexOf(illustration)+1).padStart(2,'0')}—15</small>${escape(illustration.title)}</figcaption></figure>`,chapter,anchor:i,illustration:true});}
@@ -41,3 +69,4 @@ $('next').onclick=()=>go(at+step);$('prev').onclick=()=>go(at-step);$('page-rang
 addEventListener('keydown',e=>{if(['SELECT','INPUT'].includes(e.target.tagName))return;if(e.key==='ArrowRight'){e.preventDefault();go(at+step);}if(e.key==='ArrowLeft'){e.preventDefault();go(at-step);}});
 let start;const book=$('book');book.addEventListener('touchstart',e=>{if(e.touches.length===1)start={x:e.touches[0].clientX,y:e.touches[0].clientY};},{passive:true});book.addEventListener('touchend',e=>{if(!start)return;const dx=e.changedTouches[0].clientX-start.x,dy=e.changedTouches[0].clientY-start.y;if(Math.abs(dx)>60&&Math.abs(dx)>Math.abs(dy)*1.5)go(at+(dx<0?step:-step));start=null;},{passive:true});
 addEventListener('resize',()=>{clearTimeout(resizeTimer);resizeTimer=setTimeout(paginate,180);});window.bookDebug={ready:false};document.fonts.ready.then(()=>requestAnimationFrame(paginate));
+}

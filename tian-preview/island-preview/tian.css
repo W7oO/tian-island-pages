@@ -103,3 +103,11 @@ body[data-single-work="true"] #exhibit-identity{margin-right:auto;}
 #gallery-dialog[data-view="work"],
 #gallery-dialog[data-view="work"] :is(#gallery-scroll,#gallery-chapters){touch-action:manipulation}
 #gallery-dialog[data-view="work"] #explore-loading{display:none}
+
+#gallery-overview .gallery-intro #stage-open{
+ background:#dceae2;
+ border-color:#77978b;
+ color:#254b45;
+ font-size:13px;
+ font-weight:600;
+}

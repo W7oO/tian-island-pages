@@ -2,7 +2,7 @@ import {advanceFootball,getFootballStats} from './landscape-details.js';
 import {routeOnRoads} from './road-navigation.js';
 import {updateExhibitMotion,getExhibitMotionStats,getMazeEffectStats,getInstalledProposalStats,station} from './tian-scenes.js';
 import {layoutPlan} from './layout-plan.js';
-import {buildCampusEnvironment} from './campus-environment.js';
+import {buildCampusEnvironment} from './campus-environment.js?rev=sunset-zoom';
 let campusEnvironment;let exhibitMotionEnabled=!matchMedia('(prefers-reduced-motion:reduce)').matches,exhibitMotionOverride=false;
 import {buildMascot} from './mascot.js';
 let tianMascot;
@@ -166,7 +166,7 @@ function render(now){requestAnimationFrame(render);if(mobile.matches&&now-(rende
  if(!reduced.matches){if(tornado)tornado.rotation.y=now*.00025;waves.forEach((wave,i)=>wave.position.y=.6+Math.sin(now*.001+i)*.018);}
  updateExhibitMotion(elapsed,exhibitMotionEnabled);
  if(exhibitMotionEnabled)advanceFootball(elapsed);
- if(campusEnvironment)campusEnvironment.update(now);
+ if(campusEnvironment)campusEnvironment.update(now,homeZoom);
  if(tianMascot){if(!navigation)tianMascot.moveTo(car.position.clone(),V(0,0,1),false);tianMascot.update(now);car.position.y=Craft.groundHeight(car.position.x,car.position.z)-.31;}
  drawScene();projectMarkers();
 }

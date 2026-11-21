@@ -98,5 +98,3 @@ body[data-single-work="true"] #exhibit-identity{margin-right:auto;}
  min-height:56px;
 }
 #gallery-chapters .game-frame[data-expanded="true"] .expand-work{visibility:hidden}
-
-body[data-start="island"] #gallery-dialog[data-view="work"] .gallery-top #close-gallery{display:none}

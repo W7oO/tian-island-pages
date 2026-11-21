@@ -10,7 +10,7 @@ if(homeParams.get('view')==='welcome'){
  all.textContent='全部作品';all.setAttribute('aria-label','查看全部作品');all.setAttribute('aria-expanded','false');all.setAttribute('aria-controls','overview-grid');
  brand.setAttribute('aria-label','回到创作小岛');
  document.querySelector('#gallery-overview .gallery-kicker').textContent='第一阶段 · 创作与探索';
- document.getElementById('gallery-title').textContent='刘踊田的创作小岛';
+ document.getElementById('gallery-title').textContent='田田的创作小岛';
  document.querySelector('#gallery-overview .gallery-intro>p:not(.gallery-kicker)').textContent='从兴趣出发，让想法经得起探索与检验。';
  document.querySelector('#gallery-overview .chapter-count').hidden=true;
  document.querySelector('.explore-help').textContent='点击场景看作品，也可以查看全部作品。';
